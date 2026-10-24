@@ -8,6 +8,7 @@ import '../core/di/app_locator.dart';
 import '../core/router/app_route.dart';
 import '../core/router/app_router.dart';
 import '../features/auth/auth.dart';
+import '../features/reminder/reminder.dart';
 import 'app.dart';
 
 /// Provides the shared auth cubit and auth-aware router to the app.
@@ -21,6 +22,9 @@ class AppBootstrap extends StatefulWidget {
 class _AppBootstrapState extends State<AppBootstrap> {
   final AuthCubit _authCubit = locator<AuthCubit>();
 
+  late final StreamSubscription<AuthState> _authSubscription;
+  bool? _wasAuthenticated;
+
   late final _AuthStreamRefresh _refresh = _AuthStreamRefresh(
     _authCubit.stream,
   );
@@ -30,6 +34,30 @@ class _AppBootstrapState extends State<AppBootstrap> {
     refreshListenable: _refresh,
     redirect: _redirect,
   );
+
+  @override
+  void initState() {
+    super.initState();
+    _authSubscription = _authCubit.stream.listen(_syncReminders);
+    _syncReminders(_authCubit.state);
+  }
+
+  void _syncReminders(AuthState auth) {
+    if (auth.isInitializing || _wasAuthenticated == auth.isAuthenticated) {
+      return;
+    }
+
+    _wasAuthenticated = auth.isAuthenticated;
+    unawaited(_rescheduleReminders());
+  }
+
+  Future<void> _rescheduleReminders() async {
+    try {
+      await locator<ReminderRepository>().reschedule();
+    } on Object {
+      // Reminder scheduling must never block app startup.
+    }
+  }
 
   String? _redirect(BuildContext context, GoRouterState state) {
     final auth = _authCubit.state;
@@ -53,6 +81,7 @@ class _AppBootstrapState extends State<AppBootstrap> {
 
   @override
   void dispose() {
+    _authSubscription.cancel();
     _refresh.dispose();
     _router.dispose();
     super.dispose();
