@@ -6,6 +6,7 @@ import 'src/auth_injection.dart';
 import 'src/deck_session_injection.dart';
 import 'src/home_dashboard_injection.dart';
 import 'src/micro_exercise_injection.dart';
+import 'src/reminder_injection.dart';
 import 'src/word_management_injection.dart';
 
 /// Single locator shared by every feature.
@@ -28,4 +29,5 @@ void setupLocator({SupabaseClient? supabaseClient}) {
   registerHomeDashboardDependencies(locator);
   registerDeckSessionDependencies(locator);
   registerMicroExerciseDependencies(locator);
+  registerReminderDependencies(locator);
 }
