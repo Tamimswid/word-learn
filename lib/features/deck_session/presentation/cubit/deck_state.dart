@@ -8,12 +8,14 @@ import '../../data/models/deck_word.dart';
 class DeckState {
   const DeckState({
     this.words = const <DeckWord>[],
+    this.unknownWords = const <DeckWord>[],
     this.index = 0,
     this.status = LoadStatus.idle,
     this.failure,
   });
 
   final List<DeckWord> words;
+  final List<DeckWord> unknownWords;
   final int index;
   final LoadStatus status;
   final Failure? failure;
@@ -32,6 +34,7 @@ class DeckState {
 
   DeckState copyWith({
     List<DeckWord>? words,
+    List<DeckWord>? unknownWords,
     int? index,
     LoadStatus? status,
     Failure? failure,
@@ -39,6 +42,7 @@ class DeckState {
   }) {
     return DeckState(
       words: words ?? this.words,
+      unknownWords: unknownWords ?? this.unknownWords,
       index: index ?? this.index,
       status: status ?? this.status,
       failure: clearFailure ? null : failure ?? this.failure,

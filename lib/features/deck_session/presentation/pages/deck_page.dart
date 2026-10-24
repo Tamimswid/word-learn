@@ -44,7 +44,14 @@ class _DeckView extends StatelessWidget {
                     current.status == LoadStatus.success),
             listener: (context, state) {
               if (state.isFinished) {
-                context.goNamed(AppRoute.home.name);
+                final seeds = state.unknownWords
+                    .map((word) => word.id)
+                    .toList(growable: false);
+                if (seeds.length > 1) {
+                  context.goNamed(AppRoute.exercise.name, extra: seeds);
+                } else {
+                  context.goNamed(AppRoute.home.name);
+                }
                 return;
               }
 

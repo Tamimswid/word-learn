@@ -39,6 +39,9 @@ class DeckCubit extends Cubit<DeckState> {
     emit(
       state.copyWith(
         index: state.index + 1,
+        unknownWords: known
+            ? state.unknownWords
+            : <DeckWord>[...state.unknownWords, word],
         status: LoadStatus.success,
         clearFailure: true,
       ),
