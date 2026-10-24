@@ -9,11 +9,13 @@ class HomeHeader extends StatelessWidget {
     required this.greetingName,
     required this.streakDays,
     required this.onOpenSettings,
+    required this.onOpenReminder,
   });
 
   final String greetingName;
   final int streakDays;
   final VoidCallback onOpenSettings;
+  final VoidCallback onOpenReminder;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +49,12 @@ class HomeHeader extends StatelessWidget {
               ),
             ),
             const Spacer(),
+            AppIconButton(
+              icon: const Icon(Icons.notifications_none_rounded),
+              tooltip: 'Hatırlatıcı',
+              onPressed: onOpenReminder,
+            ),
+            const SizedBox(width: AppSpacing.xs),
             AppIconButton(
               icon: const Icon(Icons.tune_rounded),
               tooltip: 'Oturum ayarları',

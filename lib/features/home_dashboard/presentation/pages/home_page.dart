@@ -12,6 +12,7 @@ import '../cubit/home_cubit.dart';
 import '../cubit/home_state.dart';
 import '../dialogs/add_word_dialog.dart';
 import '../sheets/session_size_sheet.dart';
+import '../../../reminder/presentation/sheets/reminder_sheet.dart';
 import '../widgets/home_header.dart';
 import '../widgets/learning_rhythm_card.dart';
 import '../widgets/quick_practice_section.dart';
@@ -62,6 +63,7 @@ class _HomeView extends StatelessWidget {
                         greetingName: state.firstName,
                         streakDays: snapshot.streakDays,
                         onOpenSettings: () => _openSessionSettings(context),
+                        onOpenReminder: () => _openReminder(context),
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xxl),
@@ -125,6 +127,13 @@ class _HomeView extends StatelessWidget {
 
   void _openExercise(BuildContext context) {
     context.pushNamed(AppRoute.exercise.name);
+  }
+
+  Future<void> _openReminder(BuildContext context) async {
+    final saved = await showReminderSheet(context);
+    if (!context.mounted || saved != true) return;
+
+    _showMessage(context, 'Günlük hatırlatıcı güncellendi.');
   }
 
   Future<void> _addWord(BuildContext context) async {
