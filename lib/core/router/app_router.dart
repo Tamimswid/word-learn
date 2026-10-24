@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../features/auth/presentation/pages/auth_page.dart';
+import '../../../features/deck_session/presentation/pages/deck_page.dart';
 import '../../../features/home_dashboard/presentation/pages/home_page.dart';
 import '../keys/app_keys.dart';
 import 'app_route.dart';
@@ -68,10 +69,7 @@ abstract final class AppRouter {
     GoRoute(
       path: AppRoute.deck.path,
       name: AppRoute.deck.name,
-      pageBuilder: (context, state) => _page(
-        AppRoute.deck,
-        const RoutePlaceholderPage(route: AppRoute.deck),
-      ),
+      pageBuilder: (context, state) => _page(AppRoute.deck, const DeckPage()),
     ),
     GoRoute(
       path: AppRoute.exercise.path,

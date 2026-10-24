@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../data/supabase_client.dart';
 import 'src/auth_injection.dart';
+import 'src/deck_session_injection.dart';
 import 'src/home_dashboard_injection.dart';
 import 'src/word_management_injection.dart';
 
@@ -24,4 +25,5 @@ void setupLocator({SupabaseClient? supabaseClient}) {
   registerAuthDependencies(locator);
   registerWordManagementDependencies(locator);
   registerHomeDashboardDependencies(locator);
+  registerDeckSessionDependencies(locator);
 }

@@ -41,7 +41,7 @@ class _AppBootstrapState extends State<AppBootstrap> {
       return onSignIn ? null : AppRoute.signIn.path;
     }
 
-    return onSignIn ? AppRoute.home.path : null;
+    return onSignIn ? AppRoute.deck.path : null;
   }
 
   @override
