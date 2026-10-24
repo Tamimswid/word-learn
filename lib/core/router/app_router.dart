@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../features/auth/presentation/pages/auth_page.dart';
 import '../../../features/deck_session/presentation/pages/deck_page.dart';
 import '../../../features/home_dashboard/presentation/pages/home_page.dart';
+import '../../../features/micro_exercise/presentation/pages/exercise_page.dart';
 import '../keys/app_keys.dart';
 import 'app_route.dart';
 import 'pages/route_error_page.dart';
@@ -74,10 +75,15 @@ abstract final class AppRouter {
     GoRoute(
       path: AppRoute.exercise.path,
       name: AppRoute.exercise.name,
-      pageBuilder: (context, state) => _page(
-        AppRoute.exercise,
-        const RoutePlaceholderPage(route: AppRoute.exercise),
-      ),
+      pageBuilder: (context, state) {
+        final extra = state.extra;
+        return _page(
+          AppRoute.exercise,
+          ExercisePage(
+            seedIds: extra is List<String> ? extra : const <String>[],
+          ),
+        );
+      },
     ),
     GoRoute(
       path: AppRoute.settings.path,
