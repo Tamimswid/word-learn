@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 /// This enum is the single source of truth for route paths, route names and
 /// page keys. Features must never hard-code a location string.
 enum AppRoute {
+  loading(name: 'loading', path: '/loading'),
   home(name: 'home', path: '/'),
   addWord(name: 'add-word', path: '/words/new'),
   wordDetail(name: 'word-detail', path: '/words/:wordId'),

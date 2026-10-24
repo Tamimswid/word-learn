@@ -26,22 +26,29 @@ class _AppBootstrapState extends State<AppBootstrap> {
   );
 
   late final GoRouter _router = AppRouter.create(
-    initialLocation: AppRoute.signIn.path,
+    initialLocation: AppRoute.loading.path,
     refreshListenable: _refresh,
     redirect: _redirect,
   );
 
   String? _redirect(BuildContext context, GoRouterState state) {
     final auth = _authCubit.state;
-    if (auth.isInitializing) return null;
-
+    final onLoading = state.matchedLocation == AppRoute.loading.path;
     final onSignIn = state.matchedLocation == AppRoute.signIn.path;
+
+    if (auth.isInitializing && !auth.hasError) {
+      return onLoading ? null : AppRoute.loading.path;
+    }
+
+    if (auth.isInitializing) {
+      return onSignIn ? null : AppRoute.signIn.path;
+    }
 
     if (!auth.isAuthenticated) {
       return onSignIn ? null : AppRoute.signIn.path;
     }
 
-    return onSignIn ? AppRoute.deck.path : null;
+    return onSignIn || onLoading ? AppRoute.deck.path : null;
   }
 
   @override

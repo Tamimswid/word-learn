@@ -74,6 +74,7 @@ flutter:
   assets:
     # Local runtime configuration. Copy `.env.example` to `.env` first.
     - .env
+    - assets/animation/
     - assets/icons/
     - assets/images/
 

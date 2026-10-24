@@ -8,6 +8,7 @@ import '../../../features/home_dashboard/presentation/pages/home_page.dart';
 import '../../../features/micro_exercise/presentation/pages/exercise_page.dart';
 import '../keys/app_keys.dart';
 import 'app_route.dart';
+import 'pages/loading_page.dart';
 import 'pages/route_error_page.dart';
 import 'pages/route_placeholder_page.dart';
 
@@ -43,6 +44,12 @@ abstract final class AppRouter {
   }
 
   static final List<RouteBase> _routes = <RouteBase>[
+    GoRoute(
+      path: AppRoute.loading.path,
+      name: AppRoute.loading.name,
+      pageBuilder: (context, state) =>
+          _page(AppRoute.loading, const LoadingPage()),
+    ),
     GoRoute(
       path: AppRoute.home.path,
       name: AppRoute.home.name,

@@ -1,5 +1,7 @@
 /// Central registry of bundled image assets.
 abstract final class AppAssets {
+  static const String loader = 'assets/animation/loader.gif';
+
   static const String empty = 'assets/images/empty.png';
   static const String google = 'assets/icons/google.png';
   static const String signIn = 'assets/images/sign-in-image.png';
