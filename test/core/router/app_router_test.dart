@@ -35,11 +35,11 @@ void main() {
     await _pumpApp(tester);
 
     final context = tester.element(find.byType(HomePage));
-    GoRouter.of(context).go(AppRoute.deck.path);
+    GoRouter.of(context).go(AppRoute.settings.path);
     await tester.pumpAndSettle();
 
     expect(find.byType(RoutePlaceholderPage), findsOneWidget);
-    expect(find.text('deck'), findsOneWidget);
+    expect(find.text('settings'), findsOneWidget);
   });
 
   testWidgets('shows the error page for unknown locations', (tester) async {
