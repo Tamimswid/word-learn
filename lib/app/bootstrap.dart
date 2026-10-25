@@ -9,6 +9,7 @@ import '../core/platform/process_text_service.dart';
 import '../core/router/app_route.dart';
 import '../core/router/app_router.dart';
 import '../features/auth/auth.dart';
+import '../features/quick_capture/quick_capture.dart';
 import '../features/reminder/reminder.dart';
 import 'app.dart';
 
@@ -23,6 +24,8 @@ class AppBootstrap extends StatefulWidget {
 class _AppBootstrapState extends State<AppBootstrap> {
   final AuthCubit _authCubit = locator<AuthCubit>();
   final ProcessTextService _processText = locator<ProcessTextService>();
+  final QuickCaptureCoordinator _quickCapture =
+      locator<QuickCaptureCoordinator>();
 
   late final Future<void> _initialProcessText = _processText.loadInitialWord();
   late final StreamSubscription<AuthState> _authSubscription;
@@ -105,7 +108,15 @@ class _AppBootstrapState extends State<AppBootstrap> {
   Widget build(BuildContext context) {
     return BlocProvider<AuthCubit>.value(
       value: _authCubit,
-      child: WordlearnApp(router: _router),
+      child: ListenableBuilder(
+        listenable: _quickCapture,
+        builder: (context, _) {
+          if (_quickCapture.isOverlayVisible) {
+            return const QuickCaptureOverlayApp();
+          }
+          return WordlearnApp(router: _router);
+        },
+      ),
     );
   }
 }

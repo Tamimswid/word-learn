@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -5,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'app/bootstrap.dart';
 import 'core/config/app_config.dart';
 import 'core/di/app_locator.dart';
+import 'features/quick_capture/quick_capture.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +26,10 @@ Future<void> main() async {
   setupLocator(
     supabaseClient: AppConfig.hasSupabase ? Supabase.instance.client : null,
   );
+
+  if (Platform.isMacOS) {
+    await locator<QuickCaptureCoordinator>().initialize();
+  }
 
   runApp(const AppBootstrap());
 }
