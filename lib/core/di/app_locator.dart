@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../data/supabase_client.dart';
+import '../platform/process_text_service.dart';
 import 'src/auth_injection.dart';
 import 'src/deck_session_injection.dart';
 import 'src/home_dashboard_injection.dart';
@@ -22,6 +23,10 @@ void setupLocator({SupabaseClient? supabaseClient}) {
     locator.registerLazySingleton<AppSupabaseClient>(
       () => AppSupabaseClient(locator<SupabaseClient>()),
     );
+  }
+
+  if (!locator.isRegistered<ProcessTextService>()) {
+    locator.registerLazySingleton<ProcessTextService>(ProcessTextService.new);
   }
 
   registerAuthDependencies(locator);

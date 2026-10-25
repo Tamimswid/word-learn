@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/design_system/design_system.dart';
 import '../../../../core/di/app_locator.dart';
+import '../../../../core/platform/process_text_service.dart';
 import '../../../../core/router/app_route.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
@@ -30,8 +31,28 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class _HomeView extends StatelessWidget {
+class _HomeView extends StatefulWidget {
   const _HomeView();
+
+  @override
+  State<_HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<_HomeView> {
+  final ProcessTextService _processText = locator<ProcessTextService>();
+
+  @override
+  void initState() {
+    super.initState();
+    _processText.addListener(_handleProcessText);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _handleProcessText());
+  }
+
+  @override
+  void dispose() {
+    _processText.removeListener(_handleProcessText);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,8 +157,17 @@ class _HomeView extends StatelessWidget {
     _showMessage(context, 'Günlük hatırlatıcı güncellendi.');
   }
 
-  Future<void> _addWord(BuildContext context) async {
-    final word = await showAddWordDialog(context);
+  Future<void> _handleProcessText() async {
+    if (!mounted) return;
+
+    final word = _processText.takePendingWord();
+    if (word == null) return;
+
+    await _addWord(context, initialWord: word);
+  }
+
+  Future<void> _addWord(BuildContext context, {String? initialWord}) async {
+    final word = await showAddWordDialog(context, initialWord: initialWord);
     if (!context.mounted || word == null) return;
 
     context.read<HomeCubit>().addWord(word);

@@ -7,16 +7,23 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../word_management/word_management.dart';
 import '../../data/models/home_snapshot.dart';
 
-Future<LearnedWord?> showAddWordDialog(BuildContext context) {
+Future<LearnedWord?> showAddWordDialog(
+  BuildContext context, {
+  String? initialWord,
+}) {
   return showDialog<LearnedWord>(
     context: context,
-    builder: (context) =>
-        BlocProvider<AddWordCubit>(create: (_) => locator<AddWordCubit>(), child: const AddWordDialog()),
+    builder: (context) => BlocProvider<AddWordCubit>(
+      create: (_) => locator<AddWordCubit>(),
+      child: AddWordDialog(initialWord: initialWord),
+    ),
   );
 }
 
 class AddWordDialog extends StatefulWidget {
-  const AddWordDialog({super.key});
+  const AddWordDialog({super.key, this.initialWord});
+
+  final String? initialWord;
 
   @override
   State<AddWordDialog> createState() => _AddWordDialogState();
@@ -27,6 +34,18 @@ class _AddWordDialogState extends State<AddWordDialog> {
   final TextEditingController _translationController = TextEditingController();
 
   String? _wordError;
+
+  @override
+  void initState() {
+    super.initState();
+    final initialWord = widget.initialWord;
+    if (initialWord == null || initialWord.isEmpty) return;
+
+    _wordController.value = TextEditingValue(
+      text: initialWord,
+      selection: TextSelection.collapsed(offset: initialWord.length),
+    );
+  }
 
   @override
   void dispose() {
@@ -46,11 +65,18 @@ class _AddWordDialogState extends State<AddWordDialog> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text('Kelime ekle', style: AppTypography.titleMedium.copyWith(color: AppColors.foreground)),
+                Text(
+                  'Kelime ekle',
+                  style: AppTypography.titleMedium.copyWith(
+                    color: AppColors.foreground,
+                  ),
+                ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   'Kelimeyi gir; anlamını istersen kendin yazabilirsin.',
-                  style: AppTypography.bodySmall.copyWith(color: AppColors.mutedForeground),
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppColors.mutedForeground,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.xl),
                 TextField(
@@ -59,7 +85,11 @@ class _AddWordDialogState extends State<AddWordDialog> {
                   textInputAction: TextInputAction.next,
                   enabled: !state.isLoading,
                   onChanged: (_) => _clearErrors(context),
-                  decoration: InputDecoration(labelText: 'Kelime', hintText: 'örn. brave', errorText: _wordError),
+                  decoration: InputDecoration(
+                    labelText: 'Kelime',
+                    hintText: 'örn. brave',
+                    errorText: _wordError,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 TextField(
@@ -68,11 +98,19 @@ class _AddWordDialogState extends State<AddWordDialog> {
                   enabled: !state.isLoading,
                   onChanged: (_) => _clearErrors(context),
                   onSubmitted: (_) => _submit(context),
-                  decoration: const InputDecoration(labelText: 'Anlamı (isteğe bağlı)', hintText: 'örn. cesur'),
+                  decoration: const InputDecoration(
+                    labelText: 'Anlamı (isteğe bağlı)',
+                    hintText: 'örn. cesur',
+                  ),
                 ),
                 if (state.failure != null) ...[
                   const SizedBox(height: AppSpacing.md),
-                  Text(state.failure!.message, style: AppTypography.caption.copyWith(color: AppColors.destructive)),
+                  Text(
+                    state.failure!.message,
+                    style: AppTypography.caption.copyWith(
+                      color: AppColors.destructive,
+                    ),
+                  ),
                 ],
                 const SizedBox(height: AppSpacing.xxl),
                 Row(
@@ -83,7 +121,9 @@ class _AddWordDialogState extends State<AddWordDialog> {
                         label: 'Vazgeç',
                         variant: AppButtonVariant.secondary,
                         expanded: true,
-                        onPressed: state.isLoading ? null : () => Navigator.of(context).pop(),
+                        onPressed: state.isLoading
+                            ? null
+                            : () => Navigator.of(context).pop(),
                       ),
                     ),
                     Expanded(
@@ -91,7 +131,9 @@ class _AddWordDialogState extends State<AddWordDialog> {
                         label: 'Ekle',
                         expanded: true,
                         isLoading: state.isLoading,
-                        onPressed: state.isLoading ? null : () => _submit(context),
+                        onPressed: state.isLoading
+                            ? null
+                            : () => _submit(context),
                       ),
                     ),
                   ],
@@ -120,12 +162,20 @@ class _AddWordDialogState extends State<AddWordDialog> {
       return;
     }
 
-    final entry = await context.read<AddWordCubit>().add(word, translation: translation.isEmpty ? null : translation);
+    final entry = await context.read<AddWordCubit>().add(
+      word,
+      translation: translation.isEmpty ? null : translation,
+    );
 
     if (!context.mounted || entry == null) return;
 
-    Navigator.of(
-      context,
-    ).pop(LearnedWord(id: entry.id, word: entry.word, translation: entry.translation, createdAt: entry.createdAt));
+    Navigator.of(context).pop(
+      LearnedWord(
+        id: entry.id,
+        word: entry.word,
+        translation: entry.translation,
+        createdAt: entry.createdAt,
+      ),
+    );
   }
 }
