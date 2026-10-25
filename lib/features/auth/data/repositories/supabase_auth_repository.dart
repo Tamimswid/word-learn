@@ -4,7 +4,6 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
-import '../../../../core/config/app_config.dart';
 import '../../../../core/errors/failure.dart';
 import '../../../../core/errors/supabase_error_handler.dart';
 import '../models/auth_user.dart';
@@ -168,7 +167,7 @@ class SupabaseAuthRepository implements AuthRepository {
   /// macOS returns through a custom URL scheme after the browser OAuth flow.
   String? get _oauthRedirectUrl {
     if (kIsWeb || defaultTargetPlatform != TargetPlatform.macOS) return null;
-    final url = AppConfig.authRedirectUrl;
-    return url.isEmpty ? null : url;
+    // TODO(macos): derin bağlantı işleyicisi eklenince AppConfig'e taşı.
+    return 'wordlearn://login-callback';
   }
 }
