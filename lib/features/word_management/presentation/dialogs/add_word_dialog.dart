@@ -4,14 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/design_system/design_system.dart';
 import '../../../../core/di/app_locator.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../../../word_management/word_management.dart';
-import '../../data/models/home_snapshot.dart';
+import '../../data/models/word_entry.dart';
+import '../cubit/add_word_cubit.dart';
+import '../cubit/add_word_state.dart';
 
-Future<LearnedWord?> showAddWordDialog(
+Future<WordEntry?> showAddWordDialog(
   BuildContext context, {
   String? initialWord,
 }) {
-  return showDialog<LearnedWord>(
+  return showDialog<WordEntry>(
     context: context,
     builder: (context) => BlocProvider<AddWordCubit>(
       create: (_) => locator<AddWordCubit>(),
@@ -169,13 +170,6 @@ class _AddWordDialogState extends State<AddWordDialog> {
 
     if (!context.mounted || entry == null) return;
 
-    Navigator.of(context).pop(
-      LearnedWord(
-        id: entry.id,
-        word: entry.word,
-        translation: entry.translation,
-        createdAt: entry.createdAt,
-      ),
-    );
+    Navigator.of(context).pop(entry);
   }
 }

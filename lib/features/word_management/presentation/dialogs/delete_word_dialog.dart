@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/design_system/design_system.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../../data/models/home_snapshot.dart';
 
-Future<bool> showDeleteWordDialog(BuildContext context, LearnedWord word) async {
+Future<bool> showDeleteWordDialog(BuildContext context, String word) async {
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (context) => DeleteWordDialog(word: word),
@@ -16,7 +15,7 @@ Future<bool> showDeleteWordDialog(BuildContext context, LearnedWord word) async 
 class DeleteWordDialog extends StatelessWidget {
   const DeleteWordDialog({super.key, required this.word});
 
-  final LearnedWord word;
+  final String word;
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +26,18 @@ class DeleteWordDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Kelimeyi sil', style: AppTypography.titleMedium.copyWith(color: AppColors.foreground)),
+            Text(
+              'Kelimeyi sil',
+              style: AppTypography.titleMedium.copyWith(
+                color: AppColors.foreground,
+              ),
+            ),
             const SizedBox(height: AppSpacing.xs),
             Text(
-              '"${word.word}" kelimesini silmek istediğine emin misin?',
-              style: AppTypography.bodySmall.copyWith(color: AppColors.mutedForeground),
+              '"$word" kelimesini silmek istediğine emin misin?',
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.mutedForeground,
+              ),
             ),
             const SizedBox(height: AppSpacing.xxl),
             Row(
@@ -50,7 +56,6 @@ class DeleteWordDialog extends StatelessWidget {
                     label: 'Sil',
                     variant: AppButtonVariant.danger,
                     expanded: true,
-                    isLoading: false,
                     onPressed: () => Navigator.of(context).pop(true),
                   ),
                 ),

@@ -6,6 +6,7 @@ import '../../../features/auth/presentation/pages/auth_page.dart';
 import '../../../features/deck_session/presentation/pages/deck_page.dart';
 import '../../../features/home_dashboard/presentation/pages/home_page.dart';
 import '../../../features/micro_exercise/presentation/pages/exercise_page.dart';
+import '../../../features/word_management/presentation/pages/all_words_page.dart';
 import '../keys/app_keys.dart';
 import 'app_route.dart';
 import 'pages/loading_page.dart';
@@ -54,6 +55,12 @@ abstract final class AppRouter {
       path: AppRoute.home.path,
       name: AppRoute.home.name,
       pageBuilder: (context, state) => _page(AppRoute.home, const HomePage()),
+    ),
+    GoRoute(
+      path: AppRoute.words.path,
+      name: AppRoute.words.name,
+      pageBuilder: (context, state) =>
+          _page(AppRoute.words, const AllWordsPage()),
     ),
     GoRoute(
       path: AppRoute.addWord.path,

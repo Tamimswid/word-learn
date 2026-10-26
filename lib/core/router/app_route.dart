@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 enum AppRoute {
   loading(name: 'loading', path: '/loading'),
   home(name: 'home', path: '/'),
+  words(name: 'words', path: '/words'),
   addWord(name: 'add-word', path: '/words/new'),
   wordDetail(name: 'word-detail', path: '/words/:wordId'),
   deck(name: 'deck', path: '/deck'),
