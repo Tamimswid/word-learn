@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/design_system/design_system.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../word_management/presentation/dialogs/delete_word_dialog.dart';
 import '../../data/models/home_snapshot.dart';
-import '../dialogs/delete_word_dialog.dart';
 
 class RecentWordsSection extends StatelessWidget {
   const RecentWordsSection({
     super.key,
     required this.words,
     required this.isLoading,
-    required this.onAdd,
+    required this.onSeeAll,
     required this.onDeleted,
   });
 
   final List<LearnedWord> words;
   final bool isLoading;
-  final VoidCallback onAdd;
+  final VoidCallback onSeeAll;
   final ValueChanged<LearnedWord> onDeleted;
 
   @override
@@ -35,11 +35,16 @@ class RecentWordsSection extends StatelessWidget {
               ),
             ),
             if (words.isNotEmpty)
-              AppIconButton(
-                icon: const Icon(Icons.add_rounded),
-                tooltip: 'Kelime ekle',
-                variant: AppIconButtonVariant.outline,
-                onPressed: onAdd,
+              TextButton(
+                onPressed: onSeeAll,
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('Tümünü gör'),
+                    SizedBox(width: AppSpacing.xs),
+                    Icon(Icons.arrow_forward_rounded, size: AppSpacing.lg),
+                  ],
+                ),
               ),
           ],
         ),
@@ -47,7 +52,7 @@ class RecentWordsSection extends StatelessWidget {
         if (isLoading && words.isEmpty)
           const SizedBox.shrink()
         else if (words.isEmpty)
-          _EmptyWords(onAdd: onAdd)
+          const _EmptyWords()
         else
           for (var index = 0; index < words.length; index++)
             _AnimatedWordRow(
@@ -57,7 +62,7 @@ class RecentWordsSection extends StatelessWidget {
                 word: words[index],
                 onDeleted: () => onDeleted(words[index]),
                 onConfirmDelete: () =>
-                    showDeleteWordDialog(context, words[index]),
+                    showDeleteWordDialog(context, words[index].word),
               ),
             ),
       ],
@@ -78,30 +83,33 @@ class _WordRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: ValueKey(word.id),
-      direction: DismissDirection.startToEnd,
-      background: const _DeleteBackground(),
-      confirmDismiss: (_) => onConfirmDelete(),
-      onDismissed: (_) => onDeleted(),
-      child: Container(
-        decoration: const BoxDecoration(border: AppBorders.bottom),
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.listRow),
-        child: Row(
-          children: [
-            Expanded(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      child: Dismissible(
+        key: ValueKey(word.id),
+        direction: DismissDirection.startToEnd,
+        background: const _DeleteBackground(),
+        confirmDismiss: (_) => onConfirmDelete(),
+        onDismissed: (_) => onDeleted(),
+        child: AppCard(
+          radius: AppRadius.md,
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
                 children: [
                   if (word.word.isNotEmpty)
                     Flexible(
-                      child: Text(
-                        word.word,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.foreground,
+                      child: TapToSpeak(
+                        text: word.word,
+                        child: Text(
+                          word.word,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.labelLarge.copyWith(
+                            color: AppColors.foreground,
+                          ),
                         ),
                       ),
                     ),
@@ -120,14 +128,82 @@ class _WordRow extends StatelessWidget {
                     ),
                 ],
               ),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            const Icon(
-              Icons.check_circle_rounded,
-              size: AppSpacing.lg,
-              color: AppColors.success,
-            ),
-          ],
+              if (word.exampleSentence.isNotEmpty) ...[
+                const SizedBox(height: AppSpacing.sm),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm,
+                  ),
+                  decoration: const BoxDecoration(
+                    color: AppColors.muted,
+                    borderRadius: AppRadius.smAll,
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(
+                        Icons.format_quote_rounded,
+                        size: AppSpacing.lg,
+                        color: AppColors.mutedForeground,
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            TapToSpeak(
+                              text: word.exampleSentence,
+                              tooltip: 'Cümleyi dinle',
+                              child: HighlightedText(
+                                text: word.exampleSentence,
+                                highlight: word.word,
+                                style: AppTypography.caption.copyWith(
+                                  color: AppColors.secondaryForeground,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            if (word.sentenceTranslation.isNotEmpty) ...[
+                              const SizedBox(height: AppSpacing.xxs),
+                              Text(
+                                word.sentenceTranslation,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTypography.caption.copyWith(
+                                  color: AppColors.mutedForeground,
+                                ),
+                              ),
+                            ],
+                            if (word.arabicSentence.isNotEmpty) ...[
+                              const SizedBox(height: AppSpacing.xxs),
+                              TapToSpeak(
+                                text: word.arabicSentence,
+                                language: 'ar-SA',
+                                tooltip: 'Arapça cümleyi dinle',
+                                child: HighlightedText(
+                                  text: word.arabicSentence,
+                                  highlightIndex: word.wordIndex,
+                                  textAlign: TextAlign.right,
+                                  textDirection: TextDirection.rtl,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AppTypography.caption.copyWith(
+                                    color: AppColors.mutedForeground,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
       ),
     );
@@ -135,11 +211,7 @@ class _WordRow extends StatelessWidget {
 }
 
 class _AnimatedWordRow extends StatefulWidget {
-  const _AnimatedWordRow({
-    super.key,
-    required this.index,
-    required this.child,
-  });
+  const _AnimatedWordRow({super.key, required this.index, required this.child});
 
   final int index;
   final Widget child;
@@ -165,9 +237,7 @@ class _AnimatedWordRowState extends State<_AnimatedWordRow>
     _slide = Tween<Offset>(
       begin: const Offset(0, 0.3),
       end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
     _play();
   }
 
@@ -202,7 +272,7 @@ class _DeleteBackground extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       decoration: const BoxDecoration(
         color: AppColors.destructiveSoft,
-        borderRadius: AppRadius.smAll,
+        borderRadius: AppRadius.mdAll,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -226,9 +296,7 @@ class _DeleteBackground extends StatelessWidget {
 }
 
 class _EmptyWords extends StatelessWidget {
-  const _EmptyWords({required this.onAdd});
-
-  final VoidCallback onAdd;
+  const _EmptyWords();
 
   @override
   Widget build(BuildContext context) {
@@ -252,8 +320,6 @@ class _EmptyWords extends StatelessWidget {
                 color: AppColors.foreground,
               ),
             ),
-            const SizedBox(height: AppSpacing.lg),
-            AppAddButton(onPressed: onAdd),
           ],
         ),
       ),
