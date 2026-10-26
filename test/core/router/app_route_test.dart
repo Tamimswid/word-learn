@@ -6,6 +6,7 @@ void main() {
     test('returns the plain path when no arguments are given', () {
       expect(AppRoute.deck.location(), '/deck');
       expect(AppRoute.home.location(), '/');
+      expect(AppRoute.words.location(), '/words');
     });
 
     test('fills and encodes path parameters', () {
