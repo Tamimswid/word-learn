@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../../../core/design_system/design_system.dart';
-import '../../../../core/widgets/app_badge.dart';
+import '../../../../core/widgets/widgets.dart';
 import '../../data/models/deck_word.dart';
 
 /// A single word card. Tapping flips it between the prompt and the answer,
@@ -163,11 +163,14 @@ class _DeckCardFront extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      word.word,
-                      textAlign: TextAlign.center,
-                      style: AppTypography.displayLarge.copyWith(
-                        color: AppColors.foreground,
+                    TapToSpeak(
+                      text: word.word,
+                      child: Text(
+                        word.word,
+                        textAlign: TextAlign.center,
+                        style: AppTypography.displayLarge.copyWith(
+                          color: AppColors.foreground,
+                        ),
                       ),
                     ),
                     if (word.sentenceBlank.isNotEmpty) ...[
@@ -233,10 +236,35 @@ class _DeckCardBack extends StatelessWidget {
                     ),
                     if (word.exampleSentence.isNotEmpty) ...[
                       const SizedBox(height: AppSpacing.lg),
-                      Text.rich(
-                        _sentenceSpan(),
-                        textAlign: TextAlign.center,
+                      TapToSpeak(
+                        text: word.exampleSentence,
+                        tooltip: 'Cümleyi dinle',
+                        child: HighlightedText(
+                          text: word.exampleSentence,
+                          highlight: word.word,
+                          textAlign: TextAlign.center,
+                          style: AppTypography.bodyMedium.copyWith(
+                            color: AppColors.secondaryForeground,
+                          ),
+                        ),
                       ),
+                      if (word.arabicSentence.isNotEmpty) ...[
+                        const SizedBox(height: AppSpacing.md),
+                        TapToSpeak(
+                          text: word.arabicSentence,
+                          language: 'ar-SA',
+                          tooltip: 'Arapça cümleyi dinle',
+                          child: HighlightedText(
+                            text: word.arabicSentence,
+                            highlightIndex: word.wordIndex,
+                            textAlign: TextAlign.center,
+                            textDirection: TextDirection.rtl,
+                            style: AppTypography.bodyMedium.copyWith(
+                              color: AppColors.mutedForeground,
+                            ),
+                          ),
+                        ),
+                      ],
                     ],
                   ],
                 ),
@@ -249,34 +277,6 @@ class _DeckCardBack extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  TextSpan _sentenceSpan() {
-    final style = AppTypography.bodyMedium.copyWith(
-      color: AppColors.secondaryForeground,
-    );
-    final sentence = word.exampleSentence;
-    final index = word.word.isEmpty
-        ? -1
-        : sentence.toLowerCase().indexOf(word.word.toLowerCase());
-    if (index < 0) return TextSpan(text: sentence, style: style);
-
-    final end = index + word.word.length;
-
-    return TextSpan(
-      style: style,
-      children: [
-        TextSpan(text: sentence.substring(0, index)),
-        TextSpan(
-          text: sentence.substring(index, end),
-          style: style.copyWith(
-            color: AppColors.primaryGlow,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        TextSpan(text: sentence.substring(end)),
-      ],
     );
   }
 }
