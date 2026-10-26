@@ -16,6 +16,10 @@ class SupabaseWordDataSource implements WordDataSource {
   // `generate-word-base`. Keep this in sync if it is redeployed by name.
   static const String _generateWordFunction = 'dynamic-endpoint';
 
+  // `*` keeps optional columns (sentence translation) flowing to the UI as
+  // soon as the backend exposes them.
+  static const String _listColumns = '*';
+
   static const Failure _sessionFailure = Failure(
     'Oturumunuz sona erdi. Lütfen tekrar giriş yapın.',
     type: FailureType.authentication,
@@ -43,6 +47,18 @@ class SupabaseWordDataSource implements WordDataSource {
 
       return Right(Map<String, dynamic>.from(payload));
     } catch (error, stackTrace) {
+      // ignore: avoid_print
+      print('[Supabase][generateWord] $error');
+      if (error is FunctionException) {
+        // ignore: avoid_print
+        print(
+          '[Supabase][generateWord] status=${error.status} '
+          'details=${error.details}',
+        );
+      }
+      // ignore: avoid_print
+      print(stackTrace);
+
       return Left(
         SupabaseErrorHandler.map(
           error,
@@ -62,6 +78,24 @@ class SupabaseWordDataSource implements WordDataSource {
       'words',
       <String, dynamic>{'translation': translation},
       filters: <String, Object?>{'id': id},
+    );
+  }
+
+  @override
+  Future<Either<Failure, List<Map<String, dynamic>>>> fetchWordsPage({
+    required int offset,
+    required int limit,
+  }) async {
+    final userId = _client.auth.currentUser?.id;
+    if (userId == null) return const Left(_sessionFailure);
+
+    return _data.select(
+      'words',
+      columns: _listColumns,
+      filters: <String, Object?>{'user_id': userId},
+      orderBy: 'created_at',
+      limit: limit,
+      offset: offset,
     );
   }
 

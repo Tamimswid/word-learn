@@ -12,5 +12,10 @@ abstract interface class WordDataSource {
     String translation,
   );
 
+  Future<Either<Failure, List<Map<String, dynamic>>>> fetchWordsPage({
+    required int offset,
+    required int limit,
+  });
+
   Future<Either<Failure, Unit>> deleteWord(String id);
 }

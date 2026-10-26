@@ -20,6 +20,8 @@ class InMemoryWordDataSource implements WordDataSource {
       'example_sentence': '',
       'sentence_blank': '',
       'options_json': const <String>[],
+      'error_count': 0,
+      'success_count': 0,
       'created_at': DateTime.now().toIso8601String(),
     };
     _rows[id] = row;
@@ -41,6 +43,21 @@ class InMemoryWordDataSource implements WordDataSource {
     _rows[id] = updated;
 
     return Right(updated);
+  }
+
+  @override
+  Future<Either<Failure, List<Map<String, dynamic>>>> fetchWordsPage({
+    required int offset,
+    required int limit,
+  }) async {
+    final rows = _rows.values.toList(growable: false)
+      ..sort((left, right) {
+        final leftDate = left['created_at'] as String? ?? '';
+        final rightDate = right['created_at'] as String? ?? '';
+        return rightDate.compareTo(leftDate);
+      });
+
+    return Right(rows.skip(offset).take(limit).toList(growable: false));
   }
 
   @override

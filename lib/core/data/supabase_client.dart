@@ -25,7 +25,10 @@ class AppSupabaseClient {
     String? orderBy,
     bool ascending = false,
     int? limit,
+    int? offset,
   }) {
+    assert(offset == null || limit != null, 'offset requires limit');
+
     return _guard(() async {
       final filtered = _withFilters(
         _client.from(table).select(columns),
@@ -38,7 +41,8 @@ class AppSupabaseClient {
         query = query.order(orderBy, ascending: ascending);
       }
       if (limit != null) {
-        query = query.limit(limit);
+        final from = offset ?? 0;
+        query = query.range(from, from + limit - 1);
       }
 
       final rows = await query;

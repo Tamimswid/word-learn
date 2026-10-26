@@ -3,6 +3,8 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failure.dart';
 import '../data_sources/word_data_source.dart';
 import '../models/word_entry.dart';
+import '../models/word_page.dart';
+import '../models/word_summary.dart';
 import 'word_repository.dart';
 
 class WordRepositoryImpl implements WordRepository {
@@ -28,6 +30,23 @@ class WordRepositoryImpl implements WordRepository {
   }
 
   @override
+  Future<Either<Failure, WordPage>> fetchWords({
+    required int offset,
+    required int limit,
+  }) async {
+    final result = await _source.fetchWordsPage(offset: offset, limit: limit);
+
+    return result.map((rows) {
+      final words = <WordSummary>[
+        for (var index = 0; index < rows.length; index++)
+          WordSummary.fromJson(rows[index], rank: offset + index + 1),
+      ];
+
+      return WordPage(words: words, hasMore: rows.length == limit);
+    });
+  }
+
+  @override
   Future<Either<Failure, Unit>> deleteWord(String id) {
     return _source.deleteWord(id);
   }
@@ -37,6 +56,8 @@ class WordRepositoryImpl implements WordRepository {
     String? translation,
   ) async {
     if (payload['success'] != true) {
+      // ignore: avoid_print
+      print('[Supabase][addWord] ${payload['error']}');
       return Left(_failureFrom(payload['error']));
     }
 
@@ -54,7 +75,14 @@ class WordRepositoryImpl implements WordRepository {
     final updated = await _source.updateTranslation(entry.id, override);
 
     return updated.fold(
-      (_) => Right<Failure, WordEntry>(entry),
+      (failure) {
+        // ignore: avoid_print
+        print(
+          '[Supabase][updateTranslation] ${failure.message} | '
+          '${failure.cause}',
+        );
+        return Right<Failure, WordEntry>(entry);
+      },
       (row) => Right<Failure, WordEntry>(WordEntry.fromJson(row)),
     );
   }
