@@ -12,6 +12,8 @@ class HomeRepositoryImpl implements HomeRepository {
 
   static const int _chartDayWindow = 28;
 
+  bool _loginRegistered = false;
+
   @override
   Future<Either<Failure, HomeSnapshot>> fetchSnapshot() async {
     final (settingsResult, wordsResult) = await (
@@ -29,6 +31,10 @@ class HomeRepositoryImpl implements HomeRepository {
     );
     final wordRows = wordsResult.getOrElse(
       () => const <Map<String, dynamic>>[],
+    );
+
+    final dailyLoginCount = await _registerLogin(
+      _asInt(settings['daily_login_count']),
     );
 
     final now = DateTime.now();
@@ -107,6 +113,10 @@ class HomeRepositoryImpl implements HomeRepository {
             id: row['id'] as String? ?? '',
             word: row['word'] as String? ?? '',
             translation: row['translation'] as String? ?? '',
+            exampleSentence: row['example_sentence'] as String? ?? '',
+            sentenceTranslation: row['sentence_translation'] as String? ?? '',
+            arabicSentence: row['arabic_sentence'] as String? ?? '',
+            wordIndex: _asInt(row['word_index'], fallback: -1),
             createdAt: DateTime.tryParse(
               row['created_at'] as String? ?? '',
             )?.toLocal(),
@@ -126,7 +136,25 @@ class HomeRepositoryImpl implements HomeRepository {
           settings['daily_notification_limit'],
           fallback: HomeSnapshot.defaultSessionSize,
         ),
+        dailyLoginCount: dailyLoginCount,
       ),
+    );
+  }
+
+  /// Records today's login once per app run; a failed call stays retryable
+  /// on the next load.
+  Future<int> _registerLogin(int fallback) async {
+    if (_loginRegistered) return fallback;
+
+    _loginRegistered = true;
+    final result = await _source.recordDailyLogin();
+
+    return result.fold(
+      (_) {
+        _loginRegistered = false;
+        return fallback;
+      },
+      (count) => count,
     );
   }
 

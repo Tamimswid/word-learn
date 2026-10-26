@@ -11,6 +11,9 @@ class WordEntry {
     required this.sentenceBlank,
     required this.options,
     required this.createdAt,
+    this.sentenceTranslation = '',
+    this.arabicSentence = '',
+    this.wordIndex = -1,
   });
 
   factory WordEntry.fromJson(Map<String, dynamic> json) {
@@ -27,6 +30,9 @@ class WordEntry {
           ? options.whereType<String>().toList(growable: false)
           : const <String>[],
       createdAt: DateTime.tryParse(json['created_at'] as String? ?? ''),
+      sentenceTranslation: json['sentence_translation'] as String? ?? '',
+      arabicSentence: json['arabic_sentence'] as String? ?? '',
+      wordIndex: _asIntOr(json['word_index'], fallback: -1),
     );
   }
 
@@ -38,4 +44,11 @@ class WordEntry {
   final String sentenceBlank;
   final List<String> options;
   final DateTime? createdAt;
+  final String sentenceTranslation;
+  final String arabicSentence;
+  final int wordIndex;
+
+  static int _asIntOr(Object? value, {required int fallback}) {
+    return value is num ? value.toInt() : fallback;
+  }
 }

@@ -14,6 +14,8 @@ class DeckWord {
     required this.masteryLevel,
     this.lastReviewedAt,
     this.createdAt,
+    this.arabicSentence = '',
+    this.wordIndex = -1,
   });
 
   factory DeckWord.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,8 @@ class DeckWord {
       createdAt: DateTime.tryParse(
         json['created_at'] as String? ?? '',
       )?.toLocal(),
+      arabicSentence: json['arabic_sentence'] as String? ?? '',
+      wordIndex: _asInt(json['word_index'], fallback: -1),
     );
   }
 
@@ -45,6 +49,10 @@ class DeckWord {
   final int masteryLevel;
   final DateTime? lastReviewedAt;
   final DateTime? createdAt;
+  final String arabicSentence;
+  final int wordIndex;
 
-  static int _asInt(Object? value) => value is num ? value.toInt() : 0;
+  static int _asInt(Object? value, {int fallback = 0}) {
+    return value is num ? value.toInt() : fallback;
+  }
 }

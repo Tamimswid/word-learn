@@ -19,12 +19,20 @@ class LearnedWord {
     required this.id,
     required this.word,
     required this.translation,
+    this.exampleSentence = '',
+    this.sentenceTranslation = '',
+    this.arabicSentence = '',
+    this.wordIndex = -1,
     this.createdAt,
   });
 
   final String id;
   final String word;
   final String translation;
+  final String exampleSentence;
+  final String sentenceTranslation;
+  final String arabicSentence;
+  final int wordIndex;
   final DateTime? createdAt;
 }
 
@@ -38,6 +46,7 @@ class HomeSnapshot {
     required this.monthlyPoints,
     required this.recentWords,
     required this.sessionSize,
+    required this.dailyLoginCount,
   });
 
   final int streakDays;
@@ -47,6 +56,9 @@ class HomeSnapshot {
   final List<ActivityPoint> monthlyPoints;
   final List<LearnedWord> recentWords;
   final int sessionSize;
+
+  /// Server-side counter of app opens recorded today.
+  final int dailyLoginCount;
 
   static const int recentWordLimit = 5;
   static const int defaultSessionSize = 10;
@@ -92,6 +104,7 @@ class HomeSnapshot {
       ],
       recentWords: const <LearnedWord>[],
       sessionSize: defaultSessionSize,
+      dailyLoginCount: 0,
     );
   }
 
@@ -103,6 +116,7 @@ class HomeSnapshot {
     List<ActivityPoint>? monthlyPoints,
     List<LearnedWord>? recentWords,
     int? sessionSize,
+    int? dailyLoginCount,
   }) {
     return HomeSnapshot(
       streakDays: streakDays ?? this.streakDays,
@@ -112,6 +126,7 @@ class HomeSnapshot {
       monthlyPoints: monthlyPoints ?? this.monthlyPoints,
       recentWords: recentWords ?? this.recentWords,
       sessionSize: sessionSize ?? this.sessionSize,
+      dailyLoginCount: dailyLoginCount ?? this.dailyLoginCount,
     );
   }
 }

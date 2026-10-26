@@ -10,4 +10,6 @@ abstract interface class HomeDataSource {
   Future<Either<Failure, List<Map<String, dynamic>>>> fetchWords();
 
   Future<Either<Failure, Unit>> updateSessionSize(int size);
+
+  Future<Either<Failure, int>> recordDailyLogin();
 }

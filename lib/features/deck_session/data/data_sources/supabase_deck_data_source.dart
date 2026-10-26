@@ -40,12 +40,11 @@ class SupabaseDeckDataSource implements DeckDataSource {
     final userId = _client.auth.currentUser?.id;
     if (userId == null) return const Left(_sessionFailure);
 
+    // `*` keeps optional fields (Arabic sentence) flowing without a select
+    // that breaks while a column is still missing.
     return _data.select(
       'words',
-      columns:
-          'id, word, translation, example_sentence, sentence_blank, '
-          'error_count, success_count, mastery_level, last_reviewed_at, '
-          'created_at',
+      columns: '*',
       filters: <String, Object?>{'user_id': userId},
       orderBy: 'created_at',
       limit: _wordLimit,

@@ -6,11 +6,13 @@ import 'home_data_source.dart';
 
 class InMemoryHomeDataSource implements HomeDataSource {
   int _sessionSize = HomeSnapshot.defaultSessionSize;
+  int _dailyLoginCount = 0;
 
   @override
   Future<Either<Failure, Map<String, dynamic>>> fetchSettings() async {
     return Right(<String, dynamic>{
       'daily_notification_limit': _sessionSize,
+      'daily_login_count': _dailyLoginCount,
     });
   }
 
@@ -23,5 +25,11 @@ class InMemoryHomeDataSource implements HomeDataSource {
   Future<Either<Failure, Unit>> updateSessionSize(int size) async {
     _sessionSize = size;
     return const Right(unit);
+  }
+
+  @override
+  Future<Either<Failure, int>> recordDailyLogin() async {
+    _dailyLoginCount += 1;
+    return Right(_dailyLoginCount);
   }
 }
