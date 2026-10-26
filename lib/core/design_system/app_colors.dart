@@ -19,9 +19,12 @@ abstract final class AppColors {
   static const Color onPrimary = Color(0xFFFCFCFC);
 
   // Brand
-  static const Color primary = Color(0xFF5D69CB);
-  static const Color primaryGlow = Color(0xFF7978FB);
-
+  // static const Color primary = Color(0xFF5D69CB);
+  // static const Color primaryGlow = Color(0xFF7978FB);
+// static const Color primary = Color(0xFFE55A43);     // مرجاني مشبع وعميق
+// static const Color primaryGlow = Color(0xFFFF6F59);
+static const Color primary = Color(0xFF3B8B95);     // فيروزي عميق ورصين
+static const Color primaryGlow = Color(0xFF56A3A6); // فيروزي بحري متوهج ومنعش
   // Feedback
   static const Color success = Color(0xFF2EA957);
   static const Color onSuccess = Color(0xFFFCFCFC);
@@ -34,9 +37,9 @@ abstract final class AppColors {
   static const Color input = Color(0x14FFFFFF);
 
   // Tints (design uses color-mix on base tokens)
-  static const Color primarySoft = Color(0x265D69CB);
-  static const Color primaryBar = Color(0x595D69CB);
-  static const Color primaryBorder = Color(0x4D5D69CB);
+  static const Color primarySoft = Color(0x263B8B95);
+  static const Color primaryBar = Color(0x593B8B95);
+  static const Color primaryBorder = Color(0x4D3B8B95);
   static const Color successSoft = Color(0x262EA957);
   static const Color successBorder = Color(0x4D2EA957);
   static const Color destructiveSoft = Color(0x1AEC5258);
