@@ -8,14 +8,14 @@ class HomeHeader extends StatelessWidget {
     super.key,
     required this.greetingName,
     required this.streakDays,
+    required this.dailyLoginCount,
     required this.onOpenSettings,
-    required this.onOpenReminder,
   });
 
   final String greetingName;
   final int streakDays;
+  final int dailyLoginCount;
   final VoidCallback onOpenSettings;
-  final VoidCallback onOpenReminder;
 
   @override
   Widget build(BuildContext context) {
@@ -50,14 +50,8 @@ class HomeHeader extends StatelessWidget {
             ),
             const Spacer(),
             AppIconButton(
-              icon: const Icon(Icons.notifications_none_rounded),
-              tooltip: 'Hatırlatıcı',
-              onPressed: onOpenReminder,
-            ),
-            const SizedBox(width: AppSpacing.xs),
-            AppIconButton(
               icon: const Icon(Icons.tune_rounded),
-              tooltip: 'Oturum ayarları',
+              tooltip: 'Ayarlar',
               onPressed: onOpenSettings,
             ),
           ],
@@ -89,7 +83,10 @@ class HomeHeader extends StatelessWidget {
             const SizedBox(width: AppSpacing.md),
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-              child: StreakIndicator(days: streakDays),
+              child: StreakIndicator(
+                days: streakDays,
+                label: '$streakDays gün · $dailyLoginCount giriş',
+              ),
             ),
           ],
         ),

@@ -6,17 +6,17 @@ import '../../../../core/design_system/design_system.dart';
 import '../../../../core/di/app_locator.dart';
 import '../../../../core/platform/process_text_service.dart';
 import '../../../../core/router/app_route.dart';
+import '../../../../core/widgets/widgets.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
+import '../../../word_management/presentation/dialogs/add_word_dialog.dart';
 import '../../data/models/home_snapshot.dart';
 import '../cubit/home_cubit.dart';
 import '../cubit/home_state.dart';
-import '../dialogs/add_word_dialog.dart';
-import '../sheets/session_size_sheet.dart';
-import '../../../reminder/presentation/sheets/reminder_sheet.dart';
+import '../sheets/home_settings_sheet.dart';
 import '../widgets/home_header.dart';
 import '../widgets/learning_rhythm_card.dart';
-import '../widgets/quick_practice_section.dart';
+// import '../widgets/quick_practice_section.dart';
 import '../widgets/recent_words_section.dart';
 
 class HomePage extends StatelessWidget {
@@ -83,22 +83,29 @@ class _HomeViewState extends State<_HomeView> {
                       builder: (context, state) => HomeHeader(
                         greetingName: state.firstName,
                         streakDays: snapshot.streakDays,
-                        onOpenSettings: () => _openSessionSettings(context),
-                        onOpenReminder: () => _openReminder(context),
+                        dailyLoginCount: snapshot.dailyLoginCount,
+                        onOpenSettings: () => _openSettings(context),
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xxl),
                     LearningRhythmCard(snapshot: snapshot),
                     const SizedBox(height: AppSpacing.xl),
-                    QuickPracticeSection(
-                      onSeeAll: () => _openExercise(context),
-                      onLevelTap: () => _openExercise(context),
+                    AppAddButton(
+                      expanded: true,
+                      onPressed: () => _addWord(context),
                     ),
                     const SizedBox(height: AppSpacing.xl),
+                    // Quick practice is temporarily hidden. The original
+                    // widget and route wiring are kept below for re-enabling.
+                    // QuickPracticeSection(
+                    //   onSeeAll: () => _openExercise(context),
+                    //   onLevelTap: () => _openExercise(context),
+                    // ),
+                    // const SizedBox(height: AppSpacing.xl),
                     RecentWordsSection(
                       words: snapshot.recentWords,
                       isLoading: state.isLoading,
-                      onAdd: () => _addWord(context),
+                      onSeeAll: () => _openAllWords(context),
                       onDeleted: (word) => _removeWord(context, word),
                     ),
                   ],
@@ -128,33 +135,40 @@ class _HomeViewState extends State<_HomeView> {
       );
   }
 
-  Future<void> _openSessionSettings(BuildContext context) async {
+  Future<void> _openSettings(BuildContext context) async {
     final snapshot = context.read<HomeCubit>().state.snapshot;
 
-    final value = await showSessionSizeSheet(
+    final result = await showHomeSettingsSheet(
       context,
-      initialValue: snapshot.sessionSize,
+      initialSessionSize: snapshot.sessionSize,
     );
-    if (!context.mounted || value == null) return;
+    if (!context.mounted || result == null) return;
 
-    final failure = await context.read<HomeCubit>().updateSessionSize(value);
-    if (!context.mounted) return;
+    if (result.sessionSize != snapshot.sessionSize) {
+      final failure = await context.read<HomeCubit>().updateSessionSize(
+        result.sessionSize,
+      );
+      if (!context.mounted) return;
 
-    _showMessage(
-      context,
-      failure?.message ?? 'Oturum başına $value kelime olarak kaydedildi.',
-    );
+      _showMessage(
+        context,
+        failure?.message ??
+            'Oturum başına ${result.sessionSize} kelime olarak kaydedildi.',
+      );
+      return;
+    }
+
+    if (result.reminderSaved) {
+      _showMessage(context, 'Günlük hatırlatıcı güncellendi.');
+    }
   }
 
-  void _openExercise(BuildContext context) {
-    context.pushNamed(AppRoute.exercise.name);
-  }
+  // void _openExercise(BuildContext context) {
+  //   context.pushNamed(AppRoute.exercise.name);
+  // }
 
-  Future<void> _openReminder(BuildContext context) async {
-    final saved = await showReminderSheet(context);
-    if (!context.mounted || saved != true) return;
-
-    _showMessage(context, 'Günlük hatırlatıcı güncellendi.');
+  void _openAllWords(BuildContext context) {
+    context.pushNamed(AppRoute.words.name);
   }
 
   Future<void> _handleProcessText() async {
@@ -167,10 +181,21 @@ class _HomeViewState extends State<_HomeView> {
   }
 
   Future<void> _addWord(BuildContext context, {String? initialWord}) async {
-    final word = await showAddWordDialog(context, initialWord: initialWord);
-    if (!context.mounted || word == null) return;
+    final entry = await showAddWordDialog(context, initialWord: initialWord);
+    if (!context.mounted || entry == null) return;
 
-    context.read<HomeCubit>().addWord(word);
+    context.read<HomeCubit>().addWord(
+      LearnedWord(
+        id: entry.id,
+        word: entry.word,
+        translation: entry.translation,
+        exampleSentence: entry.exampleSentence,
+        sentenceTranslation: entry.sentenceTranslation,
+        arabicSentence: entry.arabicSentence,
+        wordIndex: entry.wordIndex,
+        createdAt: entry.createdAt,
+      ),
+    );
   }
 
   Future<void> _removeWord(BuildContext context, LearnedWord word) async {
