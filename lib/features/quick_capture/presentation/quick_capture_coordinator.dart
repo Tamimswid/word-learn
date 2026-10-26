@@ -32,7 +32,6 @@ class QuickCaptureCoordinator extends ChangeNotifier
   static const Size _overlaySize = Size(224, 180);
   static const double _overlayMargin = 16;
 
-  static const Duration _successDelay = Duration(milliseconds: 500);
   static const Duration _failureDelay = Duration(seconds: 3);
 
   static const MethodChannel _overlayChannel = MethodChannel(
@@ -131,7 +130,9 @@ class QuickCaptureCoordinator extends ChangeNotifier
   Future<void> _captureSelection() async {
     if (_isCapturing) return;
 
-    if (await windowManager.isVisible()) {
+    // The overlay reuses the main window, so only a visible panel counts as
+    // "the app is already open"; a visible overlay is the capture itself.
+    if (!_isOverlayVisible && await windowManager.isVisible()) {
       await windowManager.show();
       await windowManager.focus();
       return;
@@ -144,28 +145,38 @@ class QuickCaptureCoordinator extends ChangeNotifier
 
     _isCapturing = true;
     try {
+      _cubit.reset();
       await _showOverlay();
 
       final selection = await _repository.readSelection();
-      await selection.fold(
+      await selection.fold<Future<void>>(
         (failure) async {
           _cubit.fail(failure.message);
-          await Future<void>.delayed(_failureDelay);
+          await _hideAfterFailure();
         },
         (text) async {
           await _cubit.save(text);
-          final succeeded = _cubit.state.isSuccess;
-          await Future<void>.delayed(succeeded ? _successDelay : _failureDelay);
+          if (!_cubit.state.isSuccess) await _hideAfterFailure();
         },
       );
     } finally {
-      await _hideOverlay();
-      _cubit.reset();
       _isCapturing = false;
     }
   }
 
+  /// Keeps error feedback visible briefly, then returns to the menu bar.
+  Future<void> _hideAfterFailure() async {
+    await Future<void>.delayed(_failureDelay);
+    await _hideOverlay();
+    _cubit.reset();
+  }
+
   Future<void> _showOverlay() async {
+    if (_isOverlayVisible) {
+      await windowManager.setPosition(await _overlayPosition());
+      return;
+    }
+
     await windowManager.setResizable(false);
     await windowManager.setTitleBarStyle(
       TitleBarStyle.hidden,
