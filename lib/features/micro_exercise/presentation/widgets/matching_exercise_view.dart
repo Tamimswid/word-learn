@@ -110,9 +110,9 @@ class _MatchingExerciseViewState extends State<MatchingExerciseView> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Eşlerini bul.',
-          style: AppTypography.headingMedium.copyWith(
-            color: AppColors.foreground,
+          'İngilizce kelimeleri Türkçe anlamlarıyla eşleştir.',
+          style: AppTypography.bodySmall.copyWith(
+            color: AppColors.mutedForeground,
           ),
         ),
         const SizedBox(height: AppSpacing.huge),

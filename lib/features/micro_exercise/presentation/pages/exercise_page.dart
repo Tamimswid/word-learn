@@ -84,7 +84,7 @@ class _ExerciseView extends StatelessWidget {
 
   void _scheduleNext(BuildContext context, ExerciseType? type) {
     final delay = switch (type) {
-      ExerciseType.spelling || ExerciseType.sentence => _readingFeedback,
+      ExerciseType.spelling || ExerciseType.pronunciation => _readingFeedback,
       ExerciseType.matching => _matchingFeedback,
       _ => _quickFeedback,
     };

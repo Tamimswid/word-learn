@@ -22,15 +22,14 @@ class ExerciseRepositoryImpl implements ExerciseRepository {
 
   static const int _maxSeedWords = 5;
   static const int _minSeedWords = 2;
-  static const int _matchingPairs = 2;
+  static const int _minMatchingPairs = 2;
+  static const int _maxMatchingPairs = 3;
   static const int _choiceOptions = 3;
   static const int _spellingDistractors = 2;
-  static const int _minSentenceTokens = 3;
   static const String _blankToken = '______';
 
   static final RegExp _blankPattern = RegExp(r'\(?\s*_{3,}\s*\)?');
   static final RegExp _letterPattern = RegExp(r'^[a-z]+$');
-  static final RegExp _edgePunctuation = RegExp(r'^[.,!?;:"“”]+|[.,!?;:"“”]+$');
   static final RegExp _repeatedSpace = RegExp(r'\s+');
 
   static const Failure _notEnoughWords = Failure(
@@ -86,8 +85,6 @@ class ExerciseRepositoryImpl implements ExerciseRepository {
         .toList(growable: false);
 
     final items = <ExerciseItem>[];
-    final trueFalse = _buildTrueFalse(quizSeeds, quizzes);
-    if (trueFalse != null) items.add(trueFalse);
 
     final matching = _buildMatching(seeds);
     if (matching != null) items.add(matching);
@@ -101,8 +98,8 @@ class ExerciseRepositoryImpl implements ExerciseRepository {
     final translation = _buildTranslation(quizSeeds, quizzes, allWords);
     if (translation != null) items.add(translation);
 
-    final sentence = _buildSentence(quizSeeds, quizzes, allWords);
-    if (sentence != null) items.add(sentence);
+    final pronunciation = _buildPronunciation(seeds);
+    if (pronunciation != null) items.add(pronunciation);
 
     if (items.isEmpty) return const Left(_sessionFailure);
     return Right(items);
@@ -136,35 +133,6 @@ class ExerciseRepositoryImpl implements ExerciseRepository {
     return quizzes[seed.word.toLowerCase()];
   }
 
-  ExerciseItem? _buildTrueFalse(
-    List<ExerciseWord> seeds,
-    Map<String, ExerciseQuiz> quizzes,
-  ) {
-    final quiz = _quizAt(seeds, quizzes, 0);
-    if (quiz == null) return null;
-
-    final distractors = quiz.options
-        .where(
-          (option) => option.toLowerCase() != quiz.correctAnswer.toLowerCase(),
-        )
-        .toList(growable: false);
-    if (distractors.isEmpty) return null;
-
-    final useCorrect = _random.nextBool();
-    final underlined = useCorrect
-        ? quiz.correctAnswer
-        : distractors[_random.nextInt(distractors.length)];
-    final sentence = _fillBlank(quiz.sentenceBlank, underlined);
-    if (sentence == null) return null;
-
-    return TrueFalseExercise(
-      word: quiz.word,
-      sentence: sentence,
-      underlinedWord: underlined,
-      isCorrect: useCorrect,
-    );
-  }
-
   ExerciseItem? _buildMatching(List<ExerciseWord> seeds) {
     final pairs = <MatchingPair>[];
     final seenTranslations = <String>{};
@@ -178,10 +146,10 @@ class ExerciseRepositoryImpl implements ExerciseRepository {
           translation: translation,
         ),
       );
-      if (pairs.length == _matchingPairs) break;
+      if (pairs.length == _maxMatchingPairs) break;
     }
 
-    if (pairs.length < _matchingPairs) return null;
+    if (pairs.length < _minMatchingPairs) return null;
     return MatchingExercise(pairs: pairs);
   }
 
@@ -271,33 +239,13 @@ class ExerciseRepositoryImpl implements ExerciseRepository {
     );
   }
 
-  ExerciseItem? _buildSentence(
-    List<ExerciseWord> seeds,
-    Map<String, ExerciseQuiz> quizzes,
-    List<ExerciseWord> allWords,
-  ) {
-    final quiz = _quizAt(seeds, quizzes, 3);
-    if (quiz == null) return null;
+  ExerciseItem? _buildPronunciation(List<ExerciseWord> seeds) {
+    if (seeds.isEmpty) return null;
 
-    final word = _wordFor(quiz.word, allWords);
-    if (word == null) return null;
-
-    final sentence = _fillBlank(quiz.sentenceBlank, quiz.correctAnswer);
-    if (sentence == null) return null;
-
-    final tokens = sentence
-        .split(' ')
-        .map((token) => token.replaceAll(_edgePunctuation, ''))
-        .where((token) => token.isNotEmpty)
-        .toList(growable: false);
-    if (tokens.length < _minSentenceTokens) return null;
-
-    final shuffled = <String>[...tokens]..shuffle(_random);
-    return SentenceExercise(
-      word: word.word,
-      translation: word.translation,
-      tokens: shuffled,
-      correctSentence: tokens.join(' '),
+    final seed = seeds[_random.nextInt(seeds.length)];
+    return PronunciationExercise(
+      word: seed.word,
+      translation: seed.translation,
     );
   }
 

@@ -4,7 +4,6 @@ import '../../../../core/design_system/design_system.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../data/models/exercise_item.dart';
 import '../cubit/exercise_state.dart';
-import 'highlighted_text.dart';
 
 class SpellingExerciseView extends StatefulWidget {
   const SpellingExerciseView({

@@ -1,13 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-enum ExerciseType {
-  trueFalse,
-  matching,
-  fillBlank,
-  spelling,
-  translation,
-  sentence,
-}
+enum ExerciseType { matching, fillBlank, spelling, translation, pronunciation }
 
 /// One question shown in the exercise flow.
 @immutable
@@ -17,23 +10,7 @@ sealed class ExerciseItem {
   ExerciseType get type;
 }
 
-class TrueFalseExercise extends ExerciseItem {
-  const TrueFalseExercise({
-    required this.word,
-    required this.sentence,
-    required this.underlinedWord,
-    required this.isCorrect,
-  });
-
-  final String word;
-  final String sentence;
-  final String underlinedWord;
-  final bool isCorrect;
-
-  @override
-  ExerciseType get type => ExerciseType.trueFalse;
-}
-
+/// Pairs English words with their Turkish meanings.
 class MatchingExercise extends ExerciseItem {
   const MatchingExercise({required this.pairs});
 
@@ -113,21 +90,12 @@ class TranslationExercise extends ExerciseItem {
   ExerciseType get type => ExerciseType.translation;
 }
 
-class SentenceExercise extends ExerciseItem {
-  const SentenceExercise({
-    required this.word,
-    required this.translation,
-    required this.tokens,
-    required this.correctSentence,
-  });
+class PronunciationExercise extends ExerciseItem {
+  const PronunciationExercise({required this.word, required this.translation});
 
   final String word;
   final String translation;
 
-  /// Sentence words already shuffled.
-  final List<String> tokens;
-  final String correctSentence;
-
   @override
-  ExerciseType get type => ExerciseType.sentence;
+  ExerciseType get type => ExerciseType.pronunciation;
 }

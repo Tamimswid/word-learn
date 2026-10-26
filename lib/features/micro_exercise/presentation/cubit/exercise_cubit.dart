@@ -26,17 +26,6 @@ class ExerciseCubit extends Cubit<ExerciseState> {
     );
   }
 
-  void answerTrueFalse({required bool saysCorrect}) {
-    final item = state.current;
-    if (item is! TrueFalseExercise || state.isAnswered) return;
-
-    _record(
-      isCorrect: saysCorrect == item.isCorrect,
-      correctAnswer: item.isCorrect ? 'Doğru' : 'Yanlış',
-      selected: saysCorrect ? 'true' : 'false',
-    );
-  }
-
   void answerChoice(String option) {
     final item = state.current;
     if (state.isAnswered) return;
@@ -71,16 +60,23 @@ class ExerciseCubit extends Cubit<ExerciseState> {
     );
   }
 
-  void answerSentence(List<String> tokens) {
+  void answerPronunciation(String recognized) {
     final item = state.current;
-    if (item is! SentenceExercise || state.isAnswered) return;
+    if (item is! PronunciationExercise || state.isAnswered) return;
 
-    final answer = tokens.join(' ').trim();
+    final heard = recognized.trim();
     _record(
-      isCorrect: answer.toLowerCase() == item.correctSentence.toLowerCase(),
-      correctAnswer: item.correctSentence,
-      selected: answer,
+      isCorrect: _matchesPronunciation(heard, item.word),
+      correctAnswer: item.word,
+      selected: heard,
     );
+  }
+
+  void skipPronunciation() {
+    final item = state.current;
+    if (item is! PronunciationExercise || state.isAnswered) return;
+
+    _record(isCorrect: false, correctAnswer: item.word);
   }
 
   void answerMatching({required bool hadMistake}) {
@@ -99,6 +95,23 @@ class ExerciseCubit extends Cubit<ExerciseState> {
     if (!state.isAnswered) return;
 
     emit(state.copyWith(index: state.index + 1, clearAnswer: true));
+  }
+
+  static bool _matchesPronunciation(String heard, String word) {
+    final target = _normalizePronunciation(word);
+    final spoken = _normalizePronunciation(heard);
+    if (target.isEmpty || spoken.isEmpty) return false;
+    if (spoken == target) return true;
+    if (target.contains(' ')) return spoken.contains(target);
+    return spoken.split(' ').contains(target);
+  }
+
+  static String _normalizePronunciation(String value) {
+    return value
+        .toLowerCase()
+        .replaceAll(RegExp(r"[^a-z0-9' ]"), ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
   }
 
   void _record({

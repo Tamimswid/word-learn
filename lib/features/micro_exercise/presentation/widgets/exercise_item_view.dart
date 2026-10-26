@@ -6,10 +6,9 @@ import '../cubit/exercise_cubit.dart';
 import '../cubit/exercise_state.dart';
 import 'fill_blank_exercise_view.dart';
 import 'matching_exercise_view.dart';
-import 'sentence_exercise_view.dart';
+import 'pronunciation_exercise_view.dart';
 import 'spelling_exercise_view.dart';
 import 'translation_exercise_view.dart';
-import 'true_false_exercise_view.dart';
 
 /// Renders the view matching [item]'s exercise type.
 class ExerciseItemView extends StatelessWidget {
@@ -23,12 +22,6 @@ class ExerciseItemView extends StatelessWidget {
     final cubit = context.read<ExerciseCubit>();
 
     return switch (item) {
-      TrueFalseExercise exercise => TrueFalseExerciseView(
-        item: exercise,
-        answer: answer,
-        onAnswer: (saysCorrect) =>
-            cubit.answerTrueFalse(saysCorrect: saysCorrect),
-      ),
       MatchingExercise exercise => MatchingExerciseView(
         item: exercise,
         answer: answer,
@@ -50,10 +43,11 @@ class ExerciseItemView extends StatelessWidget {
         answer: answer,
         onAnswer: cubit.answerChoice,
       ),
-      SentenceExercise exercise => SentenceExerciseView(
+      PronunciationExercise exercise => PronunciationExerciseView(
         item: exercise,
         answer: answer,
-        onSubmit: cubit.answerSentence,
+        onResult: cubit.answerPronunciation,
+        onSkip: cubit.skipPronunciation,
       ),
     };
   }
