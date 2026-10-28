@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/failure.dart';
@@ -7,6 +9,9 @@ import 'deck_repository.dart';
 
 /// Builds today's deck with the 50/30/20 mix from the product brief:
 /// 50% new or overdue words, 30% learning words, 20% mastered words.
+///
+/// Words added today always enter the deck; the daily limit is the minimum
+/// size, not a cap, so a productive day never hides its own words.
 class DeckRepositoryImpl implements DeckRepository {
   DeckRepositoryImpl(this._source);
 
@@ -36,13 +41,18 @@ class DeckRepositoryImpl implements DeckRepository {
     );
 
     final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
     final sessionSize = _sessionSize(settings['daily_notification_limit']);
-    final due = wordRows
-        .map(DeckWord.fromJson)
-        .where((word) => _isDue(word, now))
+    final words = wordRows.map(DeckWord.fromJson).toList(growable: false);
+
+    final addedToday =
+        words.where((word) => _isAddedToday(word, today)).toList()
+          ..sort(_byCreatedAt);
+    final due = words
+        .where((word) => !_isAddedToday(word, today) && _isDue(word, now))
         .toList(growable: false);
 
-    if (due.isEmpty) return const Right(<DeckWord>[]);
+    if (addedToday.isEmpty && due.isEmpty) return const Right(<DeckWord>[]);
 
     final critical =
         due.where((word) => word.masteryLevel <= 1).toList()
@@ -58,22 +68,24 @@ class DeckRepositoryImpl implements DeckRepository {
         due.where((word) => word.masteryLevel >= 4).toList()
           ..sort(_byUrgency);
 
-    final picked = <DeckWord>[];
-    final pickedIds = <String>{};
+    final quota = max(sessionSize, addedToday.length);
+    final picked = <DeckWord>[...addedToday];
+    final pickedIds = addedToday.map((word) => word.id).toSet();
     void take(List<DeckWord> pool, int count) {
       for (final word in pool) {
-        if (picked.length >= sessionSize || count <= 0) return;
+        if (picked.length >= quota || count <= 0) return;
         if (!pickedIds.add(word.id)) continue;
         picked.add(word);
         count--;
       }
     }
 
-    take(critical, (sessionSize * 0.5).round());
-    take(learning, (sessionSize * 0.3).round());
-    take(mastered, sessionSize);
-    take(critical, sessionSize);
-    take(learning, sessionSize);
+    final remaining = quota - addedToday.length;
+    take(critical, (remaining * 0.5).round());
+    take(learning, (remaining * 0.3).round());
+    take(mastered, remaining);
+    take(critical, remaining);
+    take(learning, remaining);
 
     return Right(picked);
   }
@@ -97,6 +109,21 @@ class DeckRepositoryImpl implements DeckRepository {
   static int _sessionSize(Object? value) {
     final raw = value is num ? value.toInt() : _fallbackSessionSize;
     return raw.clamp(_minSessionSize, _maxSessionSize).toInt();
+  }
+
+  static bool _isAddedToday(DeckWord word, DateTime today) {
+    final createdAt = word.createdAt;
+    if (createdAt == null) return false;
+
+    return createdAt.year == today.year &&
+        createdAt.month == today.month &&
+        createdAt.day == today.day;
+  }
+
+  static int _byCreatedAt(DeckWord a, DeckWord b) {
+    return (a.createdAt?.millisecondsSinceEpoch ?? 0).compareTo(
+      b.createdAt?.millisecondsSinceEpoch ?? 0,
+    );
   }
 
   static bool _isDue(DeckWord word, DateTime now) {
