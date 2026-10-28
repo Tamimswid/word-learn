@@ -35,19 +35,15 @@ class QuickCaptureOverlay extends StatelessWidget {
       builder: (context, state) {
         return Material(
           type: MaterialType.transparency,
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.sm),
-              child: DecoratedBox(
-                decoration: const BoxDecoration(
-                  color: AppColors.card,
-                  borderRadius: AppRadius.xlAll,
-                  border: Border.fromBorderSide(AppBorders.sideStrong),
-                  boxShadow: AppShadows.card,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.md),
+          child: SizedBox.expand(
+            child: DecoratedBox(
+              decoration: const BoxDecoration(
+                borderRadius: AppRadius.xlAll,
+                border: Border.fromBorderSide(AppBorders.sideStrong),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: Center(
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 180),
                     child: KeyedSubtree(
@@ -65,8 +61,13 @@ class QuickCaptureOverlay extends StatelessWidget {
   }
 
   Widget _content(QuickCaptureState state) {
-    if (state.isSuccess) return _Success(word: state.word?.word);
-    if (state.isFailure) return _Failure(message: state.message);
+    if (state.isSuccess) {
+      return _Success(
+        word: state.word?.word ?? '',
+        translation: state.word?.translation ?? '',
+      );
+    }
+    if (state.isFailure) return const _Failure();
     return const _Loading();
   }
 }
@@ -76,30 +77,24 @@ class _Loading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const _OrbSpinner(),
-        const SizedBox(width: AppSpacing.md),
-        Text(
-          'Kaydediliyor',
-          style: AppTypography.labelSmall.copyWith(
-            color: AppColors.mutedForeground,
-          ),
-        ),
-      ],
+    return const SizedBox.square(
+      dimension: 40,
+      child: Center(child: _OrbSpinner()),
     );
   }
 }
 
 class _Success extends StatelessWidget {
-  const _Success({this.word});
+  const _Success({required this.word, required this.translation});
 
-  final String? word;
+  final String word;
+  final String translation;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    final primary = translation.isEmpty ? word : translation;
+
+    return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         TweenAnimationBuilder<double>(
@@ -109,8 +104,8 @@ class _Success extends StatelessWidget {
           builder: (context, scale, child) =>
               Transform.scale(scale: scale, child: child),
           child: Container(
-            width: 52,
-            height: 52,
+            width: 40,
+            height: 40,
             decoration: const BoxDecoration(
               color: AppColors.successSoft,
               shape: BoxShape.circle,
@@ -118,64 +113,62 @@ class _Success extends StatelessWidget {
             ),
             child: const Icon(
               Icons.check_rounded,
-              size: 28,
+              size: 22,
               color: AppColors.success,
             ),
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
-        Text(
-          word?.isNotEmpty == true ? word! : 'Kaydedildi',
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
-          style: AppTypography.labelLarge.copyWith(color: AppColors.foreground),
-        ),
+        if (primary.isNotEmpty) ...[
+          const SizedBox(width: AppSpacing.md),
+          Flexible(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (translation.isNotEmpty)
+                  Text(
+                    word,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTypography.labelSmall.copyWith(
+                      color: AppColors.mutedForeground,
+                    ),
+                  ),
+                Text(
+                  primary,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTypography.titleSmall.copyWith(
+                    color: AppColors.foreground,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ],
     );
   }
 }
 
 class _Failure extends StatelessWidget {
-  const _Failure({this.message});
-
-  final String? message;
+  const _Failure();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 44,
-          height: 44,
-          decoration: const BoxDecoration(
-            color: AppColors.destructiveSoft,
-            shape: BoxShape.circle,
-            border: Border.fromBorderSide(AppBorders.sideDestructive),
-          ),
-          child: const Icon(
-            Icons.error_outline_rounded,
-            size: 24,
-            color: AppColors.destructive,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        Text(
-          'Kaydedilemedi',
-          style: AppTypography.labelLarge.copyWith(color: AppColors.foreground),
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        Text(
-          message ?? 'Kelime yakalanamadı.',
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
-          style: AppTypography.caption.copyWith(
-            color: AppColors.mutedForeground,
-          ),
-        ),
-      ],
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: const BoxDecoration(
+        color: AppColors.destructiveSoft,
+        shape: BoxShape.circle,
+        border: Border.fromBorderSide(AppBorders.sideDestructive),
+      ),
+      child: const Icon(
+        Icons.error_outline_rounded,
+        size: 22,
+        color: AppColors.destructive,
+      ),
     );
   }
 }
