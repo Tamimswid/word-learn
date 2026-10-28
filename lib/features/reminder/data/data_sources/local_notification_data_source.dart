@@ -31,8 +31,7 @@ class LocalNotificationDataSource implements NotificationDataSource {
             >();
         if (android == null) return true;
 
-        final granted =
-            await android.requestNotificationsPermission() ?? true;
+        final granted = await android.requestNotificationsPermission() ?? true;
         if (granted) await android.requestExactAlarmsPermission();
         return granted;
       case TargetPlatform.iOS:
@@ -41,6 +40,17 @@ class LocalNotificationDataSource implements NotificationDataSource {
               IOSFlutterLocalNotificationsPlugin
             >();
         return await ios?.requestPermissions(
+              alert: true,
+              badge: true,
+              sound: true,
+            ) ??
+            true;
+      case TargetPlatform.macOS:
+        final macOS = _plugin
+            .resolvePlatformSpecificImplementation<
+              MacOSFlutterLocalNotificationsPlugin
+            >();
+        return await macOS?.requestPermissions(
               alert: true,
               badge: true,
               sound: true,
@@ -69,6 +79,7 @@ class LocalNotificationDataSource implements NotificationDataSource {
           priority: Priority.high,
         ),
         iOS: DarwinNotificationDetails(),
+        macOS: DarwinNotificationDetails(),
       ),
       androidScheduleMode: await _scheduleMode(),
     );
@@ -95,6 +106,11 @@ class LocalNotificationDataSource implements NotificationDataSource {
       settings: const InitializationSettings(
         android: AndroidInitializationSettings('ic_stat_word'),
         iOS: DarwinInitializationSettings(
+          requestAlertPermission: false,
+          requestBadgePermission: false,
+          requestSoundPermission: false,
+        ),
+        macOS: DarwinInitializationSettings(
           requestAlertPermission: false,
           requestBadgePermission: false,
           requestSoundPermission: false,
