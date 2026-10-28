@@ -41,6 +41,23 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <!-- Captures shared/selected words in a small dialog instead of
+             launching the app; runs its own lightweight Dart entrypoint. -->
+        <activity
+            android:name=".QuickCaptureActivity"
+            android:label="Kelimeye ekle"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:taskAffinity="com.example.wordlearn.quick_capture"
+            android:theme="@style/QuickCaptureTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PROCESS_TEXT"/>
                 <category android:name="android.intent.category.DEFAULT"/>
