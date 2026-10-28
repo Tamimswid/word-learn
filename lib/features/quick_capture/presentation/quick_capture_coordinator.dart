@@ -10,11 +10,12 @@ import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../../auth/presentation/cubit/auth_cubit.dart';
+import '../../auth/presentation/cubit/auth_state.dart';
 import '../data/repositories/quick_capture_repository.dart';
 import 'cubit/quick_capture_cubit.dart';
 
-/// Owns the macOS background experience: menu bar item, Dock reopen, global
-/// shortcut and the floating capture overlay.
+/// Owns the background capture experience: the macOS menu bar item, Dock
+/// reopen, global shortcut and floating overlay, plus the Android share dialog.
 ///
 /// The main window is only used for the regular app (sign-in, dashboard). While
 /// it is hidden the app keeps running in the Dock and menu bar, and captures the
@@ -40,6 +41,9 @@ class QuickCaptureCoordinator extends ChangeNotifier
   );
   static const MethodChannel _lifecycleChannel = MethodChannel(
     'wordlearn/lifecycle',
+  );
+  static const MethodChannel _captureChannel = MethodChannel(
+    'wordlearn/quick_capture',
   );
 
   final QuickCaptureRepository _repository;
@@ -96,6 +100,68 @@ class QuickCaptureCoordinator extends ChangeNotifier
 
   Future<void> _handleLifecycleCall(MethodCall call) async {
     if (call.method == 'openPanel') await showPanel();
+  }
+
+  /// Runs the Android share/process-text capture and closes the dialog activity
+  /// once the result has been readable for a moment.
+  Future<void> runSharedCapture() async {
+    if (!Platform.isAndroid || _isCapturing) return;
+
+    _isCapturing = true;
+    try {
+      final text = await _takeSharedText();
+      if (text == null) {
+        await _closeSharedCapture();
+        return;
+      }
+
+      if (!(await _awaitAuth()).isAuthenticated) {
+        await _captureChannel.invokeMethod<void>('openApp');
+        return;
+      }
+
+      _cubit.reset();
+      await _cubit.save(text);
+      await Future<void>.delayed(
+        _cubit.state.isSuccess ? _successDelay : _failureDelay,
+      );
+      await _closeSharedCapture();
+    } on Object {
+      await _closeSharedCapture();
+    } finally {
+      _isCapturing = false;
+    }
+  }
+
+  Future<String?> _takeSharedText() async {
+    try {
+      final text = await _captureChannel.invokeMethod<String>('takeText');
+      final trimmed = text?.trim();
+      return trimmed == null || trimmed.isEmpty ? null : trimmed;
+    } on PlatformException {
+      return null;
+    }
+  }
+
+  Future<void> _closeSharedCapture() async {
+    try {
+      await _captureChannel.invokeMethod<void>('close');
+    } on PlatformException {
+      // The activity is already gone.
+    }
+  }
+
+  /// A capture can start before Supabase has restored the stored session.
+  Future<AuthState> _awaitAuth() async {
+    if (!_auth.state.isInitializing) return _auth.state;
+
+    try {
+      return await _auth.stream
+          .firstWhere((state) => !state.isInitializing)
+          .timeout(const Duration(seconds: 5));
+    } on TimeoutException {
+      return _auth.state;
+    }
   }
 
   Future<void> _setUpTray() async {
