@@ -11,6 +11,31 @@ import 'core/di/app_locator.dart';
 import 'features/quick_capture/quick_capture.dart';
 
 Future<void> main() async {
+  await _bootstrap();
+
+  if (Platform.isMacOS) {
+    await locator<QuickCaptureCoordinator>().initialize();
+  }
+
+  runApp(const AppBootstrap());
+
+  if (Platform.isMacOS) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(locator<QuickCaptureCoordinator>().showPanel());
+    });
+  }
+}
+
+/// Entry point for the Android share/process-text dialog (`QuickCaptureActivity`).
+///
+/// It boots only what a capture needs and never builds the full app shell.
+@pragma('vm:entry-point')
+Future<void> quickCaptureMain() async {
+  await _bootstrap();
+  runApp(const QuickCaptureApp());
+}
+
+Future<void> _bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // `.env` is optional so the app can still start from `--dart-define`
@@ -27,16 +52,4 @@ Future<void> main() async {
   setupLocator(
     supabaseClient: AppConfig.hasSupabase ? Supabase.instance.client : null,
   );
-
-  if (Platform.isMacOS) {
-    await locator<QuickCaptureCoordinator>().initialize();
-  }
-
-  runApp(const AppBootstrap());
-
-  if (Platform.isMacOS) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      unawaited(locator<QuickCaptureCoordinator>().showPanel());
-    });
-  }
 }

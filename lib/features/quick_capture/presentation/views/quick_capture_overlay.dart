@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -31,30 +32,50 @@ class QuickCaptureOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // The macOS window is exactly the card and gets its blur from AppKit, so it
+    // paints no surface. On Android the same card floats over the shared app.
+    final usesGlassWindow = defaultTargetPlatform == TargetPlatform.macOS;
+
     return BlocBuilder<QuickCaptureCubit, QuickCaptureState>(
       builder: (context, state) {
-        return Material(
-          type: MaterialType.transparency,
-          child: SizedBox.expand(
-            child: DecoratedBox(
-              decoration: const BoxDecoration(
-                borderRadius: AppRadius.xlAll,
-                border: Border.fromBorderSide(AppBorders.sideStrong),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.lg),
-                child: Center(
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 180),
-                    child: KeyedSubtree(
-                      key: ValueKey(state.status),
-                      child: _content(state),
-                    ),
-                  ),
+        final card = DecoratedBox(
+          decoration: BoxDecoration(
+            color: usesGlassWindow ? null : AppColors.card,
+            borderRadius: AppRadius.xlAll,
+            border: const Border.fromBorderSide(AppBorders.sideStrong),
+            boxShadow: usesGlassWindow ? null : AppShadows.card,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: Center(
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 180),
+                child: KeyedSubtree(
+                  key: ValueKey(state.status),
+                  child: _content(state),
                 ),
               ),
             ),
           ),
+        );
+
+        return Material(
+          type: MaterialType.transparency,
+          child: usesGlassWindow
+              ? SizedBox.expand(child: card)
+              : Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSpacing.xl),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        minWidth: 300,
+                        maxWidth: 340,
+                        minHeight: 96,
+                      ),
+                      child: card,
+                    ),
+                  ),
+                ),
         );
       },
     );
