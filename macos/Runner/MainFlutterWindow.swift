@@ -10,12 +10,18 @@ class MainFlutterWindow: NSPanel {
   private var selectionChannel: FlutterMethodChannel?
   private var startupChannel: FlutterMethodChannel?
   private var overlayChannel: FlutterMethodChannel?
+  private var lifecycleChannel: FlutterMethodChannel?
+  private var glassController: GlassContainerViewController?
   private var hidWindowAtLaunch = false
 
   override func awakeFromNib() {
     let flutterViewController = FlutterViewController()
+    let containerViewController = GlassContainerViewController(
+      flutterViewController: flutterViewController
+    )
     let windowFrame = self.frame
-    self.contentViewController = flutterViewController
+    self.contentViewController = containerViewController
+    self.glassController = containerViewController
     self.setFrame(windowFrame, display: true)
 
     // Transparent background so the capture overlay can float without a frame.
@@ -43,6 +49,12 @@ class MainFlutterWindow: NSPanel {
       self?.handleOverlay(call, result: result)
     }
 
+    // Lets the native side ask Dart to reopen the regular panel.
+    lifecycleChannel = FlutterMethodChannel(
+      name: "wordlearn/lifecycle",
+      binaryMessenger: messenger
+    )
+
     // Backs the `launch_at_startup` Dart package on macOS.
     startupChannel = FlutterMethodChannel(
       name: "launch_at_startup",
@@ -57,8 +69,19 @@ class MainFlutterWindow: NSPanel {
     super.awakeFromNib()
   }
 
-  /// The app starts in the menu bar only, so the window is hidden on its first
-  /// ordering pass and shown later by `window_manager`.
+  /// Reopens the regular app panel, e.g. when the Dock icon is clicked while
+  /// the window is hidden. Dart owns the window state, so it performs the work.
+  func requestOpenPanel() {
+    guard let channel = lifecycleChannel else {
+      makeKeyAndOrderFront(nil)
+      NSApp.activate(ignoringOtherApps: true)
+      return
+    }
+    channel.invokeMethod("openPanel", arguments: nil)
+  }
+
+  /// The window is hidden on its first ordering pass and shown later by
+  /// `window_manager` once Flutter has drawn its first frame.
   override func order(_ place: NSWindow.OrderingMode, relativeTo otherWin: Int) {
     super.order(place, relativeTo: otherWin)
     guard !hidWindowAtLaunch else { return }
@@ -93,9 +116,11 @@ class MainFlutterWindow: NSPanel {
       styleMask.insert(.nonactivatingPanel)
       level = .floating
       collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
-      hasShadow = false
+      hasShadow = true
       ignoresMouseEvents = true
       hidesOnDeactivate = false
+      glassController?.setGlassEnabled(true)
+      invalidateShadow()
       result(nil)
     case "show":
       // `orderFrontRegardless` shows the panel without activating the app, so
@@ -117,6 +142,8 @@ class MainFlutterWindow: NSPanel {
       level = .normal
       collectionBehavior = []
       hasShadow = true
+      glassController?.setGlassEnabled(false)
+      invalidateShadow()
       result(nil)
     default:
       result(FlutterMethodNotImplemented)
@@ -228,5 +255,54 @@ class MainFlutterWindow: NSPanel {
     default:
       result(FlutterMethodNotImplemented)
     }
+  }
+}
+
+/// Hosts the Flutter view inside a plain container so a visual effect view can
+/// sit behind it. Flutter keeps drawing into its own transparent view.
+final class GlassContainerViewController: NSViewController {
+  private let flutterViewController: FlutterViewController
+  private let effectView = NSVisualEffectView()
+
+  init(flutterViewController: FlutterViewController) {
+    self.flutterViewController = flutterViewController
+    super.init(nibName: nil, bundle: nil)
+  }
+
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+
+  override func loadView() {
+    let container = NSView()
+    container.wantsLayer = true
+
+    // Matches AppRadius.xl so the glass corners line up with the Flutter card.
+    effectView.wantsLayer = true
+    effectView.blendingMode = .behindWindow
+    effectView.material = .hudWindow
+    effectView.state = .active
+    effectView.layer?.cornerRadius = 24
+    effectView.layer?.masksToBounds = true
+    effectView.autoresizingMask = [.width, .height]
+    effectView.isHidden = true
+    container.addSubview(effectView)
+
+    addChild(flutterViewController)
+    flutterViewController.backgroundColor = .clear
+    flutterViewController.view.autoresizingMask = [.width, .height]
+    container.addSubview(flutterViewController.view)
+
+    view = container
+  }
+
+  override func viewDidLayout() {
+    super.viewDidLayout()
+    effectView.frame = view.bounds
+    flutterViewController.view.frame = view.bounds
+  }
+
+  func setGlassEnabled(_ enabled: Bool) {
+    effectView.isHidden = !enabled
   }
 }
