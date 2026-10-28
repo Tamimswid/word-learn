@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/design_system/design_system.dart';
 import '../../../../core/di/app_locator.dart';
-import '../../../../core/platform/process_text_service.dart';
 import '../../../../core/router/app_route.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
@@ -39,21 +38,6 @@ class _HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<_HomeView> {
-  final ProcessTextService _processText = locator<ProcessTextService>();
-
-  @override
-  void initState() {
-    super.initState();
-    _processText.addListener(_handleProcessText);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _handleProcessText());
-  }
-
-  @override
-  void dispose() {
-    _processText.removeListener(_handleProcessText);
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -171,17 +155,8 @@ class _HomeViewState extends State<_HomeView> {
     context.pushNamed(AppRoute.words.name);
   }
 
-  Future<void> _handleProcessText() async {
-    if (!mounted) return;
-
-    final word = _processText.takePendingWord();
-    if (word == null) return;
-
-    await _addWord(context, initialWord: word);
-  }
-
-  Future<void> _addWord(BuildContext context, {String? initialWord}) async {
-    final entry = await showAddWordDialog(context, initialWord: initialWord);
+  Future<void> _addWord(BuildContext context) async {
+    final entry = await showAddWordDialog(context);
     if (!context.mounted || entry == null) return;
 
     context.read<HomeCubit>().addWord(

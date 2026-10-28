@@ -2,7 +2,6 @@ import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../data/supabase_client.dart';
-import '../platform/process_text_service.dart';
 import '../platform/text_to_speech_service.dart';
 import 'src/auth_injection.dart';
 import 'src/deck_session_injection.dart';
@@ -27,14 +26,8 @@ void setupLocator({SupabaseClient? supabaseClient}) {
     );
   }
 
-  if (!locator.isRegistered<ProcessTextService>()) {
-    locator.registerLazySingleton<ProcessTextService>(ProcessTextService.new);
-  }
-
   if (!locator.isRegistered<TextToSpeechService>()) {
-    locator.registerLazySingleton<TextToSpeechService>(
-      TextToSpeechService.new,
-    );
+    locator.registerLazySingleton<TextToSpeechService>(TextToSpeechService.new);
   }
 
   registerAuthDependencies(locator);
