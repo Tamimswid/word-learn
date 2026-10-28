@@ -13,12 +13,12 @@ import '../../auth/presentation/cubit/auth_cubit.dart';
 import '../data/repositories/quick_capture_repository.dart';
 import 'cubit/quick_capture_cubit.dart';
 
-/// Owns the macOS background experience: menu bar item, global shortcut and
-/// the floating capture overlay.
+/// Owns the macOS background experience: menu bar item, Dock reopen, global
+/// shortcut and the floating capture overlay.
 ///
 /// The main window is only used for the regular app (sign-in, dashboard). While
-/// it is hidden the app lives in the menu bar and captures the selected text of
-/// whichever app is in front.
+/// it is hidden the app keeps running in the Dock and menu bar, and captures the
+/// selected text of whichever app is in front.
 class QuickCaptureCoordinator extends ChangeNotifier
     with WindowListener, TrayListener {
   QuickCaptureCoordinator(this._repository, this._cubit, this._auth);
@@ -29,13 +29,17 @@ class QuickCaptureCoordinator extends ChangeNotifier
   static const String _quitKey = 'quit';
 
   static const Size _panelSize = Size(1180, 780);
-  static const Size _overlaySize = Size(224, 180);
+  static const Size _overlaySize = Size(300, 104);
   static const double _overlayMargin = 16;
 
+  static const Duration _successDelay = Duration(seconds: 2);
   static const Duration _failureDelay = Duration(seconds: 3);
 
   static const MethodChannel _overlayChannel = MethodChannel(
     'wordlearn/overlay',
+  );
+  static const MethodChannel _lifecycleChannel = MethodChannel(
+    'wordlearn/lifecycle',
   );
 
   final QuickCaptureRepository _repository;
@@ -64,6 +68,7 @@ class QuickCaptureCoordinator extends ChangeNotifier
     await windowManager.setPreventClose(true);
 
     trayManager.addListener(this);
+    _lifecycleChannel.setMethodCallHandler(_handleLifecycleCall);
     await _setUpTray();
     await _setUpHotKey();
     await _setUpLaunchAtStartup();
@@ -72,8 +77,8 @@ class QuickCaptureCoordinator extends ChangeNotifier
     await windowManager.center();
   }
 
-  /// Shows the regular app window. Used by the tray menu and whenever a capture
-  /// is requested without an authenticated session.
+  /// Shows the regular app window. Used by the tray icon, the Dock reopen event
+  /// and whenever a capture is requested without an authenticated session.
   Future<void> showPanel() async {
     if (!Platform.isMacOS) return;
 
@@ -87,6 +92,10 @@ class QuickCaptureCoordinator extends ChangeNotifier
     await windowManager.setOpacity(1);
     await windowManager.show();
     await windowManager.focus();
+  }
+
+  Future<void> _handleLifecycleCall(MethodCall call) async {
+    if (call.method == 'openPanel') await showPanel();
   }
 
   Future<void> _setUpTray() async {
@@ -130,14 +139,6 @@ class QuickCaptureCoordinator extends ChangeNotifier
   Future<void> _captureSelection() async {
     if (_isCapturing) return;
 
-    // The overlay reuses the main window, so only a visible panel counts as
-    // "the app is already open"; a visible overlay is the capture itself.
-    if (!_isOverlayVisible && await windowManager.isVisible()) {
-      await windowManager.show();
-      await windowManager.focus();
-      return;
-    }
-
     if (!_auth.state.isAuthenticated) {
       await showPanel();
       return;
@@ -146,17 +147,22 @@ class QuickCaptureCoordinator extends ChangeNotifier
     _isCapturing = true;
     try {
       _cubit.reset();
+      // The overlay reuses the main window, so a visible panel is put away
+      // before the window shrinks into the floating capture card.
+      if (await windowManager.isVisible()) await windowManager.hide();
       await _showOverlay();
 
       final selection = await _repository.readSelection();
       await selection.fold<Future<void>>(
         (failure) async {
           _cubit.fail(failure.message);
-          await _hideAfterFailure();
+          await _closeOverlay(_failureDelay);
         },
         (text) async {
           await _cubit.save(text);
-          if (!_cubit.state.isSuccess) await _hideAfterFailure();
+          await _closeOverlay(
+            _cubit.state.isSuccess ? _successDelay : _failureDelay,
+          );
         },
       );
     } finally {
@@ -164,19 +170,15 @@ class QuickCaptureCoordinator extends ChangeNotifier
     }
   }
 
-  /// Keeps error feedback visible briefly, then returns to the menu bar.
-  Future<void> _hideAfterFailure() async {
-    await Future<void>.delayed(_failureDelay);
+  /// Keeps the result readable for a moment, then hides the overlay. The app
+  /// keeps running in the menu bar and Dock.
+  Future<void> _closeOverlay(Duration delay) async {
+    await Future<void>.delayed(delay);
     await _hideOverlay();
     _cubit.reset();
   }
 
   Future<void> _showOverlay() async {
-    if (_isOverlayVisible) {
-      await windowManager.setPosition(await _overlayPosition());
-      return;
-    }
-
     await windowManager.setResizable(false);
     await windowManager.setTitleBarStyle(
       TitleBarStyle.hidden,
@@ -253,6 +255,16 @@ class QuickCaptureCoordinator extends ChangeNotifier
     if (_isOverlayVisible == visible) return;
     _isOverlayVisible = visible;
     notifyListeners();
+  }
+
+  @override
+  void onTrayIconMouseDown() {
+    unawaited(showPanel());
+  }
+
+  @override
+  void onTrayIconRightMouseDown() {
+    unawaited(trayManager.popUpContextMenu());
   }
 
   @override
