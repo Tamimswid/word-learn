@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +10,7 @@ import '../../../../core/router/app_route.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
+import '../../../reminder/reminder.dart';
 import '../../../word_management/presentation/dialogs/add_word_dialog.dart';
 import '../../data/models/home_snapshot.dart';
 import '../cubit/home_cubit.dart';
@@ -139,6 +142,7 @@ class _HomeViewState extends State<_HomeView> {
         failure?.message ??
             'Oturum başına ${result.sessionSize} kelime olarak kaydedildi.',
       );
+      if (failure == null) _syncReminders();
       return;
     }
 
@@ -171,13 +175,24 @@ class _HomeViewState extends State<_HomeView> {
         createdAt: entry.createdAt,
       ),
     );
+    _syncReminders();
   }
 
   Future<void> _removeWord(BuildContext context, LearnedWord word) async {
     final failure = await context.read<HomeCubit>().deleteWord(word);
-    if (!context.mounted || failure == null) return;
+    if (failure == null) {
+      _syncReminders();
+      return;
+    }
+    if (!context.mounted) return;
 
     _showMessage(context, failure.message);
+  }
+
+  /// Today's added words take part in the plan, so the schedule is rebuilt
+  /// whenever the deck changes.
+  void _syncReminders() {
+    unawaited(locator<ReminderRepository>().reschedule());
   }
 
   void _showMessage(BuildContext context, String message) {

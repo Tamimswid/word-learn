@@ -11,6 +11,7 @@ import 'package:window_manager/window_manager.dart';
 
 import '../../auth/presentation/cubit/auth_cubit.dart';
 import '../../auth/presentation/cubit/auth_state.dart';
+import '../../reminder/reminder.dart';
 import '../data/repositories/quick_capture_repository.dart';
 import 'cubit/quick_capture_cubit.dart';
 
@@ -22,7 +23,12 @@ import 'cubit/quick_capture_cubit.dart';
 /// selected text of whichever app is in front.
 class QuickCaptureCoordinator extends ChangeNotifier
     with WindowListener, TrayListener {
-  QuickCaptureCoordinator(this._repository, this._cubit, this._auth);
+  QuickCaptureCoordinator(
+    this._repository,
+    this._cubit,
+    this._auth,
+    this._reminders,
+  );
 
   static const String _trayIcon = 'assets/icons/tray_word.png';
   static const String _captureKey = 'capture';
@@ -49,6 +55,7 @@ class QuickCaptureCoordinator extends ChangeNotifier
   final QuickCaptureRepository _repository;
   final QuickCaptureCubit _cubit;
   final AuthCubit _auth;
+  final ReminderRepository _reminders;
 
   final HotKey _hotKey = HotKey(
     identifier: 'wordlearn-capture',
@@ -122,6 +129,7 @@ class QuickCaptureCoordinator extends ChangeNotifier
 
       _cubit.reset();
       await _cubit.save(text);
+      if (_cubit.state.isSuccess) _syncReminders();
       await Future<void>.delayed(
         _cubit.state.isSuccess ? _successDelay : _failureDelay,
       );
@@ -149,6 +157,11 @@ class QuickCaptureCoordinator extends ChangeNotifier
     } on PlatformException {
       // The activity is already gone.
     }
+  }
+
+  /// Today's added words take part in the plan, so a saved capture rebuilds it.
+  void _syncReminders() {
+    unawaited(_reminders.reschedule());
   }
 
   /// A capture can start before Supabase has restored the stored session.
@@ -226,6 +239,7 @@ class QuickCaptureCoordinator extends ChangeNotifier
         },
         (text) async {
           await _cubit.save(text);
+          if (_cubit.state.isSuccess) _syncReminders();
           await _closeOverlay(
             _cubit.state.isSuccess ? _successDelay : _failureDelay,
           );

@@ -7,6 +7,7 @@ import '../../../features/quick_capture/data/repositories/quick_capture_reposito
 import '../../../features/quick_capture/data/repositories/quick_capture_repository_impl.dart';
 import '../../../features/quick_capture/presentation/cubit/quick_capture_cubit.dart';
 import '../../../features/quick_capture/presentation/quick_capture_coordinator.dart';
+import '../../../features/reminder/reminder.dart';
 import '../../../features/word_management/data/repositories/word_repository.dart';
 
 void registerQuickCaptureDependencies(GetIt locator) {
@@ -37,6 +38,7 @@ void registerQuickCaptureDependencies(GetIt locator) {
         locator<QuickCaptureRepository>(),
         locator<QuickCaptureCubit>(),
         locator<AuthCubit>(),
+        locator<ReminderRepository>(),
       ),
     );
   }

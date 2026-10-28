@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -5,6 +7,7 @@ import '../../../../core/design_system/design_system.dart';
 import '../../../../core/di/app_locator.dart';
 import '../../../../core/state/load_status.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../reminder/reminder.dart';
 import '../cubit/word_list_cubit.dart';
 import '../cubit/word_list_state.dart';
 import '../dialogs/add_word_dialog.dart';
@@ -53,6 +56,7 @@ class _AllWordsView extends StatelessWidget {
     if (!context.mounted || entry == null) return;
 
     context.read<WordListCubit>().addWord(entry);
+    unawaited(locator<ReminderRepository>().reschedule());
   }
 
   void _showMessage(BuildContext context, String message) {
@@ -126,7 +130,10 @@ class _WordsBodyState extends State<_WordsBody> {
           direction: DismissDirection.endToStart,
           background: const _DeleteBackground(),
           confirmDismiss: (_) => showDeleteWordDialog(context, word.word),
-          onDismissed: (_) => context.read<WordListCubit>().deleteWord(word),
+          onDismissed: (_) async {
+            await context.read<WordListCubit>().deleteWord(word);
+            unawaited(locator<ReminderRepository>().reschedule());
+          },
           child: WordCard(word: word),
         );
       },
