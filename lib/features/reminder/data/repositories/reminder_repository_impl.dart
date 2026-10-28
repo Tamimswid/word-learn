@@ -10,10 +10,12 @@ import '../models/reminder_settings.dart';
 import '../models/reminder_slot.dart';
 import 'reminder_repository.dart';
 
-/// Binds today's deck words to randomly spaced times inside the user window.
+/// Binds the day's deck words to times inside the user window.
 ///
-/// Gaps are always between [_minGapMinutes] and [_maxGapMinutes]; words are
-/// scheduled in deck order until the window is full.
+/// Gaps stay between [_minGapMinutes] and [_maxGapMinutes]. When the deck has
+/// more words than the window can hold at the minimum gap, the words are
+/// spread evenly so every slot still fits; surplus words wait for the next
+/// scheduling run.
 class ReminderRepositoryImpl implements ReminderRepository {
   ReminderRepositoryImpl(
     this._deck,
@@ -147,12 +149,18 @@ class ReminderRepositoryImpl implements ReminderRepository {
       start = now.add(const Duration(minutes: 1));
     }
 
+    final windowMinutes = end.difference(start).inMinutes;
+    if (windowMinutes <= 0) return const <ReminderSlot>[];
+
+    final capacity = max(1, windowMinutes ~/ _minGapMinutes);
+    final count = min(min(words.length, _maxScheduled), capacity);
+    final step = windowMinutes / count;
+
     final slots = <ReminderSlot>[];
     var at = start;
 
-    for (final word in words) {
-      if (!at.isBefore(end) || slots.length >= _maxScheduled) break;
-
+    for (var index = 0; index < count; index++) {
+      final word = words[index];
       slots.add(
         ReminderSlot(
           wordId: word.id,
@@ -161,16 +169,33 @@ class ReminderRepositoryImpl implements ReminderRepository {
           at: at,
         ),
       );
+      if (index == count - 1) break;
 
-      final remaining = end.difference(at).inMinutes;
-      if (remaining <= _minGapMinutes) break;
+      final latest = end.subtract(
+        Duration(minutes: _minGapMinutes * (count - index - 1)),
+      );
+      final gap = step >= _maxGapMinutes
+          ? _minGapMinutes +
+                _random.nextInt(_maxGapMinutes - _minGapMinutes + 1)
+          : _jitteredGap(step);
 
-      final upper = remaining < _maxGapMinutes ? remaining : _maxGapMinutes;
-      final gap =
-          _minGapMinutes + _random.nextInt(upper - _minGapMinutes + 1);
-      at = at.add(Duration(minutes: gap));
+      var next = at.add(Duration(minutes: gap));
+      final earliest = at.add(const Duration(minutes: _minGapMinutes));
+      if (next.isBefore(earliest)) next = earliest;
+      if (next.isAfter(latest)) next = latest;
+      at = next;
     }
 
     return slots;
+  }
+
+  /// Keeps the spacing close to [step] so a fixed count always fits the window.
+  int _jitteredGap(double step) {
+    final base = step.round();
+    final jitter = (step * 0.2).round();
+    if (jitter <= 0) return base.clamp(_minGapMinutes, _maxGapMinutes).toInt();
+
+    final gap = base + _random.nextInt(jitter * 2 + 1) - jitter;
+    return gap.clamp(_minGapMinutes, _maxGapMinutes).toInt();
   }
 }

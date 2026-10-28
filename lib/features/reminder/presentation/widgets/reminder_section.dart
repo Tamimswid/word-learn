@@ -67,7 +67,8 @@ class ReminderSection extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.md),
         Text(
-          'Kelimeler arasında 10 dk – 2 saat rastgele aralık bırakılır.',
+          'Kelimeler seçtiğin saat aralığına yayılır; aralıklar 10 dk – '
+          '2 saat arasında belirlenir.',
           style: AppTypography.caption.copyWith(
             color: AppColors.mutedForeground,
           ),
