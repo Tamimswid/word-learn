@@ -27,12 +27,7 @@ class RecentWordsSection extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: Text(
-                'Son öğrenilenler',
-                style: AppTypography.labelMedium.copyWith(
-                  color: AppColors.foreground,
-                ),
-              ),
+              child: Text('Son öğrenilenler', style: AppTypography.labelMedium.copyWith(color: AppColors.foreground)),
             ),
             if (words.isNotEmpty)
               TextButton(
@@ -61,8 +56,7 @@ class RecentWordsSection extends StatelessWidget {
               child: _WordRow(
                 word: words[index],
                 onDeleted: () => onDeleted(words[index]),
-                onConfirmDelete: () =>
-                    showDeleteWordDialog(context, words[index].word),
+                onConfirmDelete: () => showDeleteWordDialog(context, words[index].word),
               ),
             ),
       ],
@@ -71,11 +65,7 @@ class RecentWordsSection extends StatelessWidget {
 }
 
 class _WordRow extends StatelessWidget {
-  const _WordRow({
-    required this.word,
-    required this.onDeleted,
-    required this.onConfirmDelete,
-  });
+  const _WordRow({required this.word, required this.onDeleted, required this.onConfirmDelete});
 
   final LearnedWord word;
   final VoidCallback onDeleted;
@@ -94,6 +84,7 @@ class _WordRow extends StatelessWidget {
         child: AppCard(
           radius: AppRadius.md,
           padding: const EdgeInsets.all(AppSpacing.md),
+
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -107,23 +98,18 @@ class _WordRow extends StatelessWidget {
                           word.word,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTypography.labelLarge.copyWith(
-                            color: AppColors.foreground,
-                          ),
+                          style: AppTypography.labelLarge.copyWith(color: AppColors.foreground),
                         ),
                       ),
                     ),
-                  if (word.word.isNotEmpty && word.translation.isNotEmpty)
-                    const SizedBox(width: AppSpacing.sm),
+                  if (word.word.isNotEmpty && word.translation.isNotEmpty) const SizedBox(width: AppSpacing.sm),
                   if (word.translation.isNotEmpty)
                     Flexible(
                       child: Text(
                         word.translation,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: AppTypography.caption.copyWith(
-                          color: AppColors.mutedForeground,
-                        ),
+                        style: AppTypography.caption.copyWith(color: AppColors.mutedForeground),
                       ),
                     ),
                 ],
@@ -131,22 +117,12 @@ class _WordRow extends StatelessWidget {
               if (word.exampleSentence.isNotEmpty) ...[
                 const SizedBox(height: AppSpacing.sm),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.sm,
-                  ),
-                  decoration: const BoxDecoration(
-                    color: AppColors.muted,
-                    borderRadius: AppRadius.smAll,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+                  decoration: const BoxDecoration(color: AppColors.muted, borderRadius: AppRadius.smAll),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(
-                        Icons.format_quote_rounded,
-                        size: AppSpacing.lg,
-                        color: AppColors.mutedForeground,
-                      ),
+                      const Icon(Icons.format_quote_rounded, size: AppSpacing.lg, color: AppColors.mutedForeground),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Column(
@@ -158,9 +134,7 @@ class _WordRow extends StatelessWidget {
                               child: HighlightedText(
                                 text: word.exampleSentence,
                                 highlight: word.word,
-                                style: AppTypography.caption.copyWith(
-                                  color: AppColors.secondaryForeground,
-                                ),
+                                style: AppTypography.caption.copyWith(color: AppColors.secondaryForeground),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -171,13 +145,11 @@ class _WordRow extends StatelessWidget {
                                 word.sentenceTranslation,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
-                                style: AppTypography.caption.copyWith(
-                                  color: AppColors.mutedForeground,
-                                ),
+                                style: AppTypography.caption.copyWith(color: AppColors.mutedForeground),
                               ),
                             ],
                             if (word.arabicSentence.isNotEmpty) ...[
-                              const SizedBox(height: AppSpacing.xxs),
+                              const SizedBox(height: AppSpacing.lg),
                               TapToSpeak(
                                 text: word.arabicSentence,
                                 language: 'ar-SA',
@@ -189,9 +161,7 @@ class _WordRow extends StatelessWidget {
                                   textDirection: TextDirection.rtl,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
-                                  style: AppTypography.caption.copyWith(
-                                    color: AppColors.mutedForeground,
-                                  ),
+                                  style: AppTypography.caption.copyWith(color: AppColors.mutedForeground),
                                 ),
                               ),
                             ],
@@ -220,8 +190,7 @@ class _AnimatedWordRow extends StatefulWidget {
   State<_AnimatedWordRow> createState() => _AnimatedWordRowState();
 }
 
-class _AnimatedWordRowState extends State<_AnimatedWordRow>
-    with SingleTickerProviderStateMixin {
+class _AnimatedWordRowState extends State<_AnimatedWordRow> with SingleTickerProviderStateMixin {
   static const Duration _duration = Duration(milliseconds: 280);
   static const Duration _stagger = Duration(milliseconds: 45);
 
@@ -270,25 +239,13 @@ class _DeleteBackground extends StatelessWidget {
     return Container(
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      decoration: const BoxDecoration(
-        color: AppColors.destructiveSoft,
-        borderRadius: AppRadius.mdAll,
-      ),
+      decoration: const BoxDecoration(color: AppColors.destructiveSoft, borderRadius: AppRadius.mdAll),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(
-            Icons.delete_outline_rounded,
-            size: AppSpacing.lg,
-            color: AppColors.destructive,
-          ),
+          const Icon(Icons.delete_outline_rounded, size: AppSpacing.lg, color: AppColors.destructive),
           const SizedBox(width: AppSpacing.sm),
-          Text(
-            'Sil',
-            style: AppTypography.labelMedium.copyWith(
-              color: AppColors.destructive,
-            ),
-          ),
+          Text('Sil', style: AppTypography.labelMedium.copyWith(color: AppColors.destructive)),
         ],
       ),
     );
@@ -307,19 +264,9 @@ class _EmptyWords extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(
-              AppAssets.empty,
-              width: AppSpacing.huge * 4,
-              height: AppSpacing.huge * 4,
-              fit: BoxFit.contain,
-            ),
+            Image.asset(AppAssets.empty, width: AppSpacing.huge * 4, height: AppSpacing.huge * 4, fit: BoxFit.contain),
             const SizedBox(height: AppSpacing.md),
-            Text(
-              'Empty',
-              style: AppTypography.titleLarge.copyWith(
-                color: AppColors.foreground,
-              ),
-            ),
+            Text('Empty', style: AppTypography.titleLarge.copyWith(color: AppColors.foreground)),
           ],
         ),
       ),

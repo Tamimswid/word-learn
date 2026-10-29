@@ -16,10 +16,7 @@ class ActivityBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final maxValue = points.fold<double>(
-      0,
-      (current, point) => point.value > current ? point.value : current,
-    );
+    final maxValue = points.fold<double>(0, (current, point) => point.value > current ? point.value : current);
     final scale = maxValue <= 0 ? 1.0 : maxValue;
     final minFactor = _minBarHeight / _chartHeight;
 
@@ -43,20 +40,14 @@ class ActivityBarChart extends StatelessWidget {
                         curve: Curves.easeOutCubic,
                         child: DecoratedBox(
                           decoration: BoxDecoration(
-                            color: point.isCurrent
-                                ? AppColors.primaryGlow
-                                : AppColors.primaryBar,
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(AppRadius.xs),
-                            ),
+                            color: point.isCurrent ? AppColors.primaryGlow : AppColors.primaryBar,
+                            borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.xs)),
                           ),
                         ),
                         builder: (context, value, child) {
                           return FractionallySizedBox(
                             alignment: Alignment.bottomCenter,
-                            heightFactor: (value / scale)
-                                .clamp(minFactor, 1.0)
-                                .toDouble(),
+                            heightFactor: (value / scale).clamp(minFactor, 1.0).toDouble(),
                             child: child,
                           );
                         },
@@ -77,9 +68,7 @@ class ActivityBarChart extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: AppTypography.overline.copyWith(
-                        color: point.isCurrent
-                            ? AppColors.primaryGlow
-                            : AppColors.mutedForeground,
+                        color: point.isCurrent ? AppColors.primaryGlow : AppColors.mutedForeground,
                       ),
                     ),
                   ),

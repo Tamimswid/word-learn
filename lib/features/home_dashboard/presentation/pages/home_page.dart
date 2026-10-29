@@ -45,60 +45,62 @@ class _HomeViewState extends State<_HomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: BlocListener<HomeCubit, HomeState>(
-          listenWhen: (previous, current) =>
-              previous.failure != current.failure && current.failure != null,
-          listener: _showLoadFailure,
-          child: BlocBuilder<HomeCubit, HomeState>(
-            builder: (context, state) {
-              final snapshot = state.snapshot;
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _addWord(context),
+        tooltip: 'Kelime ekle',
+        child: const Icon(Icons.add_rounded),
+      ),
+      body: AppAnimatedBackground(
+        child: SafeArea(
+          child: BlocListener<HomeCubit, HomeState>(
+            listenWhen: (previous, current) =>
+                previous.failure != current.failure && current.failure != null,
+            listener: _showLoadFailure,
+            child: BlocBuilder<HomeCubit, HomeState>(
+              builder: (context, state) {
+                final snapshot = state.snapshot;
 
-              return SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.screen,
-                  AppSpacing.md,
-                  AppSpacing.screen,
-                  AppSpacing.xxl,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    BlocBuilder<AuthCubit, AuthState>(
-                      buildWhen: (previous, current) =>
-                          previous.user != current.user,
-                      builder: (context, state) => HomeHeader(
-                        greetingName: state.firstName,
-                        streakDays: snapshot.streakDays,
-                        dailyLoginCount: snapshot.dailyLoginCount,
-                        onOpenSettings: () => _openSettings(context),
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.screen,
+                    AppSpacing.md,
+                    AppSpacing.screen,
+                    AppSpacing.giant + AppSpacing.xxl,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      BlocBuilder<AuthCubit, AuthState>(
+                        buildWhen: (previous, current) =>
+                            previous.user != current.user,
+                        builder: (context, state) => HomeHeader(
+                          greetingName: state.firstName,
+                          streakDays: snapshot.streakDays,
+                          dailyLoginCount: snapshot.dailyLoginCount,
+                          onOpenSettings: () => _openSettings(context),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: AppSpacing.xxl),
-                    LearningRhythmCard(snapshot: snapshot),
-                    const SizedBox(height: AppSpacing.xl),
-                    AppAddButton(
-                      expanded: true,
-                      onPressed: () => _addWord(context),
-                    ),
-                    const SizedBox(height: AppSpacing.xl),
-                    // Quick practice is temporarily hidden. The original
-                    // widget and route wiring are kept below for re-enabling.
-                    // QuickPracticeSection(
-                    //   onSeeAll: () => _openExercise(context),
-                    //   onLevelTap: () => _openExercise(context),
-                    // ),
-                    // const SizedBox(height: AppSpacing.xl),
-                    RecentWordsSection(
-                      words: snapshot.recentWords,
-                      isLoading: state.isLoading,
-                      onSeeAll: () => _openAllWords(context),
-                      onDeleted: (word) => _removeWord(context, word),
-                    ),
-                  ],
-                ),
-              );
-            },
+                      const SizedBox(height: AppSpacing.xxl),
+                      LearningRhythmCard(snapshot: snapshot),
+                      const SizedBox(height: AppSpacing.xl),
+                      // Quick practice is temporarily hidden. The original
+                      // widget and route wiring are kept below for re-enabling.
+                      // QuickPracticeSection(
+                      //   onSeeAll: () => _openExercise(context),
+                      //   onLevelTap: () => _openExercise(context),
+                      // ),
+                      // const SizedBox(height: AppSpacing.xl),
+                      RecentWordsSection(
+                        words: snapshot.recentWords,
+                        isLoading: state.isLoading,
+                        onSeeAll: () => _openAllWords(context),
+                        onDeleted: (word) => _removeWord(context, word),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),
