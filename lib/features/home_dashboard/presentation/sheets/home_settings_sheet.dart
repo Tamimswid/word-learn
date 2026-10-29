@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/design_system/design_system.dart';
 import '../../../../core/di/app_locator.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../reminder/data/models/reminder_settings.dart';
 import '../../../reminder/presentation/cubit/reminder_cubit.dart';
 import '../../../reminder/presentation/cubit/reminder_state.dart';
@@ -127,6 +130,16 @@ class _HomeSettingsSheetState extends State<HomeSettingsSheet> {
                     onCancel: () => Navigator.of(context).pop(),
                     onSave: _save,
                   ),
+                  const SizedBox(height: AppSpacing.lg),
+                  Center(
+                    child: AppButton(
+                      label: 'Çıkış yap',
+                      icon: const Icon(Icons.logout_rounded),
+                      variant: AppButtonVariant.ghost,
+                      size: AppButtonSize.small,
+                      onPressed: _signOut,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -187,6 +200,14 @@ class _HomeSettingsSheetState extends State<HomeSettingsSheet> {
     Navigator.of(context).pop(
       HomeSettingsResult(sessionSize: _selected, reminderSaved: reminderSaved),
     );
+  }
+
+  /// Close the sheet first so the router's sign-in redirect is not covered
+  /// by the modal route.
+  void _signOut() {
+    final auth = context.read<AuthCubit>();
+    Navigator.of(context).pop();
+    unawaited(auth.signOut());
   }
 }
 
