@@ -6,14 +6,16 @@ import '../../../../core/design_system/design_system.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import 'auth_google_button.dart';
-import 'auth_hero.dart';
+import 'auth_word_cards.dart';
 
-/// Minimal sign-in screen: introduction, floating illustration and one action.
+/// Minimal sign-in screen: introduction, rotating word cards and one action.
 class AuthContent extends StatelessWidget {
   const AuthContent({super.key});
 
-  static const String _title = 'ابدأ رحلة التعلم';
   static const String _body = 'سجل دخولك وابنِ مفرداتك الإنجليزية بأسلوب بسيط وممتع.';
+
+  /// Share of the screen height the card deck occupies.
+  static const double _cardsHeightFraction = 0.45;
 
   @override
   Widget build(BuildContext context) {
@@ -36,29 +38,28 @@ class AuthContent extends StatelessWidget {
                   Expanded(
                     child: Center(
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Spacer(flex: 1),
-                          Text(
-                            _title,
-                            textAlign: TextAlign.center,
-                            textDirection: TextDirection.rtl,
-                            style: AppTypography.headingLarge.copyWith(color: AppColors.foreground),
+                          SizedBox(
+                            height:
+                                MediaQuery.sizeOf(context).height *
+                                _cardsHeightFraction,
+                            child: const AuthWordCards(),
                           ),
-                          Spacer(flex: 3),
-                          const SizedBox(height: 320, child: AuthHero()),
-                          Spacer(flex: 1),
-        
+                          const SizedBox(height: AppSpacing.xxl),
                           Text(
                             _body,
                             textAlign: TextAlign.center,
                             textDirection: TextDirection.rtl,
-                            style: AppTypography.bodyLarge.copyWith(color: AppColors.mutedForeground),
+                            style: AppTypography.bodyLarge.copyWith(
+                              color: AppColors.mutedForeground,
+                            ),
                           ),
-                          const SizedBox(height: AppSpacing.xxl),
                         ],
                       ),
                     ),
                   ),
+                  const SizedBox(height: AppSpacing.xxl),
                   const SizedBox(width: 420, child: AuthGoogleButton()),
                 ],
               ),
