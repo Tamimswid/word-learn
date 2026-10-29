@@ -24,24 +24,27 @@ class DailyWordsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text('Bugünün kelimeleri', style: AppTypography.labelMedium.copyWith(color: AppColors.foreground)),
-            ),
-            if (words.isNotEmpty)
-              TextButton(
-                onPressed: onSeeAll,
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text('Tümünü gör'),
-                    SizedBox(width: AppSpacing.xs),
-                    Icon(Icons.arrow_forward_rounded, size: AppSpacing.lg),
-                  ],
-                ),
+        Directionality(
+          textDirection: TextDirection.rtl,
+          child: Row(
+            children: [
+              Expanded(
+                child: Text('كلمات اليوم', style: AppTypography.labelMedium.copyWith(color: AppColors.foreground)),
               ),
-          ],
+              if (words.isNotEmpty)
+                TextButton(
+                  onPressed: onSeeAll,
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('عرض الكل'),
+                      SizedBox(width: AppSpacing.xs),
+                      Icon(Icons.arrow_forward_rounded, size: AppSpacing.lg),
+                    ],
+                  ),
+                ),
+            ],
+          ),
         ),
         const SizedBox(height: AppSpacing.xs),
         if (isLoading && words.isEmpty)
@@ -88,87 +91,94 @@ class _WordRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
-                children: [
-                  if (word.word.isNotEmpty)
-                    Flexible(
-                      child: TapToSpeak(
-                        text: word.word,
-                        child: Text(
-                          word.word,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTypography.labelLarge.copyWith(color: AppColors.foreground),
+              Directionality(
+                textDirection: TextDirection.rtl,
+                child: Row(
+                  children: [
+                    if (word.word.isNotEmpty)
+                      Flexible(
+                        child: TapToSpeak(
+                          text: word.word,
+                          child: Text(
+                            word.word,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTypography.labelLarge.copyWith(color: AppColors.foreground),
+                          ),
                         ),
                       ),
-                    ),
-                  if (word.word.isNotEmpty && word.translation.isNotEmpty) const SizedBox(width: AppSpacing.sm),
-                  if (word.translation.isNotEmpty)
-                    Flexible(
-                      child: Text(
-                        word.translation,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTypography.caption.copyWith(color: AppColors.mutedForeground),
+                    if (word.word.isNotEmpty && word.translation.isNotEmpty) const SizedBox(width: AppSpacing.sm),
+                    if (word.translation.isNotEmpty)
+                      Flexible(
+                        child: Text(
+                          word.translation,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.caption.copyWith(color: AppColors.mutedForeground),
+                        ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
               if (word.exampleSentence.isNotEmpty) ...[
                 const SizedBox(height: AppSpacing.sm),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
                   decoration: const BoxDecoration(color: AppColors.muted, borderRadius: AppRadius.smAll),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Icon(Icons.format_quote_rounded, size: AppSpacing.lg, color: AppColors.mutedForeground),
-                      const SizedBox(width: AppSpacing.sm),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            TapToSpeak(
-                              text: word.exampleSentence,
-                              tooltip: 'Cümleyi dinle',
-                              child: HighlightedText(
-                                text: word.exampleSentence,
-                                highlight: word.word,
-                                style: AppTypography.caption.copyWith(color: AppColors.secondaryForeground),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            if (word.sentenceTranslation.isNotEmpty) ...[
-                              const SizedBox(height: AppSpacing.xxs),
-                              Text(
-                                word.sentenceTranslation,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: AppTypography.caption.copyWith(color: AppColors.mutedForeground),
-                              ),
-                            ],
-                            if (word.arabicSentence.isNotEmpty) ...[
-                              const SizedBox(height: AppSpacing.lg),
+                  child: Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.format_quote_rounded, size: AppSpacing.lg, color: AppColors.mutedForeground),
+                        const SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
                               TapToSpeak(
-                                text: word.arabicSentence,
-                                language: 'ar-SA',
-                                tooltip: 'Arapça cümleyi dinle',
+                                text: word.exampleSentence,
+                                tooltip: 'استمع إلى الجملة',
                                 child: HighlightedText(
-                                  text: word.arabicSentence,
-                                  highlightIndex: word.wordIndex,
-                                  textAlign: TextAlign.right,
-                                  textDirection: TextDirection.rtl,
+                                  text: word.exampleSentence,
+                                  highlight: word.word,
+                                  textDirection: TextDirection.ltr,
+                                  style: AppTypography.caption.copyWith(color: AppColors.secondaryForeground),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              if (word.sentenceTranslation.isNotEmpty) ...[
+                                const SizedBox(height: AppSpacing.xxs),
+                                Text(
+                                  word.sentenceTranslation,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                   style: AppTypography.caption.copyWith(color: AppColors.mutedForeground),
                                 ),
-                              ),
+                              ],
+                              if (word.arabicSentence.isNotEmpty) ...[
+                                const SizedBox(height: AppSpacing.lg),
+                                TapToSpeak(
+                                  text: word.arabicSentence,
+                                  language: 'ar-SA',
+                                  tooltip: 'استمع إلى الجملة العربية',
+                                  child: HighlightedText(
+                                    text: word.arabicSentence,
+                                    highlightIndex: word.wordIndex,
+                                    textAlign: TextAlign.right,
+                                    textDirection: TextDirection.rtl,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: AppTypography.caption.copyWith(color: AppColors.mutedForeground),
+                                  ),
+                                ),
+                              ],
                             ],
-                          ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -245,7 +255,7 @@ class _DeleteBackground extends StatelessWidget {
         children: [
           const Icon(Icons.delete_outline_rounded, size: AppSpacing.lg, color: AppColors.destructive),
           const SizedBox(width: AppSpacing.sm),
-          Text('Sil', style: AppTypography.labelMedium.copyWith(color: AppColors.destructive)),
+          Text('حذف', style: AppTypography.labelMedium.copyWith(color: AppColors.destructive)),
         ],
       ),
     );
@@ -266,7 +276,7 @@ class _EmptyWords extends StatelessWidget {
           children: [
             Image.asset(AppAssets.empty, width: AppSpacing.huge * 4, height: AppSpacing.huge * 4, fit: BoxFit.contain),
             const SizedBox(height: AppSpacing.md),
-            Text('Empty', style: AppTypography.titleLarge.copyWith(color: AppColors.foreground)),
+            Text('لا توجد كلمات', style: AppTypography.titleLarge.copyWith(color: AppColors.foreground)),
           ],
         ),
       ),

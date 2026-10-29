@@ -21,85 +21,73 @@ class LearningRhythmCard extends StatefulWidget {
 class _LearningRhythmCardState extends State<LearningRhythmCard> {
   _ActivityPeriod _period = _ActivityPeriod.weekly;
 
-  List<ActivityPoint> get _points => _period == _ActivityPeriod.weekly
-      ? widget.snapshot.weeklyPoints
-      : widget.snapshot.monthlyPoints;
+  List<ActivityPoint> get _points =>
+      _period == _ActivityPeriod.weekly ? widget.snapshot.weeklyPoints : widget.snapshot.monthlyPoints;
 
   @override
   Widget build(BuildContext context) {
     return AppCard(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  'Öğrenme ritmin',
-                  style: AppTypography.labelMedium.copyWith(
-                    color: AppColors.foreground,
-                  ),
+          Directionality(
+            textDirection: TextDirection.rtl,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text('إيقاع تعلّمك', style: AppTypography.labelMedium.copyWith(color: AppColors.foreground)),
                 ),
-              ),
-              _PeriodToggle(period: _period, onChanged: _selectPeriod),
-            ],
+                _PeriodToggle(period: _period, onChanged: _selectPeriod),
+              ],
+            ),
           ),
           const SizedBox(height: AppSpacing.md),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Expanded(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
-                  children: [
-                    TweenAnimationBuilder<double>(
-                      tween: Tween<double>(
-                        begin: 0,
-                        end: widget.snapshot.learnedCount.toDouble(),
-                      ),
-                      duration: _numberAnimation,
-                      curve: Curves.easeOutCubic,
-                      builder: (context, value, _) => Text(
-                        '${value.round()}',
-                        style: AppTypography.headingLarge.copyWith(
-                          color: AppColors.foreground,
+          Directionality(
+            textDirection: TextDirection.rtl,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: [
+                      TweenAnimationBuilder<double>(
+                        tween: Tween<double>(begin: 0, end: widget.snapshot.learnedCount.toDouble()),
+                        duration: _numberAnimation,
+                        curve: Curves.easeOutCubic,
+                        builder: (context, value, _) => Text(
+                          '${value.round()}',
+                          style: AppTypography.headingLarge.copyWith(color: AppColors.foreground),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: AppSpacing.sm),
-                    Flexible(
-                      child: Text(
-                        'kelime öğrenildi',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.mutedForeground,
+                      const SizedBox(width: AppSpacing.sm),
+                      Flexible(
+                        child: Text(
+                          'كلمة تم تعلّمها',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.bodySmall.copyWith(color: AppColors.mutedForeground),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              TweenAnimationBuilder<double>(
-                tween: Tween<double>(
-                  begin: 0,
-                  end: widget.snapshot.changePercent.toDouble(),
+                const SizedBox(width: AppSpacing.sm),
+                TweenAnimationBuilder<double>(
+                  tween: Tween<double>(begin: 0, end: widget.snapshot.changePercent.toDouble()),
+                  duration: _numberAnimation,
+                  curve: Curves.easeOutCubic,
+                  builder: (context, value, _) {
+                    final percent = value.round();
+                    return Text(
+                      '${percent < 0 ? '-' : '+'}%${percent.abs()}',
+                      style: AppTypography.caption.copyWith(color: AppColors.success),
+                    );
+                  },
                 ),
-                duration: _numberAnimation,
-                curve: Curves.easeOutCubic,
-                builder: (context, value, _) {
-                  final percent = value.round();
-                  return Text(
-                    '${percent < 0 ? '-' : '+'}%${percent.abs()}',
-                    style: AppTypography.caption.copyWith(
-                      color: AppColors.success,
-                    ),
-                  );
-                },
-              ),
-            ],
+              ],
+            ),
           ),
           const SizedBox(height: AppSpacing.md),
           ActivityBarChart(points: _points),
@@ -122,19 +110,16 @@ class _PeriodToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.xxs),
-      decoration: const BoxDecoration(
-        color: AppColors.secondary,
-        borderRadius: AppRadius.smAll,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        spacing: AppSpacing.xxs,
-        children: [
-          _option('Haftalık', _ActivityPeriod.weekly),
-          _option('Aylık', _ActivityPeriod.monthly),
-        ],
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.xxs),
+        decoration: const BoxDecoration(color: AppColors.secondary, borderRadius: AppRadius.smAll),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          spacing: AppSpacing.xxs,
+          children: [_option('أسبوعي', _ActivityPeriod.weekly), _option('شهري', _ActivityPeriod.monthly)],
+        ),
       ),
     );
   }
@@ -160,9 +145,7 @@ class _PeriodToggle extends StatelessWidget {
                 child: Text(
                   label,
                   style: AppTypography.overline.copyWith(
-                    color: isSelected
-                        ? AppColors.foreground
-                        : AppColors.mutedForeground,
+                    color: isSelected ? AppColors.foreground : AppColors.mutedForeground,
                   ),
                 ),
               ),

@@ -31,10 +31,10 @@ class _AllWordsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Tüm kelimeler')),
+      appBar: _RtlAppBar(AppBar(title: const Text('كل الكلمات'))),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _addWord(context),
-        tooltip: 'Kelime ekle',
+        tooltip: 'إضافة كلمة',
         child: const Icon(Icons.add_rounded),
       ),
       body: AppAnimatedBackground(
@@ -62,6 +62,20 @@ class _AllWordsView extends StatelessWidget {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text(message)));
+  }
+}
+
+class _RtlAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const _RtlAppBar(this.appBar);
+
+  final AppBar appBar;
+
+  @override
+  Size get preferredSize => appBar.preferredSize;
+
+  @override
+  Widget build(BuildContext context) {
+    return Directionality(textDirection: TextDirection.rtl, child: appBar);
   }
 }
 
@@ -177,7 +191,7 @@ class _DeleteBackground extends StatelessWidget {
         children: [
           const Icon(Icons.delete_outline_rounded, size: AppSpacing.lg, color: AppColors.destructive),
           const SizedBox(width: AppSpacing.sm),
-          Text('Sil', style: AppTypography.labelMedium.copyWith(color: AppColors.destructive)),
+          Text('حذف', style: AppTypography.labelMedium.copyWith(color: AppColors.destructive)),
         ],
       ),
     );
@@ -197,10 +211,10 @@ class _WordsEmpty extends StatelessWidget {
           children: [
             Image.asset(AppAssets.empty, width: AppSpacing.huge * 4, height: AppSpacing.huge * 4, fit: BoxFit.contain),
             const SizedBox(height: AppSpacing.md),
-            Text('Henüz kelime yok', style: AppTypography.titleMedium.copyWith(color: AppColors.foreground)),
+            Text('لا توجد كلمات بعد', style: AppTypography.titleMedium.copyWith(color: AppColors.foreground)),
             const SizedBox(height: AppSpacing.xs),
             Text(
-              'Sağ alttaki ekle butonuyla ilk kelimeni ekleyebilirsin.',
+              'يمكنك إضافة أول كلمة من زر الإضافة في الأسفل.',
               textAlign: TextAlign.center,
               style: AppTypography.bodySmall.copyWith(color: AppColors.mutedForeground),
             ),
@@ -227,7 +241,7 @@ class _WordsError extends StatelessWidget {
           children: [
             const Icon(Icons.cloud_off_rounded, size: AppSpacing.huge, color: AppColors.mutedForeground),
             const SizedBox(height: AppSpacing.md),
-            Text('Kelimeler yüklenemedi', style: AppTypography.titleMedium.copyWith(color: AppColors.foreground)),
+            Text('تعذر تحميل الكلمات', style: AppTypography.titleMedium.copyWith(color: AppColors.foreground)),
             if (message != null) ...[
               const SizedBox(height: AppSpacing.xs),
               Text(
@@ -237,7 +251,7 @@ class _WordsError extends StatelessWidget {
               ),
             ],
             const SizedBox(height: AppSpacing.lg),
-            AppButton(label: 'Tekrar dene', icon: const Icon(Icons.refresh_rounded), onPressed: onRetry),
+            AppButton(label: 'إعادة المحاولة', icon: const Icon(Icons.refresh_rounded), onPressed: onRetry),
           ],
         ),
       ),

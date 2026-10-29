@@ -21,60 +21,63 @@ class ActivityBarChart extends StatelessWidget {
     final minFactor = _minBarHeight / _chartHeight;
 
     return Semantics(
-      label: 'Öğrenme grafiği',
+      label: 'مخطط التعلّم',
       child: ExcludeSemantics(
-        child: Column(
-          children: [
-            Container(
-              height: _chartHeight,
-              decoration: const BoxDecoration(border: AppBorders.bottom),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
+        child: Directionality(
+          textDirection: TextDirection.rtl,
+          child: Column(
+            children: [
+              Container(
+                height: _chartHeight,
+                decoration: const BoxDecoration(border: AppBorders.bottom),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  spacing: AppSpacing.sm,
+                  children: [
+                    for (final point in points)
+                      Expanded(
+                        child: TweenAnimationBuilder<double>(
+                          tween: Tween<double>(begin: 0, end: point.value),
+                          duration: _animationDuration,
+                          curve: Curves.easeOutCubic,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: point.isCurrent ? AppColors.primaryGlow : AppColors.primaryBar,
+                              borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.xs)),
+                            ),
+                          ),
+                          builder: (context, value, child) {
+                            return FractionallySizedBox(
+                              alignment: Alignment.bottomCenter,
+                              heightFactor: (value / scale).clamp(minFactor, 1.0).toDouble(),
+                              child: child,
+                            );
+                          },
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Row(
                 spacing: AppSpacing.sm,
                 children: [
                   for (final point in points)
                     Expanded(
-                      child: TweenAnimationBuilder<double>(
-                        tween: Tween<double>(begin: 0, end: point.value),
-                        duration: _animationDuration,
-                        curve: Curves.easeOutCubic,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: point.isCurrent ? AppColors.primaryGlow : AppColors.primaryBar,
-                            borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.xs)),
-                          ),
+                      child: Text(
+                        point.label,
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.overline.copyWith(
+                          color: point.isCurrent ? AppColors.primaryGlow : AppColors.mutedForeground,
                         ),
-                        builder: (context, value, child) {
-                          return FractionallySizedBox(
-                            alignment: Alignment.bottomCenter,
-                            heightFactor: (value / scale).clamp(minFactor, 1.0).toDouble(),
-                            child: child,
-                          );
-                        },
                       ),
                     ),
                 ],
               ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Row(
-              spacing: AppSpacing.sm,
-              children: [
-                for (final point in points)
-                  Expanded(
-                    child: Text(
-                      point.label,
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTypography.overline.copyWith(
-                        color: point.isCurrent ? AppColors.primaryGlow : AppColors.mutedForeground,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
