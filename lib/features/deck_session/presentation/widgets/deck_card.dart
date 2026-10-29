@@ -101,7 +101,7 @@ class _DeckCardState extends State<DeckCard> with SingleTickerProviderStateMixin
         child: Transform.rotate(
           angle: known ? -0.12 : 0.12,
           child: AppBadge(
-            label: known ? 'BİLDİM' : 'BİLMEDİM',
+            label: known ? 'عرفتها' : 'لم أعرفها',
             variant: known ? AppBadgeVariant.success : AppBadgeVariant.danger,
             icon: Icon(known ? Icons.check_rounded : Icons.close_rounded),
           ),
@@ -118,10 +118,10 @@ class _DeckCardFront extends StatelessWidget {
 
   String get _statusLabel {
     final lastReviewedAt = word.lastReviewedAt;
-    if (lastReviewedAt == null) return 'Yeni kelime';
+    if (lastReviewedAt == null) return 'كلمة جديدة';
 
     final days = DateTime.now().difference(lastReviewedAt).inDays;
-    return days >= 3 ? 'Uzun süredir görülmedi' : 'Tekrar zamanı';
+    return days >= 3 ? 'لم تُرَ منذ مدة' : 'وقت المراجعة';
   }
 
   @override
@@ -163,7 +163,7 @@ class _DeckCardFront extends StatelessWidget {
               ),
             ),
           ),
-          const _DeckCardHint(icon: Icons.touch_app_rounded, label: 'Anlamı görmek için dokun'),
+          const _DeckCardHint(icon: Icons.touch_app_rounded, label: 'انقر لرؤية المعنى'),
         ],
       ),
     );
@@ -184,7 +184,7 @@ class _DeckCardBack extends StatelessWidget {
         children: [
           Row(
             children: [
-              const AppBadge(label: 'ÇEVİRİ', variant: AppBadgeVariant.primary, icon: Icon(Icons.translate_rounded)),
+              const AppBadge(label: 'الترجمة', variant: AppBadgeVariant.primary, icon: Icon(Icons.translate_rounded)),
             ],
           ),
           Expanded(
@@ -194,7 +194,7 @@ class _DeckCardBack extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      word.translation.isEmpty ? 'Çeviri bulunamadı' : word.translation,
+                      word.translation.isEmpty ? 'لم يتم العثور على ترجمة' : word.translation,
                       textAlign: TextAlign.center,
                       style: AppTypography.headingMedium.copyWith(color: AppColors.foreground),
                     ),
@@ -202,7 +202,7 @@ class _DeckCardBack extends StatelessWidget {
                       const SizedBox(height: AppSpacing.lg),
                       TapToSpeak(
                         text: word.exampleSentence,
-                        tooltip: 'Cümleyi dinle',
+                        tooltip: 'استمع إلى الجملة',
                         child: HighlightedText(
                           text: word.exampleSentence,
                           highlight: word.word,
@@ -215,7 +215,7 @@ class _DeckCardBack extends StatelessWidget {
                         TapToSpeak(
                           text: word.arabicSentence,
                           language: 'ar-SA',
-                          tooltip: 'Arapça cümleyi dinle',
+                          tooltip: 'استمع إلى الجملة العربية',
                           child: HighlightedText(
                             text: word.arabicSentence,
                             highlightIndex: word.wordIndex,
@@ -231,7 +231,7 @@ class _DeckCardBack extends StatelessWidget {
               ),
             ),
           ),
-          const _DeckCardHint(icon: Icons.replay_rounded, label: 'Kelimeye dönmek için dokun'),
+          const _DeckCardHint(icon: Icons.replay_rounded, label: 'انقر للعودة إلى الكلمة'),
         ],
       ),
     );

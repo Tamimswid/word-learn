@@ -122,7 +122,7 @@ class _DeckHeader extends StatelessWidget {
           children: [
             AppIconButton(
               icon: const Icon(Icons.close_rounded),
-              tooltip: 'Kapat',
+              tooltip: 'إغلاق',
               variant: AppIconButtonVariant.ghost,
               size: AppSpacing.xxxl,
               onPressed: onClose,
@@ -130,10 +130,10 @@ class _DeckHeader extends StatelessWidget {
             Expanded(
               child: Column(
                 children: [
-                  Text('Bugünün kartları', style: AppTypography.titleSmall.copyWith(color: AppColors.foreground)),
+                  Text('بطاقات اليوم', style: AppTypography.titleSmall.copyWith(color: AppColors.foreground)),
                   const SizedBox(height: AppSpacing.xxs),
                   Text(
-                    total == 0 ? 'Hazırlanıyor' : '$position / $total',
+                    total == 0 ? 'جارٍ التحضير' : '$position / $total',
                     style: AppTypography.caption.copyWith(color: AppColors.mutedForeground),
                   ),
                 ],
@@ -172,7 +172,7 @@ class _DeckError extends StatelessWidget {
         children: [
           const Icon(Icons.cloud_off_rounded, size: AppSpacing.huge, color: AppColors.mutedForeground),
           const SizedBox(height: AppSpacing.md),
-          Text('Kartlar yüklenemedi', style: AppTypography.titleMedium.copyWith(color: AppColors.foreground)),
+          Text('تعذر تحميل البطاقات', style: AppTypography.titleMedium.copyWith(color: AppColors.foreground)),
           if (message != null) ...[
             const SizedBox(height: AppSpacing.xs),
             Text(
@@ -183,7 +183,7 @@ class _DeckError extends StatelessWidget {
           ],
           const SizedBox(height: AppSpacing.lg),
           AppButton(
-            label: 'Tekrar dene',
+            label: 'إعادة المحاولة',
             icon: const Icon(Icons.refresh_rounded),
             onPressed: () => context.read<DeckCubit>().load(),
           ),

@@ -12,7 +12,7 @@ class SupabaseDeckDataSource implements DeckDataSource {
   final AppSupabaseClient _data;
 
   static const Failure _sessionFailure = Failure(
-    'Oturumunuz sona erdi. Lütfen tekrar giriş yapın.',
+    'انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.',
     type: FailureType.authentication,
   );
 
