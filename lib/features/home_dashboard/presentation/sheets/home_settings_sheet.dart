@@ -133,7 +133,7 @@ class _HomeSettingsSheetState extends State<HomeSettingsSheet> {
                   const SizedBox(height: AppSpacing.lg),
                   Center(
                     child: AppButton(
-                      label: 'Çıkış yap',
+                      label: 'تسجيل الخروج',
                       icon: const Icon(Icons.logout_rounded),
                       variant: AppButtonVariant.ghost,
                       size: AppButtonSize.small,
@@ -243,7 +243,7 @@ class _SheetActions extends StatelessWidget {
       children: [
         Expanded(
           child: AppButton(
-            label: 'Vazgeç',
+            label: 'إلغاء',
             variant: AppButtonVariant.secondary,
             expanded: true,
             onPressed: isSaving ? null : onCancel,
@@ -251,7 +251,7 @@ class _SheetActions extends StatelessWidget {
         ),
         Expanded(
           child: AppButton(
-            label: 'Kaydet',
+            label: 'حفظ',
             expanded: true,
             isLoading: isSaving,
             onPressed: isSaving || !canSave ? null : onSave,

@@ -13,7 +13,7 @@ class SupabaseHomeDataSource implements HomeDataSource {
   final AppSupabaseClient _data;
 
   static const Failure _sessionFailure = Failure(
-    'Oturumunuz sona erdi. Lütfen tekrar giriş yapın.',
+    'انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.',
     type: FailureType.authentication,
   );
 
@@ -87,13 +87,13 @@ class SupabaseHomeDataSource implements HomeDataSource {
 
       if (result is num) return Right(result.toInt());
 
-      return const Left(Failure('Günlük giriş sayısı alınamadı.'));
+      return const Left(Failure('تعذر الحصول على عدد تسجيلات الدخول اليومي.'));
     } catch (error, stackTrace) {
       return Left(
         SupabaseErrorHandler.map(
           error,
           stackTrace: stackTrace,
-          fallbackMessage: 'Günlük giriş sayısı güncellenemedi.',
+          fallbackMessage: 'تعذر تحديث عدد تسجيلات الدخول اليومي.',
         ),
       );
     }

@@ -47,7 +47,7 @@ class _HomeViewState extends State<_HomeView> {
       backgroundColor: AppColors.background,
       floatingActionButton: FloatingActionButton(
         onPressed: () => _addWord(context),
-        tooltip: 'Kelime ekle',
+        tooltip: 'إضافة كلمة',
         child: const Icon(Icons.add_rounded),
       ),
       body: AppAnimatedBackground(
@@ -117,7 +117,7 @@ class _HomeViewState extends State<_HomeView> {
         SnackBar(
           content: Text(failure.message),
           action: SnackBarAction(
-            label: 'Tekrar dene',
+            label: 'إعادة المحاولة',
             onPressed: () => context.read<HomeCubit>().load(),
           ),
         ),
@@ -142,14 +142,14 @@ class _HomeViewState extends State<_HomeView> {
       _showMessage(
         context,
         failure?.message ??
-            'Oturum başına ${result.sessionSize} kelime olarak kaydedildi.',
+            'تم حفظ عدد ${result.sessionSize} كلمة لكل جلسة.',
       );
       if (failure == null) _syncReminders();
       return;
     }
 
     if (result.reminderSaved) {
-      _showMessage(context, 'Günlük hatırlatıcı güncellendi.');
+      _showMessage(context, 'تم تحديث التذكير اليومي.');
     }
   }
 

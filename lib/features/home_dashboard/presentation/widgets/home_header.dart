@@ -19,7 +19,7 @@ class HomeHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final greeting = greetingName.isEmpty ? 'Merhaba' : 'Merhaba, $greetingName';
+    final greeting = greetingName.isEmpty ? 'مرحبًا' : '$greetingName,مرحبًا';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +56,7 @@ class HomeHeader extends StatelessWidget {
         // ),
         const SizedBox(height: AppSpacing.md),
         Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: Column(
@@ -65,27 +65,25 @@ class HomeHeader extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(greeting, style: AppTypography.bodySmall.copyWith(color: AppColors.mutedForeground)),
                       AppIconButton(
                         icon: const Icon(Icons.tune_rounded),
-                        tooltip: 'Ayarlar',
+                        tooltip: 'الإعدادات',
                         onPressed: onOpenSettings,
                       ),
+                      Text(greeting, style: AppTypography.bodySmall.copyWith(color: AppColors.mutedForeground)),
                     ],
                   ),
                   const SizedBox(height: AppSpacing.xxs),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Bugün de bir kelime.',
-                        style: AppTypography.headingMedium.copyWith(color: AppColors.foreground),
-                      ),
-
-                      const SizedBox(width: AppSpacing.md),
                       Padding(
                         padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-                        child: StreakIndicator(days: streakDays, label: '$dailyLoginCount gün'),
+                        child: StreakIndicator(days: streakDays, label: '$dailyLoginCount يوم'),
+                      ),
+                      Text(
+                        'كلمة أخرى اليوم',
+                        style: AppTypography.headingMedium.copyWith(color: AppColors.foreground),
                       ),
                     ],
                   ),

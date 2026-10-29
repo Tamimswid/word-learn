@@ -36,8 +36,8 @@ class SessionSizeSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const AppSectionHeader(
-          title: 'Oturum başına kelime',
-          description: 'Her oturumda göreceğin kelime sayısını seç.',
+          title: 'عدد الكلمات لكل جلسة',
+          description: 'اختر عدد الكلمات التي ستراها في كل جلسة.',
         ),
         const SizedBox(height: AppSpacing.lg),
         Row(
@@ -50,7 +50,7 @@ class SessionSizeSection extends StatelessWidget {
                 onTap: () => onSelectPreset(value),
               ),
             _SizeOption(
-              label: 'Özel',
+              label: 'مخصص',
               isSelected: isCustom,
               onTap: onSelectCustom,
             ),
@@ -67,7 +67,7 @@ class SessionSizeSection extends StatelessWidget {
             decoration: InputDecoration(
               hintText: '$minWords–$maxWords',
               errorText: invalid
-                  ? '$minWords ile $maxWords arasında bir sayı gir.'
+                  ? 'أدخل رقمًا بين $minWords و $maxWords.'
                   : null,
             ),
             onChanged: onCustomChanged,

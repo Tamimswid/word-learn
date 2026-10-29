@@ -64,20 +64,20 @@ class HomeSnapshot {
   static const int defaultSessionSize = 10;
 
   static const List<String> weekdayLabels = <String>[
-    'Pzt',
-    'Sal',
-    'Çar',
-    'Per',
-    'Cum',
-    'Cmt',
-    'Paz',
+    'إث',
+    'ثل',
+    'أر',
+    'خم',
+    'جم',
+    'سب',
+    'أح',
   ];
 
   static const List<String> weekLabels = <String>[
-    '1. Hf',
-    '2. Hf',
-    '3. Hf',
-    '4. Hf',
+    'أ١',
+    'أ٢',
+    'أ٣',
+    'أ٤',
   ];
 
   factory HomeSnapshot.zero() {

@@ -15,23 +15,23 @@ class QuickPracticeSection extends StatelessWidget {
 
   static const List<QuickPracticeLevel> _levels = <QuickPracticeLevel>[
     QuickPracticeLevel(
-      label: 'Süper hızlı',
-      duration: '5–10 sn',
+      label: 'فائق السرعة',
+      duration: '5–10 ث',
       iconAsset: AppAssets.practiceFast,
     ),
     QuickPracticeLevel(
-      label: 'Kolay',
-      duration: '15–20 sn',
+      label: 'سهل',
+      duration: '15–20 ث',
       iconAsset: AppAssets.practiceEasy,
     ),
     QuickPracticeLevel(
-      label: 'Orta',
-      duration: '20–30 sn',
+      label: 'متوسط',
+      duration: '20–30 ث',
       iconAsset: AppAssets.practiceMedium,
     ),
     QuickPracticeLevel(
-      label: 'Zor',
-      duration: '30–45 sn',
+      label: 'صعب',
+      duration: '30–45 ث',
       iconAsset: AppAssets.practiceHard,
     ),
   ];
@@ -45,7 +45,7 @@ class QuickPracticeSection extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                'Hızlı alıştırma',
+                'تدريب سريع',
                 style: AppTypography.labelMedium.copyWith(
                   color: AppColors.foreground,
                 ),
@@ -56,7 +56,7 @@ class QuickPracticeSection extends StatelessWidget {
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Tümü'),
+                  Text('الكل'),
                   SizedBox(width: AppSpacing.xs),
                   Icon(Icons.arrow_forward_rounded, size: AppSpacing.lg),
                 ],
