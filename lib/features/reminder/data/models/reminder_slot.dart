@@ -1,30 +1,28 @@
 import 'package:flutter/foundation.dart';
 
-/// A single word bound to the moment its notification fires.
+/// A notification bound to the moment it fires. Word reminders and app-entry
+/// nudges share the shape; only their text differs.
 @immutable
 class ReminderSlot {
   const ReminderSlot({
-    required this.wordId,
-    required this.word,
-    required this.translation,
+    required this.title,
+    required this.body,
     required this.at,
   });
 
-  final String wordId;
-  final String word;
-  final String translation;
+  final String title;
+  final String body;
   final DateTime at;
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         other is ReminderSlot &&
-            other.wordId == wordId &&
-            other.word == word &&
-            other.translation == translation &&
+            other.title == title &&
+            other.body == body &&
             other.at == at;
   }
 
   @override
-  int get hashCode => Object.hash(wordId, word, translation, at);
+  int get hashCode => Object.hash(title, body, at);
 }
