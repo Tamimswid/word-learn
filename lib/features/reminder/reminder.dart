@@ -1,3 +1,4 @@
+export 'data/models/reminder_cadence.dart';
 export 'data/models/reminder_settings.dart';
 export 'data/models/reminder_slot.dart';
 export 'data/repositories/reminder_repository.dart';
