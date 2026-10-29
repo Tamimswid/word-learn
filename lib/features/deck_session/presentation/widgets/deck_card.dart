@@ -9,12 +9,7 @@ import '../../data/models/deck_word.dart';
 /// A single word card. Tapping flips it between the prompt and the answer,
 /// while [dragProgress] reveals the swipe stamps.
 class DeckCard extends StatefulWidget {
-  const DeckCard({
-    super.key,
-    required this.word,
-    this.interactive = false,
-    this.dragProgress = 0,
-  });
+  const DeckCard({super.key, required this.word, this.interactive = false, this.dragProgress = 0});
 
   final DeckWord word;
   final bool interactive;
@@ -26,12 +21,8 @@ class DeckCard extends StatefulWidget {
   State<DeckCard> createState() => _DeckCardState();
 }
 
-class _DeckCardState extends State<DeckCard>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _flip = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 420),
-  );
+class _DeckCardState extends State<DeckCard> with SingleTickerProviderStateMixin {
+  late final AnimationController _flip = AnimationController(vsync: this, duration: const Duration(milliseconds: 420));
 
   @override
   void dispose() {
@@ -61,10 +52,7 @@ class _DeckCardState extends State<DeckCard>
           child: Stack(
             fit: StackFit.expand,
             children: [
-              AnimatedBuilder(
-                animation: _flip,
-                builder: (context, _) => _buildFlippableCard(),
-              ),
+              AnimatedBuilder(animation: _flip, builder: (context, _) => _buildFlippableCard()),
               if (widget.interactive && progress > 0.01) _buildStamp(progress),
             ],
           ),
@@ -96,10 +84,7 @@ class _DeckCardState extends State<DeckCard>
           border: Border.fromBorderSide(AppBorders.side),
           boxShadow: AppShadows.card,
         ),
-        child: ClipRRect(
-          borderRadius: AppRadius.xlAll,
-          child: content,
-        ),
+        child: ClipRRect(borderRadius: AppRadius.xlAll, child: content),
       ),
     );
   }
@@ -118,9 +103,7 @@ class _DeckCardState extends State<DeckCard>
           child: AppBadge(
             label: known ? 'BİLDİM' : 'BİLMEDİM',
             variant: known ? AppBadgeVariant.success : AppBadgeVariant.danger,
-            icon: Icon(
-              known ? Icons.check_rounded : Icons.close_rounded,
-            ),
+            icon: Icon(known ? Icons.check_rounded : Icons.close_rounded),
           ),
         ),
       ),
@@ -150,11 +133,7 @@ class _DeckCardFront extends StatelessWidget {
         children: [
           Row(
             children: [
-              AppBadge(
-                label: _statusLabel,
-                variant: AppBadgeVariant.primary,
-                icon: const Icon(Icons.schedule_rounded),
-              ),
+              AppBadge(label: _statusLabel, variant: AppBadgeVariant.primary, icon: const Icon(Icons.schedule_rounded)),
             ],
           ),
           Expanded(
@@ -168,9 +147,7 @@ class _DeckCardFront extends StatelessWidget {
                       child: Text(
                         word.word,
                         textAlign: TextAlign.center,
-                        style: AppTypography.displayLarge.copyWith(
-                          color: AppColors.foreground,
-                        ),
+                        style: AppTypography.displayLarge.copyWith(color: AppColors.foreground),
                       ),
                     ),
                     if (word.sentenceBlank.isNotEmpty) ...[
@@ -178,9 +155,7 @@ class _DeckCardFront extends StatelessWidget {
                       Text(
                         word.sentenceBlank,
                         textAlign: TextAlign.center,
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.mutedForeground,
-                        ),
+                        style: AppTypography.bodySmall.copyWith(color: AppColors.mutedForeground),
                       ),
                     ],
                   ],
@@ -188,10 +163,7 @@ class _DeckCardFront extends StatelessWidget {
               ),
             ),
           ),
-          const _DeckCardHint(
-            icon: Icons.touch_app_rounded,
-            label: 'Anlamı görmek için dokun',
-          ),
+          const _DeckCardHint(icon: Icons.touch_app_rounded, label: 'Anlamı görmek için dokun'),
         ],
       ),
     );
@@ -212,11 +184,7 @@ class _DeckCardBack extends StatelessWidget {
         children: [
           Row(
             children: [
-              const AppBadge(
-                label: 'ÇEVİRİ',
-                variant: AppBadgeVariant.primary,
-                icon: Icon(Icons.translate_rounded),
-              ),
+              const AppBadge(label: 'ÇEVİRİ', variant: AppBadgeVariant.primary, icon: Icon(Icons.translate_rounded)),
             ],
           ),
           Expanded(
@@ -226,13 +194,9 @@ class _DeckCardBack extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      word.translation.isEmpty
-                          ? 'Çeviri bulunamadı'
-                          : word.translation,
+                      word.translation.isEmpty ? 'Çeviri bulunamadı' : word.translation,
                       textAlign: TextAlign.center,
-                      style: AppTypography.headingMedium.copyWith(
-                        color: AppColors.foreground,
-                      ),
+                      style: AppTypography.headingMedium.copyWith(color: AppColors.foreground),
                     ),
                     if (word.exampleSentence.isNotEmpty) ...[
                       const SizedBox(height: AppSpacing.lg),
@@ -243,9 +207,7 @@ class _DeckCardBack extends StatelessWidget {
                           text: word.exampleSentence,
                           highlight: word.word,
                           textAlign: TextAlign.center,
-                          style: AppTypography.bodyMedium.copyWith(
-                            color: AppColors.secondaryForeground,
-                          ),
+                          style: AppTypography.bodyMedium.copyWith(color: AppColors.secondaryForeground),
                         ),
                       ),
                       if (word.arabicSentence.isNotEmpty) ...[
@@ -259,9 +221,7 @@ class _DeckCardBack extends StatelessWidget {
                             highlightIndex: word.wordIndex,
                             textAlign: TextAlign.center,
                             textDirection: TextDirection.rtl,
-                            style: AppTypography.bodyMedium.copyWith(
-                              color: AppColors.mutedForeground,
-                            ),
+                            style: AppTypography.bodyMedium.copyWith(color: AppColors.mutedForeground),
                           ),
                         ),
                       ],
@@ -271,10 +231,7 @@ class _DeckCardBack extends StatelessWidget {
               ),
             ),
           ),
-          const _DeckCardHint(
-            icon: Icons.replay_rounded,
-            label: 'Kelimeye dönmek için dokun',
-          ),
+          const _DeckCardHint(icon: Icons.replay_rounded, label: 'Kelimeye dönmek için dokun'),
         ],
       ),
     );
@@ -300,9 +257,7 @@ class _DeckCardHint extends StatelessWidget {
             label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AppTypography.bodySmall.copyWith(
-              color: AppColors.mutedForeground,
-            ),
+            style: AppTypography.bodySmall.copyWith(color: AppColors.mutedForeground),
           ),
         ),
       ],

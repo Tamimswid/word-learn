@@ -16,10 +16,7 @@ class DeckPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<DeckCubit>(
-      create: (_) => locator<DeckCubit>()..load(),
-      child: const _DeckView(),
-    );
+    return BlocProvider<DeckCubit>(create: (_) => locator<DeckCubit>()..load(), child: const _DeckView());
   }
 }
 
@@ -29,12 +26,7 @@ class _DeckView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
-      body: DecoratedBox(
-        decoration: const BoxDecoration(
-          color: AppColors.background,
-          gradient: AppGradients.glow,
-        ),
+      body: AppAnimatedBackground(
         child: SafeArea(
           child: BlocConsumer<DeckCubit, DeckState>(
             listenWhen: (previous, current) =>
@@ -44,9 +36,7 @@ class _DeckView extends StatelessWidget {
                     current.status == LoadStatus.success),
             listener: (context, state) {
               if (state.isFinished) {
-                final seeds = state.unknownWords
-                    .map((word) => word.id)
-                    .toList(growable: false);
+                final seeds = state.unknownWords.map((word) => word.id).toList(growable: false);
                 if (seeds.length > 1) {
                   context.goNamed(AppRoute.exercise.name, extra: seeds);
                 } else {
@@ -62,16 +52,9 @@ class _DeckView extends StatelessWidget {
               return Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.screen,
-                      AppSpacing.sm,
-                      AppSpacing.screen,
-                      0,
-                    ),
+                    padding: const EdgeInsets.fromLTRB(AppSpacing.screen, AppSpacing.sm, AppSpacing.screen, 0),
                     child: _DeckHeader(
-                      progress: state.total == 0
-                          ? 0
-                          : state.index / state.total,
+                      progress: state.total == 0 ? 0 : state.index / state.total,
                       position: state.position.clamp(0, state.total),
                       total: state.total,
                       onClose: () => context.goNamed(AppRoute.home.name),
@@ -83,9 +66,7 @@ class _DeckView extends StatelessWidget {
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 440),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.screen,
-                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screen),
                           child: _buildBody(context, state),
                         ),
                       ),
@@ -102,8 +83,7 @@ class _DeckView extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context, DeckState state) {
-    if (state.status == LoadStatus.idle ||
-        state.status == LoadStatus.loading) {
+    if (state.status == LoadStatus.idle || state.status == LoadStatus.loading) {
       return const Center(child: CircularProgressIndicator());
     }
 
@@ -127,12 +107,7 @@ class _DeckView extends StatelessWidget {
 }
 
 class _DeckHeader extends StatelessWidget {
-  const _DeckHeader({
-    required this.progress,
-    required this.position,
-    required this.total,
-    required this.onClose,
-  });
+  const _DeckHeader({required this.progress, required this.position, required this.total, required this.onClose});
 
   final double progress;
   final int position;
@@ -155,18 +130,11 @@ class _DeckHeader extends StatelessWidget {
             Expanded(
               child: Column(
                 children: [
-                  Text(
-                    'Bugünün kartları',
-                    style: AppTypography.titleSmall.copyWith(
-                      color: AppColors.foreground,
-                    ),
-                  ),
+                  Text('Bugünün kartları', style: AppTypography.titleSmall.copyWith(color: AppColors.foreground)),
                   const SizedBox(height: AppSpacing.xxs),
                   Text(
                     total == 0 ? 'Hazırlanıyor' : '$position / $total',
-                    style: AppTypography.caption.copyWith(
-                      color: AppColors.mutedForeground,
-                    ),
+                    style: AppTypography.caption.copyWith(color: AppColors.mutedForeground),
                   ),
                 ],
               ),
@@ -202,26 +170,15 @@ class _DeckError extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(
-            Icons.cloud_off_rounded,
-            size: AppSpacing.huge,
-            color: AppColors.mutedForeground,
-          ),
+          const Icon(Icons.cloud_off_rounded, size: AppSpacing.huge, color: AppColors.mutedForeground),
           const SizedBox(height: AppSpacing.md),
-          Text(
-            'Kartlar yüklenemedi',
-            style: AppTypography.titleMedium.copyWith(
-              color: AppColors.foreground,
-            ),
-          ),
+          Text('Kartlar yüklenemedi', style: AppTypography.titleMedium.copyWith(color: AppColors.foreground)),
           if (message != null) ...[
             const SizedBox(height: AppSpacing.xs),
             Text(
               message!,
               textAlign: TextAlign.center,
-              style: AppTypography.bodySmall.copyWith(
-                color: AppColors.mutedForeground,
-              ),
+              style: AppTypography.bodySmall.copyWith(color: AppColors.mutedForeground),
             ),
           ],
           const SizedBox(height: AppSpacing.lg),
