@@ -17,7 +17,7 @@
     </queries>
 
     <application
-        android:label="wordlearn"
+        android:label="كلمة"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -46,7 +46,7 @@
              launching the app; runs its own lightweight Dart entrypoint. -->
         <activity
             android:name=".QuickCaptureActivity"
-            android:label="Kelimeye ekle"
+            android:label="إضافة إلى كلمة"
             android:exported="true"
             android:excludeFromRecents="true"
             android:taskAffinity="com.example.wordlearn.quick_capture"

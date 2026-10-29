@@ -37,9 +37,9 @@
 	<key>NSHumanReadableCopyright</key>
 	<string>$(PRODUCT_COPYRIGHT)</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Kelime telaffuzunu kaydetmek için mikrofon kullanılır.</string>
+	<string>يُستخدم الميكروفون لتسجيل نطق الكلمة.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Söylediğin kelimenin telaffuzunu kontrol etmek için ses tanıma kullanılır.</string>
+	<string>يُستخدم التعرف على الصوت للتحقق من نطق الكلمة التي تنطقها.</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
