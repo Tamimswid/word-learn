@@ -10,7 +10,9 @@ import 'deck_repository.dart';
 ///
 /// Due words come first, ranked by how often the user missed them; words that
 /// were never shown fill the rest of the daily limit so a thin backlog does not
-/// turn into an empty session. Words still inside their interval wait.
+/// turn into an empty session. Words still inside their interval wait, unless
+/// nothing is due and nothing is new: then the most error-prone and oldest
+/// words are shown so the day still has something worth reviewing.
 class DeckRepositoryImpl implements DeckRepository {
   DeckRepositoryImpl(this._source, {ReviewPolicy policy = ReviewPolicy.standard})
     : _policy = policy;
@@ -60,6 +62,12 @@ class DeckRepositoryImpl implements DeckRepository {
 
     take(due);
     take(unseen);
+
+    // Nothing due and nothing new: show the words most likely to be forgotten,
+    // oldest first, instead of an empty session.
+    if (session.isEmpty) {
+      take(words.toList()..sort(_byFallbackPriority));
+    }
 
     return Right(session);
   }
@@ -120,6 +128,17 @@ class DeckRepositoryImpl implements DeckRepository {
 
     final due = (_dueAt(a) ?? DateTime(0)).compareTo(_dueAt(b) ?? DateTime(0));
     if (due != 0) return due;
+
+    return _byCreatedAt(a, b);
+  }
+
+  /// Fallback order when nothing is due: most missed first, then oldest.
+  int _byFallbackPriority(DeckWord a, DeckWord b) {
+    final rate = _errorRate(b).compareTo(_errorRate(a));
+    if (rate != 0) return rate;
+
+    final errors = b.errorCount.compareTo(a.errorCount);
+    if (errors != 0) return errors;
 
     return _byCreatedAt(a, b);
   }
