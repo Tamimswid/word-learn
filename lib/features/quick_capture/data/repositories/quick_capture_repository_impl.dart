@@ -19,7 +19,7 @@ class QuickCaptureRepositoryImpl implements QuickCaptureRepository {
       final text = await _selection.readSelectedText();
       if (text == null || text.isEmpty) {
         return const Left(
-          Failure('Seçili metin bulunamadı.', type: FailureType.notFound),
+          Failure('لم يتم العثور على نص محدد.', type: FailureType.notFound),
         );
       }
 
@@ -27,7 +27,7 @@ class QuickCaptureRepositoryImpl implements QuickCaptureRepository {
     } on MissingPluginException catch (error, stackTrace) {
       return Left(
         Failure(
-          'Metin yakalama bu platformda desteklenmiyor.',
+          'التقاط النص غير مدعوم على هذه المنصة.',
           cause: error,
           stackTrace: stackTrace,
         ),
@@ -36,8 +36,8 @@ class QuickCaptureRepositoryImpl implements QuickCaptureRepository {
       if (error.code == 'accessibility') {
         return Left(
           Failure(
-            'Erişilebilirlik izni gerekli: Sistem Ayarları → Gizlilik ve '
-            'Güvenlik → Erişilebilirlik.',
+            'إذن إمكانية الوصول مطلوب: إعدادات النظام ← الخصوصية والأمان '
+            '← إمكانية الوصول.',
             type: FailureType.permission,
             cause: error,
             stackTrace: stackTrace,
@@ -47,7 +47,7 @@ class QuickCaptureRepositoryImpl implements QuickCaptureRepository {
 
       return Left(
         Failure(
-          'Seçili metin okunamadı.',
+          'تعذرت قراءة النص المحدد.',
           cause: error,
           stackTrace: stackTrace,
         ),

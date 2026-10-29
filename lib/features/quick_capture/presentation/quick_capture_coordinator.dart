@@ -179,14 +179,14 @@ class QuickCaptureCoordinator extends ChangeNotifier
 
   Future<void> _setUpTray() async {
     await trayManager.setIcon(_trayIcon, isTemplate: true, iconSize: 18);
-    await trayManager.setToolTip('Kelime');
+    await trayManager.setToolTip('كلمة');
     await trayManager.setContextMenu(
       Menu(
         items: [
-          MenuItem(key: _captureKey, label: 'Kelime Yakala  (⌘⇧K)'),
-          MenuItem(key: _panelKey, label: 'Paneli Aç'),
+          MenuItem(key: _captureKey, label: 'التقاط كلمة  (⌘⇧K)'),
+          MenuItem(key: _panelKey, label: 'فتح اللوحة'),
           MenuItem.separator(),
-          MenuItem(key: _quitKey, label: 'Çıkış'),
+          MenuItem(key: _quitKey, label: 'إنهاء'),
         ],
       ),
     );
@@ -203,7 +203,7 @@ class QuickCaptureCoordinator extends ChangeNotifier
   Future<void> _setUpLaunchAtStartup() async {
     try {
       launchAtStartup.setup(
-        appName: 'Kelime',
+        appName: 'كلمة',
         appPath: Platform.resolvedExecutable,
       );
       if (!await launchAtStartup.isEnabled()) {
