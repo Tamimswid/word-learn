@@ -93,6 +93,16 @@ class WordListCubit extends Cubit<WordListState> {
     }, (_) {});
   }
 
+  void replaceWord(WordSummary word) {
+    final index = state.words.indexWhere((item) => item.id == word.id);
+    if (index < 0) return;
+
+    final words = <WordSummary>[...state.words];
+    words[index] = word;
+
+    emit(state.copyWith(words: _rerank(words), clearActionFailure: true));
+  }
+
   void addWord(WordEntry entry) {
     final item = WordSummary(
       id: entry.id,

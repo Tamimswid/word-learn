@@ -8,10 +8,12 @@ import '../../../../core/di/app_locator.dart';
 import '../../../../core/state/load_status.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../reminder/reminder.dart';
+import '../../data/models/word_summary.dart';
 import '../cubit/word_list_cubit.dart';
 import '../cubit/word_list_state.dart';
 import '../dialogs/add_word_dialog.dart';
 import '../dialogs/delete_word_dialog.dart';
+import '../sheets/edit_word_sheet.dart';
 import '../widgets/word_card.dart';
 
 class AllWordsPage extends StatelessWidget {
@@ -19,10 +21,7 @@ class AllWordsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<WordListCubit>(
-      create: (_) => locator<WordListCubit>()..load(),
-      child: const _AllWordsView(),
-    );
+    return BlocProvider<WordListCubit>(create: (_) => locator<WordListCubit>()..load(), child: const _AllWordsView());
   }
 }
 
@@ -32,21 +31,21 @@ class _AllWordsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(title: const Text('Tüm kelimeler')),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _addWord(context),
         tooltip: 'Kelime ekle',
         child: const Icon(Icons.add_rounded),
       ),
-      body: BlocConsumer<WordListCubit, WordListState>(
-        listenWhen: (previous, current) =>
-            previous.actionFailure != current.actionFailure &&
-            current.actionFailure != null,
-        listener: (context, state) {
-          _showMessage(context, state.actionFailure!.message);
-        },
-        builder: (context, state) => _WordsBody(state: state),
+      body: AppAnimatedBackground(
+        child: BlocConsumer<WordListCubit, WordListState>(
+          listenWhen: (previous, current) =>
+              previous.actionFailure != current.actionFailure && current.actionFailure != null,
+          listener: (context, state) {
+            _showMessage(context, state.actionFailure!.message);
+          },
+          builder: (context, state) => _WordsBody(state: state),
+        ),
       ),
     );
   }
@@ -102,10 +101,7 @@ class _WordsBodyState extends State<_WordsBody> {
     }
 
     if (state.status == LoadStatus.failure) {
-      return _WordsError(
-        message: state.failure?.message,
-        onRetry: () => context.read<WordListCubit>().load(),
-      );
+      return _WordsError(message: state.failure?.message, onRetry: () => context.read<WordListCubit>().load());
     }
 
     if (state.words.isEmpty) return const _WordsEmpty();
@@ -134,10 +130,17 @@ class _WordsBodyState extends State<_WordsBody> {
             await context.read<WordListCubit>().deleteWord(word);
             unawaited(locator<ReminderRepository>().reschedule());
           },
-          child: WordCard(word: word),
+          child: WordCard(word: word, onLongPress: () => _editWord(word)),
         );
       },
     );
+  }
+
+  Future<void> _editWord(WordSummary word) async {
+    final updated = await showEditWordSheet(context, word: word);
+    if (!mounted || updated == null) return;
+
+    context.read<WordListCubit>().replaceWord(updated);
   }
 
   void _handleScroll() {
@@ -168,25 +171,13 @@ class _DeleteBackground extends StatelessWidget {
     return Container(
       alignment: Alignment.centerRight,
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      decoration: const BoxDecoration(
-        color: AppColors.destructiveSoft,
-        borderRadius: AppRadius.xlAll,
-      ),
+      decoration: const BoxDecoration(color: AppColors.destructiveSoft, borderRadius: AppRadius.xlAll),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(
-            Icons.delete_outline_rounded,
-            size: AppSpacing.lg,
-            color: AppColors.destructive,
-          ),
+          const Icon(Icons.delete_outline_rounded, size: AppSpacing.lg, color: AppColors.destructive),
           const SizedBox(width: AppSpacing.sm),
-          Text(
-            'Sil',
-            style: AppTypography.labelMedium.copyWith(
-              color: AppColors.destructive,
-            ),
-          ),
+          Text('Sil', style: AppTypography.labelMedium.copyWith(color: AppColors.destructive)),
         ],
       ),
     );
@@ -204,26 +195,14 @@ class _WordsEmpty extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(
-              AppAssets.empty,
-              width: AppSpacing.huge * 4,
-              height: AppSpacing.huge * 4,
-              fit: BoxFit.contain,
-            ),
+            Image.asset(AppAssets.empty, width: AppSpacing.huge * 4, height: AppSpacing.huge * 4, fit: BoxFit.contain),
             const SizedBox(height: AppSpacing.md),
-            Text(
-              'Henüz kelime yok',
-              style: AppTypography.titleMedium.copyWith(
-                color: AppColors.foreground,
-              ),
-            ),
+            Text('Henüz kelime yok', style: AppTypography.titleMedium.copyWith(color: AppColors.foreground)),
             const SizedBox(height: AppSpacing.xs),
             Text(
               'Sağ alttaki ekle butonuyla ilk kelimeni ekleyebilirsin.',
               textAlign: TextAlign.center,
-              style: AppTypography.bodySmall.copyWith(
-                color: AppColors.mutedForeground,
-              ),
+              style: AppTypography.bodySmall.copyWith(color: AppColors.mutedForeground),
             ),
           ],
         ),
@@ -246,34 +225,19 @@ class _WordsError extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.cloud_off_rounded,
-              size: AppSpacing.huge,
-              color: AppColors.mutedForeground,
-            ),
+            const Icon(Icons.cloud_off_rounded, size: AppSpacing.huge, color: AppColors.mutedForeground),
             const SizedBox(height: AppSpacing.md),
-            Text(
-              'Kelimeler yüklenemedi',
-              style: AppTypography.titleMedium.copyWith(
-                color: AppColors.foreground,
-              ),
-            ),
+            Text('Kelimeler yüklenemedi', style: AppTypography.titleMedium.copyWith(color: AppColors.foreground)),
             if (message != null) ...[
               const SizedBox(height: AppSpacing.xs),
               Text(
                 message!,
                 textAlign: TextAlign.center,
-                style: AppTypography.bodySmall.copyWith(
-                  color: AppColors.mutedForeground,
-                ),
+                style: AppTypography.bodySmall.copyWith(color: AppColors.mutedForeground),
               ),
             ],
             const SizedBox(height: AppSpacing.lg),
-            AppButton(
-              label: 'Tekrar dene',
-              icon: const Icon(Icons.refresh_rounded),
-              onPressed: onRetry,
-            ),
+            AppButton(label: 'Tekrar dene', icon: const Icon(Icons.refresh_rounded), onPressed: onRetry),
           ],
         ),
       ),

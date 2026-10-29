@@ -5,14 +5,16 @@ import '../../../../core/widgets/widgets.dart';
 import '../../data/models/word_summary.dart';
 
 class WordCard extends StatelessWidget {
-  const WordCard({super.key, required this.word});
+  const WordCard({super.key, required this.word, this.onLongPress});
 
   final WordSummary word;
+  final VoidCallback? onLongPress;
 
   @override
   Widget build(BuildContext context) {
     return AppCard(
       padding: const EdgeInsets.all(AppSpacing.lg),
+      onLongPress: onLongPress,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
