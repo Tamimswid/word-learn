@@ -18,8 +18,8 @@ class AuthGoogleButton extends StatelessWidget {
         final isBusy = state.isBusy;
 
         return AppButton(
-          label: 'Sign in',
-          semanticLabel: 'Google ile giriş yap',
+          label: 'تسجيل الدخول',
+          semanticLabel: 'تسجيل الدخول باستخدام جوجل',
           icon: Image.asset(
             AppAssets.google,
             width: 18,

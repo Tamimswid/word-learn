@@ -54,7 +54,7 @@ class SupabaseAuthRepository implements AuthRepository {
       if (response.session == null) {
         return const Left(
           Failure(
-            'Google oturumu oluşturulamadı. Lütfen tekrar deneyin.',
+            'تعذر إنشاء جلسة جوجل. يرجى المحاولة مرة أخرى.',
             type: FailureType.authentication,
           ),
         );
@@ -71,7 +71,7 @@ class SupabaseAuthRepository implements AuthRepository {
             failure.code == 'invalid_grant') {
           return Left(
             Failure(
-              'Google kimlik doğrulaması doğrulanamadı. Lütfen tekrar deneyin.',
+              'تعذر التحقق من هوية جوجل. يرجى المحاولة مرة أخرى.',
               type: FailureType.authentication,
               code: failure.code,
               cause: error,
@@ -87,7 +87,7 @@ class SupabaseAuthRepository implements AuthRepository {
           error,
           stackTrace: stackTrace,
           fallbackMessage:
-              'Google ile giriş tamamlanamadı. Lütfen tekrar deneyin.',
+              'تعذر إكمال تسجيل الدخول عبر جوجل. يرجى المحاولة مرة أخرى.',
         ),
       );
     }
@@ -102,7 +102,7 @@ class SupabaseAuthRepository implements AuthRepository {
       if (!launched) {
         return const Left(
           Failure(
-            'Google giriş ekranı açılamadı. Lütfen tekrar deneyin.',
+            'تعذر فتح شاشة تسجيل الدخول عبر جوجل. يرجى المحاولة مرة أخرى.',
             type: FailureType.authentication,
           ),
         );
@@ -114,7 +114,7 @@ class SupabaseAuthRepository implements AuthRepository {
           error,
           stackTrace: stackTrace,
           fallbackMessage:
-              'Google ile giriş başlatılamadı. Lütfen tekrar deneyin.',
+              'تعذر بدء تسجيل الدخول عبر جوجل. يرجى المحاولة مرة أخرى.',
         ),
       );
     }
@@ -131,7 +131,7 @@ class SupabaseAuthRepository implements AuthRepository {
         SupabaseErrorHandler.map(
           error,
           stackTrace: stackTrace,
-          fallbackMessage: 'Çıkış yapılamadı. Lütfen tekrar deneyin.',
+          fallbackMessage: 'تعذر تسجيل الخروج. يرجى المحاولة مرة أخرى.',
         ),
       );
     }
@@ -143,7 +143,7 @@ class SupabaseAuthRepository implements AuthRepository {
     final metadata = user.userMetadata ?? const <String, dynamic>{};
     final name = metadata['full_name'] ?? metadata['name'];
     final avatar = metadata['avatar_url'] ?? metadata['picture'];
-    final fallbackName = user.email?.split('@').first ?? 'Kullanıcı';
+    final fallbackName = user.email?.split('@').first ?? 'مستخدم';
 
     return AuthUser(
       id: user.id,

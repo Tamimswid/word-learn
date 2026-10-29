@@ -32,7 +32,7 @@ class GoogleSignInService {
       if (!GoogleSignIn.instance.supportsAuthenticate()) {
         return const Left(
           Failure(
-            'Bu platformda Google girişi desteklenmiyor.',
+            'تسجيل الدخول عبر جوجل غير مدعوم على هذا النظام.',
             type: FailureType.authentication,
             code: 'google_sign_in_unsupported',
           ),
@@ -44,7 +44,7 @@ class GoogleSignInService {
       if (idToken == null || idToken.isEmpty) {
         return const Left(
           Failure(
-            'Google kimlik anahtarı alınamadı. Lütfen tekrar deneyin.',
+            'تعذر الحصول على مفتاح هوية جوجل. يرجى المحاولة مرة أخرى.',
             type: FailureType.authentication,
             code: 'google_id_token_missing',
           ),
@@ -56,8 +56,8 @@ class GoogleSignInService {
       return Left(
         Failure(
           error.code == GoogleSignInExceptionCode.canceled
-              ? 'Google girişi iptal edildi.'
-              : 'Google ile giriş yapılamadı. Lütfen tekrar deneyin.',
+              ? 'تم إلغاء تسجيل الدخول عبر جوجل.'
+              : 'تعذر تسجيل الدخول عبر جوجل. يرجى المحاولة مرة أخرى.',
           type: FailureType.authentication,
           code: error.code.name,
           cause: error,
@@ -67,7 +67,7 @@ class GoogleSignInService {
     } catch (error, stackTrace) {
       return Left(
         Failure(
-          'Google ile giriş yapılamadı. Lütfen tekrar deneyin.',
+          'تعذر تسجيل الدخول عبر جوجل. يرجى المحاولة مرة أخرى.',
           type: FailureType.authentication,
           cause: error,
           stackTrace: stackTrace,
@@ -112,10 +112,10 @@ class GoogleSignInService {
         defaultTargetPlatform == TargetPlatform.macOS;
 
     if (isApplePlatform && iosClientId.isEmpty) {
-      return 'Google girişi için iOS istemci kimliği yapılandırılmamış.';
+      return 'معرّف عميل نظام آبل لتسجيل الدخول عبر جوجل غير مُهيأ.';
     }
     if (!isApplePlatform && webClientId.isEmpty) {
-      return 'Google girişi için web istemci kimliği yapılandırılmamış.';
+      return 'معرّف عميل الويب لتسجيل الدخول عبر جوجل غير مُهيأ.';
     }
     return null;
   }

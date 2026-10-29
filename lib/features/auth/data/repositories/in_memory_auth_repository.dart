@@ -26,7 +26,7 @@ class InMemoryAuthRepository implements AuthRepository {
     const user = AuthUser(
       id: 'demo-ayse',
       email: 'ayse@gmail.com',
-      displayName: 'Ayşe Yılmaz',
+      displayName: 'عائشة يلماز',
     );
     _currentUser = user;
     _changes.add(const Right(user));
