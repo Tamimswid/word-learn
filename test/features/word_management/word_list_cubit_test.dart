@@ -60,6 +60,17 @@ class _FakeWordRepository implements WordRepository {
   }) {
     throw UnsupportedError('not used in these tests');
   }
+
+  @override
+  Future<Either<Failure, WordSummary>> updateWord(
+    WordSummary current, {
+    required String word,
+    required String translation,
+    required String exampleSentence,
+    required String arabicSentence,
+  }) {
+    throw UnsupportedError('not used in these tests');
+  }
 }
 
 void main() {

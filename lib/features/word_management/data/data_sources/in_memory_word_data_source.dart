@@ -46,6 +46,22 @@ class InMemoryWordDataSource implements WordDataSource {
   }
 
   @override
+  Future<Either<Failure, Map<String, dynamic>>> updateWord(
+    String id,
+    Map<String, dynamic> values,
+  ) async {
+    final row = _rows[id];
+    if (row == null) {
+      return const Left(Failure('Kelime bulunamadı.'));
+    }
+
+    final updated = <String, dynamic>{...row, ...values};
+    _rows[id] = updated;
+
+    return Right(updated);
+  }
+
+  @override
   Future<Either<Failure, List<Map<String, dynamic>>>> fetchWordsPage({
     required int offset,
     required int limit,

@@ -82,6 +82,21 @@ class SupabaseWordDataSource implements WordDataSource {
   }
 
   @override
+  Future<Either<Failure, Map<String, dynamic>>> updateWord(
+    String id,
+    Map<String, dynamic> values,
+  ) async {
+    final userId = _client.auth.currentUser?.id;
+    if (userId == null) return const Left(_sessionFailure);
+
+    return _data.update(
+      'words',
+      values,
+      filters: <String, Object?>{'id': id, 'user_id': userId},
+    );
+  }
+
+  @override
   Future<Either<Failure, List<Map<String, dynamic>>>> fetchWordsPage({
     required int offset,
     required int limit,

@@ -12,6 +12,11 @@ abstract interface class WordDataSource {
     String translation,
   );
 
+  Future<Either<Failure, Map<String, dynamic>>> updateWord(
+    String id,
+    Map<String, dynamic> values,
+  );
+
   Future<Either<Failure, List<Map<String, dynamic>>>> fetchWordsPage({
     required int offset,
     required int limit,

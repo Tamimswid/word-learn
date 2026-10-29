@@ -47,8 +47,52 @@ class WordRepositoryImpl implements WordRepository {
   }
 
   @override
+  Future<Either<Failure, WordSummary>> updateWord(
+    WordSummary current, {
+    required String word,
+    required String translation,
+    required String exampleSentence,
+    required String arabicSentence,
+  }) async {
+    final values = <String, dynamic>{
+      'word': word,
+      'translation': translation,
+      'example_sentence': exampleSentence,
+      'arabic_sentence': arabicSentence,
+    };
+
+    if (exampleSentence != current.exampleSentence || word != current.word) {
+      values['sentence_blank'] = _blankOut(exampleSentence, word);
+    }
+
+    // The Arabic highlight is a token index; an edited sentence invalidates it.
+    if (arabicSentence != current.arabicSentence) {
+      values['word_index'] = -1;
+    }
+
+    final result = await _source.updateWord(current.id, values);
+
+    return result.map(
+      (row) => WordSummary.fromJson(row, rank: current.rank),
+    );
+  }
+
+  @override
   Future<Either<Failure, Unit>> deleteWord(String id) {
     return _source.deleteWord(id);
+  }
+
+  /// Rebuilds the fill-in-the-blank sentence with the current word.
+  static String _blankOut(String sentence, String word) {
+    if (sentence.isEmpty || word.isEmpty) return '';
+
+    final pattern = RegExp(
+      '\\b${RegExp.escape(word)}\\b',
+      caseSensitive: false,
+    );
+    if (!pattern.hasMatch(sentence)) return '';
+
+    return sentence.replaceFirst(pattern, '___');
   }
 
   Future<Either<Failure, WordEntry>> _saveTranslation(
