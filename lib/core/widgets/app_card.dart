@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:liquid_glass/liquid_glass.dart';
 
 import '../design_system/app_colors.dart';
 import '../design_system/app_radius.dart';
-import '../design_system/app_shadows.dart';
 import '../design_system/app_spacing.dart';
 
 enum AppCardVariant { elevated, muted, outline }
@@ -29,7 +27,7 @@ class AppCard extends StatelessWidget {
   final double radius;
 
   Color get _background => switch (variant) {
-    AppCardVariant.elevated => const Color.fromARGB(119, 23, 24, 26),
+    AppCardVariant.elevated => AppColors.card,
     AppCardVariant.muted => AppColors.muted,
     AppCardVariant.outline => AppColors.transparent,
   };
@@ -43,23 +41,15 @@ class AppCard extends StatelessWidget {
       color: _background,
       borderRadius: borderRadius,
       border: Border.all(color: _borderColor),
-      boxShadow: variant == AppCardVariant.elevated ? AppShadows.card : null,
+      // boxShadow: variant == AppCardVariant.elevated ? AppShadows.card : null,
     );
 
     if (onTap == null && onLongPress == null) {
-      return LiquidGlass(
-        // blur: 0.5,
-        opacity: 0.03,
-        blur: 0.2,
-        borderRadius: borderRadius,
-        child: Container(padding: padding, child: child),
-      );
+      return Container(padding: padding, decoration: decoration, child: child);
     }
 
-    return LiquidGlass(
-      opacity: 0.03,
-      blur: 0.2,
-      borderRadius: borderRadius,
+    return DecoratedBox(
+      decoration: decoration,
       child: Material(
         type: MaterialType.transparency,
         clipBehavior: Clip.antiAlias,
