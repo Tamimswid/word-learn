@@ -5,8 +5,8 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../word_management/presentation/dialogs/delete_word_dialog.dart';
 import '../../data/models/home_snapshot.dart';
 
-class RecentWordsSection extends StatelessWidget {
-  const RecentWordsSection({
+class DailyWordsSection extends StatelessWidget {
+  const DailyWordsSection({
     super.key,
     required this.words,
     required this.isLoading,
@@ -27,7 +27,7 @@ class RecentWordsSection extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: Text('Son öğrenilenler', style: AppTypography.labelMedium.copyWith(color: AppColors.foreground)),
+              child: Text('Bugünün kelimeleri', style: AppTypography.labelMedium.copyWith(color: AppColors.foreground)),
             ),
             if (words.isNotEmpty)
               TextButton(

@@ -2,28 +2,33 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/errors/failure.dart';
 import '../../../../core/state/load_status.dart';
+import '../../../deck_session/deck_session.dart';
 import '../../../word_management/data/repositories/word_repository.dart';
 import '../../data/models/home_snapshot.dart';
 import '../../data/repositories/home_repository.dart';
 import 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
-  HomeCubit(this._repository, this._words)
+  HomeCubit(this._repository, this._words, this._deck)
     : super(HomeState(snapshot: HomeSnapshot.zero()));
 
   final HomeRepository _repository;
   final WordRepository _words;
+  final DeckRepository _deck;
 
   Future<void> load() async {
     if (state.isLoading) return;
 
     emit(state.copyWith(status: LoadStatus.loading, clearFailure: true));
 
-    final result = await _repository.fetchSnapshot();
+    final (snapshotResult, sessionResult) = await (
+      _repository.fetchSnapshot(),
+      _deck.fetchSession(),
+    ).wait;
 
     if (isClosed) return;
 
-    result.fold(
+    snapshotResult.fold(
       (failure) => emit(
         state.copyWith(status: LoadStatus.failure, failure: failure),
       ),
@@ -31,6 +36,10 @@ class HomeCubit extends Cubit<HomeState> {
         state.copyWith(
           status: LoadStatus.success,
           snapshot: snapshot,
+          sessionWords: _toDisplayWords(
+            sessionResult.getOrElse(() => const <DeckWord>[]),
+            snapshot.sessionSize,
+          ),
           clearFailure: true,
         ),
       ),
@@ -54,6 +63,9 @@ class HomeCubit extends Cubit<HomeState> {
           weeklyPoints: points.weekly,
           monthlyPoints: points.monthly,
         ),
+        sessionWords: <LearnedWord>[word, ...state.sessionWords]
+            .take(snapshot.sessionSize)
+            .toList(growable: false),
       ),
     );
   }
@@ -61,21 +73,21 @@ class HomeCubit extends Cubit<HomeState> {
   Future<Failure?> deleteWord(LearnedWord word) async {
     final snapshot = state.snapshot;
 
-    final index = snapshot.recentWords.indexWhere(
-      (candidate) => candidate.id == word.id,
-    );
-    if (index < 0) return null;
+    final hasWord =
+        state.sessionWords.any((candidate) => candidate.id == word.id) ||
+        snapshot.recentWords.any((candidate) => candidate.id == word.id);
+    if (!hasWord) return null;
 
-    final remaining = <LearnedWord>[...snapshot.recentWords]..removeAt(index);
     final points = _shiftPoints(snapshot, word.createdAt, -1);
     emit(
       state.copyWith(
         snapshot: snapshot.copyWith(
           learnedCount: _decrement(snapshot.learnedCount),
-          recentWords: remaining,
+          recentWords: _without(snapshot.recentWords, word.id),
           weeklyPoints: points.weekly,
           monthlyPoints: points.monthly,
         ),
+        sessionWords: _without(state.sessionWords, word.id),
       ),
     );
 
@@ -83,29 +95,14 @@ class HomeCubit extends Cubit<HomeState> {
 
     if (isClosed) return null;
 
-    return result.fold(
-      (failure) {
-        final current = state.snapshot;
-        final restored = <LearnedWord>[...current.recentWords];
-        restored.insert(
-          index > restored.length ? restored.length : index,
-          word,
-        );
-        final restoredPoints = _shiftPoints(current, word.createdAt, 1);
-        emit(
-          state.copyWith(
-            snapshot: current.copyWith(
-              learnedCount: current.learnedCount + 1,
-              recentWords: restored,
-              weeklyPoints: restoredPoints.weekly,
-              monthlyPoints: restoredPoints.monthly,
-            ),
-          ),
-        );
-        return failure;
-      },
-      (_) => null,
-    );
+    final failure = result.fold<Failure?>((failure) => failure, (_) => null);
+    if (failure != null) {
+      // The optimistic removal has to be undone from server state.
+      await load();
+      return failure;
+    }
+
+    return null;
   }
 
   Future<Failure?> updateSessionSize(int size) async {
@@ -113,7 +110,14 @@ class HomeCubit extends Cubit<HomeState> {
     if (snapshot.sessionSize == size) return null;
 
     final previousSize = snapshot.sessionSize;
-    emit(state.copyWith(snapshot: snapshot.copyWith(sessionSize: size)));
+    emit(
+      state.copyWith(
+        snapshot: snapshot.copyWith(sessionSize: size),
+        sessionWords: state.sessionWords
+            .take(size)
+            .toList(growable: false),
+      ),
+    );
 
     final result = await _repository.updateSessionSize(size);
 
@@ -130,6 +134,30 @@ class HomeCubit extends Cubit<HomeState> {
       },
       (_) => null,
     );
+  }
+
+  static List<LearnedWord> _toDisplayWords(List<DeckWord> words, int limit) {
+    return words
+        .take(limit)
+        .map(
+          (word) => LearnedWord(
+            id: word.id,
+            word: word.word,
+            translation: word.translation,
+            exampleSentence: word.exampleSentence,
+            arabicSentence: word.arabicSentence,
+            wordIndex: word.wordIndex,
+            createdAt: word.createdAt,
+          ),
+        )
+        .toList(growable: false);
+  }
+
+  static List<LearnedWord> _without(List<LearnedWord> words, String id) {
+    return <LearnedWord>[
+      for (final word in words)
+        if (word.id != id) word,
+    ];
   }
 
   static int _decrement(int value) => value > 0 ? value - 1 : 0;

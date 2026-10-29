@@ -58,7 +58,7 @@ class _GlowPainter extends CustomPainter {
   final double progress;
 
   /// Circle diameter relative to the screen's shorter side.
-  static const double _diameterRatio = 0.8;
+  static const double _diameterRatio = 0.8 * 1.3;
 
   /// Peak opacity at the circle center.
   static const double _opacity = 0.2;
@@ -84,7 +84,8 @@ class _GlowPainter extends CustomPainter {
     );
     _paintGlow(
       canvas,
-      center: orbitCenter + _onOrbit(orbit, math.pi - angle),
+      // Half a lap apart: the second glow mirrors every axis of the first.
+      center: orbitCenter + _onOrbit(orbit, angle + math.pi),
       radius: radius,
       color: AppColors.primary.withValues(alpha: 0.2),
     );
