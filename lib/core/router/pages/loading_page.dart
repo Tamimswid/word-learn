@@ -39,7 +39,7 @@ class LoadingPage extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
-                  'Yükleniyor…',
+                  'جارٍ التحميل…',
                   style: AppTypography.bodySmall.copyWith(
                     color: AppColors.mutedForeground,
                   ),

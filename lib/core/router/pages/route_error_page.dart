@@ -31,7 +31,7 @@ class RouteErrorPage extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.md),
               Text(
-                'Sayfa bulunamadı',
+                'لم يتم العثور على الصفحة',
                 style: AppTypography.titleMedium,
                 textAlign: TextAlign.center,
               ),
@@ -45,7 +45,7 @@ class RouteErrorPage extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.xxl),
               AppButton(
-                label: 'Ana sayfaya dön',
+                label: 'العودة إلى الصفحة الرئيسية',
                 icon: const Icon(Icons.home_rounded),
                 onPressed: () => context.goTo(AppRoute.home),
               ),

@@ -35,22 +35,22 @@ class DesignSystemPreview extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
-                  Text('Kelime', style: AppTypography.titleSmall),
+                  Text('كلمة', style: AppTypography.titleSmall),
                   const Spacer(),
                   const StreakIndicator(days: 5),
                   const SizedBox(width: AppSpacing.md),
                   AppIconButton(
                     icon: const Icon(Icons.notifications_none_rounded),
-                    tooltip: 'Bildirim ayarları',
+                    tooltip: 'إعدادات الإشعارات',
                     onPressed: () {},
                   ),
                 ],
               ),
               const SizedBox(height: AppSpacing.xxl),
-              Text('Bugün de bir kelime.', style: AppTypography.headingMedium),
+              Text('كلمة أخرى اليوم.', style: AppTypography.headingMedium),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                'Küçük tekrar, kalıcı kelimeler.',
+                'مراجعة صغيرة، كلمات راسخة.',
                 style: AppTypography.bodyMedium.copyWith(
                   color: AppColors.mutedForeground,
                 ),
@@ -60,12 +60,12 @@ class DesignSystemPreview extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const AppBadge(label: 'Süper hızlı'),
+                    const AppBadge(label: 'فائق السرعة'),
                     const SizedBox(height: AppSpacing.md),
                     Text('serendipity', style: AppTypography.displayLarge),
                     const SizedBox(height: AppSpacing.sm),
                     Text(
-                      'mutlu rastlantı',
+                      'مصادفة سعيدة',
                       style: AppTypography.bodyMedium.copyWith(
                         color: AppColors.secondaryForeground,
                       ),
@@ -75,14 +75,14 @@ class DesignSystemPreview extends StatelessWidget {
               ),
               const Spacer(),
               AppButton(
-                label: 'Başla',
+                label: 'ابدأ',
                 icon: const Icon(Icons.arrow_forward_rounded),
                 expanded: true,
                 onPressed: () {},
               ),
               const SizedBox(height: AppSpacing.sm),
               AppButton(
-                label: 'Daha sonra',
+                label: 'لاحقًا',
                 variant: AppButtonVariant.secondary,
                 expanded: true,
                 onPressed: () {},

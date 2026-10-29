@@ -7,7 +7,7 @@ import 'failure.dart';
 /// Converts Supabase and transport errors into the common [Failure].
 abstract final class SupabaseErrorHandler {
   static const String _unexpectedMessage =
-      'Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.';
+      'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.';
 
   static Failure map(
     Object error, {
@@ -18,7 +18,7 @@ abstract final class SupabaseErrorHandler {
 
     if (error is AuthRetryableFetchException) {
       return Failure(
-        'Sunucuya ulaşılamadı. İnternet bağlantınızı kontrol edip tekrar deneyin.',
+        'تعذر الوصول إلى الخادم. تحقق من اتصالك بالإنترنت ثم حاول مرة أخرى.',
         type: FailureType.network,
         cause: error,
         stackTrace: stackTrace,
@@ -39,7 +39,7 @@ abstract final class SupabaseErrorHandler {
 
     if (error is StorageException) {
       return Failure(
-        'Dosya işlemi tamamlanamadı. Lütfen tekrar deneyin.',
+        'تعذر إكمال عملية الملف. يرجى المحاولة مرة أخرى.',
         type: FailureType.storage,
         code: error.statusCode,
         cause: error,
@@ -49,7 +49,7 @@ abstract final class SupabaseErrorHandler {
 
     if (error is TimeoutException) {
       return Failure(
-        'İstek zaman aşımına uğradı. Lütfen tekrar deneyin.',
+        'انتهت مهلة الطلب. يرجى المحاولة مرة أخرى.',
         type: FailureType.timeout,
         cause: error,
         stackTrace: stackTrace,
@@ -66,40 +66,40 @@ abstract final class SupabaseErrorHandler {
   static Failure _mapAuth(AuthException error, StackTrace? stackTrace) {
     final (message, type) = switch (error.code) {
       'invalid_credentials' || 'invalid_grant' => (
-        'E-posta veya şifre hatalı.',
+        'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
         FailureType.authentication,
       ),
       'email_not_confirmed' => (
-        'E-posta adresiniz henüz doğrulanmadı.',
+        'لم يتم تأكيد بريدك الإلكتروني بعد.',
         FailureType.authentication,
       ),
-      'user_not_found' => ('Kullanıcı bulunamadı.', FailureType.notFound),
+      'user_not_found' => ('لم يتم العثور على المستخدم.', FailureType.notFound),
       'user_already_exists' || 'email_exists' => (
-        'Bu e-posta adresiyle bir hesap zaten var.',
+        'يوجد حساب بهذا البريد الإلكتروني بالفعل.',
         FailureType.conflict,
       ),
       'weak_password' => (
-        'Şifreniz çok zayıf. Daha güçlü bir şifre deneyin.',
+        'كلمة المرور ضعيفة جدًا. جرّب كلمة مرور أقوى.',
         FailureType.authentication,
       ),
       'session_not_found' || 'session_expired' || 'refresh_token_not_found' => (
-        'Oturumunuz sona erdi. Lütfen tekrar giriş yapın.',
+        'انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.',
         FailureType.authentication,
       ),
       'over_request_rate_limit' || 'over_email_send_rate_limit' => (
-        'Çok fazla deneme yaptınız. Lütfen biraz sonra tekrar deneyin.',
+        'لقد أجريت محاولات كثيرة جدًا. يرجى المحاولة بعد قليل.',
         FailureType.authentication,
       ),
       'provider_disabled' || 'oauth_provider_not_supported' => (
-        'Bu giriş yöntemi şu anda kullanılamıyor.',
+        'طريقة تسجيل الدخول هذه غير متاحة حاليًا.',
         FailureType.authentication,
       ),
       'signup_disabled' => (
-        'Yeni kayıtlar şu anda kapalı.',
+        'التسجيل الجديد مغلق حاليًا.',
         FailureType.permission,
       ),
       _ => (
-        'Kimlik doğrulama işlemi tamamlanamadı. Lütfen tekrar deneyin.',
+        'تعذر إكمال عملية التحقق. يرجى المحاولة مرة أخرى.',
         FailureType.authentication,
       ),
     };
@@ -126,7 +126,7 @@ abstract final class SupabaseErrorHandler {
         (serverMessage.contains('23505') ||
             serverMessage.toLowerCase().contains('duplicate key'))) {
       return Failure(
-        'Bu kelime zaten eklenmiş.',
+        'تمت إضافة هذه الكلمة بالفعل.',
         type: FailureType.conflict,
         code: '23505',
         cause: error,
@@ -136,21 +136,21 @@ abstract final class SupabaseErrorHandler {
 
     final (message, type) = switch (error.status) {
       0 => (
-        'Sunucuya ulaşılamadı. İnternet bağlantınızı kontrol edip tekrar deneyin.',
+        'تعذر الوصول إلى الخادم. تحقق من اتصالك بالإنترنت ثم حاول مرة أخرى.',
         FailureType.network,
       ),
       401 => (
-        'Oturumunuz sona erdi. Lütfen tekrar giriş yapın.',
+        'انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.',
         FailureType.authentication,
       ),
-      403 => ('Bu işlem için yetkiniz yok.', FailureType.permission),
+      403 => ('لا تملك صلاحية لهذا الإجراء.', FailureType.permission),
       404 => (
-        'İstenen hizmet bulunamadı. Lütfen tekrar deneyin.',
+        'لم يتم العثور على الخدمة المطلوبة. يرجى المحاولة مرة أخرى.',
         FailureType.notFound,
       ),
-      409 => ('Bu kayıt zaten mevcut.', FailureType.conflict),
+      409 => ('هذا السجل موجود بالفعل.', FailureType.conflict),
       429 => (
-        'Çok fazla istek gönderildi. Lütfen biraz sonra tekrar deneyin.',
+        'تم إرسال طلبات كثيرة جدًا. يرجى المحاولة بعد قليل.',
         FailureType.unexpected,
       ),
       _ => (fallbackMessage ?? _unexpectedMessage, FailureType.unexpected),
@@ -170,11 +170,11 @@ abstract final class SupabaseErrorHandler {
     StackTrace? stackTrace,
   ) {
     final (message, type) = switch (error.code) {
-      '42501' => ('Bu işlem için yetkiniz yok.', FailureType.permission),
-      '23505' => ('Bu kayıt zaten mevcut.', FailureType.conflict),
-      'PGRST116' => ('Aradığınız kayıt bulunamadı.', FailureType.notFound),
+      '42501' => ('لا تملك صلاحية لهذا الإجراء.', FailureType.permission),
+      '23505' => ('هذا السجل موجود بالفعل.', FailureType.conflict),
+      'PGRST116' => ('لم يتم العثور على السجل الذي تبحث عنه.', FailureType.notFound),
       _ => (
-        'İstek tamamlanamadı. Lütfen tekrar deneyin.',
+        'تعذر إكمال الطلب. يرجى المحاولة مرة أخرى.',
         FailureType.unexpected,
       ),
     };

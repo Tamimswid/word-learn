@@ -22,10 +22,10 @@ class StreakIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     final isActive = days > 0;
     final color = isActive ? AppColors.primaryGlow : AppColors.mutedForeground;
-    final text = label ?? '$days gün';
+    final text = label ?? '$days يوم';
 
     return Semantics(
-      label: '$days günlük seri',
+      label: 'سلسلة متواصلة مدتها $days يوم',
       child: ExcludeSemantics(
         child: Row(
           mainAxisSize: MainAxisSize.min,

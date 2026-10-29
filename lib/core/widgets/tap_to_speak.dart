@@ -9,7 +9,7 @@ class TapToSpeak extends StatelessWidget {
     super.key,
     required this.text,
     required this.child,
-    this.tooltip = 'Okunuşu dinle',
+    this.tooltip = 'استمع إلى النطق',
     this.language = 'en-US',
   });
 

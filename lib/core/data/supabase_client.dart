@@ -13,7 +13,7 @@ class AppSupabaseClient {
 
   final supabase.SupabaseClient _client;
 
-  static const Failure _missingFilters = Failure('İşlem için en az bir filtre gerekli.', type: FailureType.unexpected);
+  static const Failure _missingFilters = Failure('يلزم وجود مرشح واحد على الأقل لإتمام العملية.', type: FailureType.unexpected);
 
   Future<Either<Failure, List<Map<String, dynamic>>>> select(
     String table, {

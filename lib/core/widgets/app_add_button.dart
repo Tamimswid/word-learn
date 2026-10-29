@@ -7,7 +7,7 @@ class AppAddButton extends StatelessWidget {
   const AppAddButton({
     super.key,
     required this.onPressed,
-    this.label = 'Kelime ekle',
+    this.label = 'إضافة كلمة',
     this.expanded = false,
   });
 

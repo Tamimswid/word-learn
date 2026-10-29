@@ -36,7 +36,7 @@ class RoutePlaceholderPage extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Text(
-                  'Bu ekran hazırlanıyor',
+                  'هذه الشاشة قيد الإعداد',
                   style: AppTypography.titleMedium,
                   textAlign: TextAlign.center,
                 ),

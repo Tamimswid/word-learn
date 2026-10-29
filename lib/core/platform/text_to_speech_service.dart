@@ -17,7 +17,7 @@ class TextToSpeechService {
   }) async {
     final value = text.trim();
     if (value.isEmpty) {
-      return const Left(Failure('Okunacak metin bulunamadı.'));
+      return const Left(Failure('لم يتم العثور على نص لقراءته.'));
     }
 
     try {
@@ -28,7 +28,7 @@ class TextToSpeechService {
     } catch (error, stackTrace) {
       return Left(
         Failure(
-          'Okunuş çalıştırılamadı.',
+          'تعذر تشغيل النطق.',
           type: FailureType.unexpected,
           cause: error,
           stackTrace: stackTrace,
@@ -44,7 +44,7 @@ class TextToSpeechService {
     } catch (error, stackTrace) {
       return Left(
         Failure(
-          'Okunuş durdurulamadı.',
+          'تعذر إيقاف النطق.',
           type: FailureType.unexpected,
           cause: error,
           stackTrace: stackTrace,
