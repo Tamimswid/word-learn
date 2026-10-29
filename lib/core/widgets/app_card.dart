@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:liquid_glass/liquid_glass.dart';
 
 import '../design_system/app_colors.dart';
 import '../design_system/app_radius.dart';
@@ -14,6 +15,7 @@ class AppCard extends StatelessWidget {
     this.padding = const EdgeInsets.all(AppSpacing.card),
     this.variant = AppCardVariant.elevated,
     this.onTap,
+    this.onLongPress,
     this.highlighted = false,
     this.radius = AppRadius.xl,
   });
@@ -22,17 +24,17 @@ class AppCard extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final AppCardVariant variant;
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
   final bool highlighted;
   final double radius;
 
   Color get _background => switch (variant) {
-    AppCardVariant.elevated => AppColors.card,
+    AppCardVariant.elevated => const Color.fromARGB(119, 23, 24, 26),
     AppCardVariant.muted => AppColors.muted,
     AppCardVariant.outline => AppColors.transparent,
   };
 
-  Color get _borderColor =>
-      highlighted ? AppColors.primaryBorder : AppColors.border;
+  Color get _borderColor => highlighted ? AppColors.primaryBorder : AppColors.border;
 
   @override
   Widget build(BuildContext context) {
@@ -44,18 +46,27 @@ class AppCard extends StatelessWidget {
       boxShadow: variant == AppCardVariant.elevated ? AppShadows.card : null,
     );
 
-    if (onTap == null) {
-      return Container(decoration: decoration, padding: padding, child: child);
+    if (onTap == null && onLongPress == null) {
+      return LiquidGlass(
+        // blur: 0.5,
+        opacity: 0.03,
+        blur: 0.2,
+        borderRadius: borderRadius,
+        child: Container(padding: padding, child: child),
+      );
     }
 
-    return DecoratedBox(
-      decoration: decoration,
+    return LiquidGlass(
+      opacity: 0.03,
+      blur: 0.2,
+      borderRadius: borderRadius,
       child: Material(
         type: MaterialType.transparency,
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(borderRadius: borderRadius),
         child: InkWell(
           onTap: onTap,
+          onLongPress: onLongPress,
           overlayColor: const WidgetStatePropertyAll(AppColors.foregroundFaint),
           child: Padding(padding: padding, child: child),
         ),

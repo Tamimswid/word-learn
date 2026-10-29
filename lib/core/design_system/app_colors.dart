@@ -16,18 +16,19 @@ abstract final class AppColors {
   static const Color foreground = Color(0xFFF5F7F7);
   static const Color secondaryForeground = Color(0xFFD1D8E1);
   static const Color mutedForeground = Color(0xFF878D94);
-  static const Color onPrimary = Color(0xFFFCFCFC);
+  // static const Color onPrimary = Color(0xFFFCFCFC);
+  static const Color onPrimary = Color(0xFF222222);
 
   // Brand
   // static const Color primary = Color(0xFF5D69CB);
   // static const Color primaryGlow = Color(0xFF7978FB);
   // static const Color primary = Color(0xFFE55A43);     // مرجاني مشبع وعميق
   // static const Color primaryGlow = Color(0xFFFF6F59);
-  // static const Color primary = Color(0xFF3B8B95);     // فيروزي عميق ورصين
-  // static const Color primaryGlow = Color(0xFF56A3A6); // فيروزي بحري متوهج ومنعش
+  static const Color primary = Color(0xFF80EF80); // فيروزي عميق ورصين
+  static const Color primaryGlow = Color(0xFF42D674); // فيروزي بحري متوهج ومنعش
 
-  static const Color primary = Color(0xFF4CA0A1); // أخضر مائي داكن نسبياً
-  static const Color primaryGlow = Color(0xFF66A5AD); // نعناعي مشرق ومريح للعين
+  // static const Color primary = Color(0xFF4CA0A1); // أخضر مائي داكن نسبياً
+  // static const Color primaryGlow = Color(0xFF66A5AD); // نعناعي مشرق ومريح للعين
   // Feedback
   static const Color success = Color(0xFF2EA957);
   static const Color onSuccess = Color(0xFFFCFCFC);
