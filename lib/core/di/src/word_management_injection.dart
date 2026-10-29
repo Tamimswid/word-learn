@@ -40,4 +40,10 @@ void registerWordManagementDependencies(GetIt locator) {
       () => WordListCubit(locator<WordRepository>()),
     );
   }
+
+  if (!locator.isRegistered<EditWordCubit>()) {
+    locator.registerFactory<EditWordCubit>(
+      () => EditWordCubit(locator<WordRepository>()),
+    );
+  }
 }
