@@ -36,7 +36,7 @@ class InMemoryWordDataSource implements WordDataSource {
   ) async {
     final row = _rows[id];
     if (row == null) {
-      return const Left(Failure('Kelime bulunamadı.'));
+      return const Left(Failure('لم يتم العثور على الكلمة.'));
     }
 
     final updated = <String, dynamic>{...row, 'translation': translation};
@@ -52,7 +52,7 @@ class InMemoryWordDataSource implements WordDataSource {
   ) async {
     final row = _rows[id];
     if (row == null) {
-      return const Left(Failure('Kelime bulunamadı.'));
+      return const Left(Failure('لم يتم العثور على الكلمة.'));
     }
 
     final updated = <String, dynamic>{...row, ...values};

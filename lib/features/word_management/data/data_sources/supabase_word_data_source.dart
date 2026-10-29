@@ -21,7 +21,7 @@ class SupabaseWordDataSource implements WordDataSource {
   static const String _listColumns = '*';
 
   static const Failure _sessionFailure = Failure(
-    'Oturumunuz sona erdi. Lütfen tekrar giriş yapın.',
+    'انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.',
     type: FailureType.authentication,
   );
 
@@ -41,7 +41,7 @@ class SupabaseWordDataSource implements WordDataSource {
       final payload = response.data;
       if (payload is! Map) {
         return const Left(
-          Failure('Kelime oluşturulamadı. Lütfen tekrar deneyin.'),
+          Failure('تعذر إنشاء الكلمة. يرجى المحاولة مرة أخرى.'),
         );
       }
 
@@ -63,7 +63,7 @@ class SupabaseWordDataSource implements WordDataSource {
         SupabaseErrorHandler.map(
           error,
           stackTrace: stackTrace,
-          fallbackMessage: 'Kelime oluşturulamadı. Lütfen tekrar deneyin.',
+          fallbackMessage: 'تعذر إنشاء الكلمة. يرجى المحاولة مرة أخرى.',
         ),
       );
     }

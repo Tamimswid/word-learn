@@ -27,14 +27,14 @@ class DeleteWordDialog extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Kelimeyi sil',
+              'حذف الكلمة',
               style: AppTypography.titleMedium.copyWith(
                 color: AppColors.foreground,
               ),
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
-              '"$word" kelimesini silmek istediğine emin misin?',
+              'هل أنت متأكد من حذف الكلمة "$word"؟',
               style: AppTypography.bodySmall.copyWith(
                 color: AppColors.mutedForeground,
               ),
@@ -45,7 +45,7 @@ class DeleteWordDialog extends StatelessWidget {
               children: [
                 Expanded(
                   child: AppButton(
-                    label: 'Vazgeç',
+                    label: 'إلغاء',
                     variant: AppButtonVariant.secondary,
                     expanded: true,
                     onPressed: () => Navigator.of(context).pop(false),
@@ -53,7 +53,7 @@ class DeleteWordDialog extends StatelessWidget {
                 ),
                 Expanded(
                   child: AppButton(
-                    label: 'Sil',
+                    label: 'حذف',
                     variant: AppButtonVariant.danger,
                     expanded: true,
                     onPressed: () => Navigator.of(context).pop(true),

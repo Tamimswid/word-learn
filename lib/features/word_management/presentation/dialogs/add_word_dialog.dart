@@ -67,14 +67,14 @@ class _AddWordDialogState extends State<AddWordDialog> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'Kelime ekle',
+                  'إضافة كلمة',
                   style: AppTypography.titleMedium.copyWith(
                     color: AppColors.foreground,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  'Kelimeyi gir; anlamını istersen kendin yazabilirsin.',
+                  'أدخل الكلمة؛ ويمكنك كتابة معناها بنفسك إن أردت.',
                   style: AppTypography.bodySmall.copyWith(
                     color: AppColors.mutedForeground,
                   ),
@@ -87,8 +87,8 @@ class _AddWordDialogState extends State<AddWordDialog> {
                   enabled: !state.isLoading,
                   onChanged: (_) => _clearErrors(context),
                   decoration: InputDecoration(
-                    labelText: 'Kelime',
-                    hintText: 'örn. brave',
+                    labelText: 'الكلمة',
+                    hintText: 'مثال: brave',
                     errorText: _wordError,
                   ),
                 ),
@@ -100,8 +100,8 @@ class _AddWordDialogState extends State<AddWordDialog> {
                   onChanged: (_) => _clearErrors(context),
                   onSubmitted: (_) => _submit(context),
                   decoration: const InputDecoration(
-                    labelText: 'Anlamı (isteğe bağlı)',
-                    hintText: 'örn. cesur',
+                    labelText: 'المعنى (اختياري)',
+                    hintText: 'مثال: شجاع',
                   ),
                 ),
                 if (state.failure != null) ...[
@@ -119,7 +119,7 @@ class _AddWordDialogState extends State<AddWordDialog> {
                   children: [
                     Expanded(
                       child: AppButton(
-                        label: 'Vazgeç',
+                        label: 'إلغاء',
                         variant: AppButtonVariant.secondary,
                         expanded: true,
                         onPressed: state.isLoading
@@ -129,7 +129,7 @@ class _AddWordDialogState extends State<AddWordDialog> {
                     ),
                     Expanded(
                       child: AppButton(
-                        label: 'Ekle',
+                        label: 'إضافة',
                         expanded: true,
                         isLoading: state.isLoading,
                         onPressed: state.isLoading
@@ -159,7 +159,7 @@ class _AddWordDialogState extends State<AddWordDialog> {
     final translation = _translationController.text.trim();
 
     if (word.isEmpty) {
-      setState(() => _wordError = 'Kelime gerekli.');
+      setState(() => _wordError = 'الكلمة مطلوبة.');
       return;
     }
 

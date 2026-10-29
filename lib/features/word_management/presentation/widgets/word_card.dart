@@ -83,7 +83,7 @@ class WordCard extends StatelessWidget {
                       children: [
                         TapToSpeak(
                           text: word.exampleSentence,
-                          tooltip: 'Cümleyi dinle',
+                          tooltip: 'استمع إلى الجملة',
                           child: HighlightedText(
                             text: word.exampleSentence,
                             highlight: word.word,
@@ -108,7 +108,7 @@ class WordCard extends StatelessWidget {
                             child: TapToSpeak(
                               text: word.arabicSentence,
                               language: 'ar-SA',
-                              tooltip: 'Arapça cümleyi dinle',
+                              tooltip: 'استمع إلى الجملة العربية',
                               child: HighlightedText(
                                 text: word.arabicSentence,
                                 highlightIndex: word.wordIndex,
@@ -133,12 +133,12 @@ class WordCard extends StatelessWidget {
             runSpacing: AppSpacing.xs,
             children: [
               AppBadge(
-                label: '${word.successCount} doğru',
+                label: '${word.successCount} صحيحة',
                 variant: AppBadgeVariant.success,
                 icon: const Icon(Icons.check_circle_rounded),
               ),
               AppBadge(
-                label: '${word.errorCount} yanlış',
+                label: '${word.errorCount} خاطئة',
                 variant: AppBadgeVariant.danger,
                 icon: const Icon(Icons.cancel_rounded),
               ),

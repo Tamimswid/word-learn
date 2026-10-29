@@ -86,14 +86,14 @@ class _EditWordSheetState extends State<EditWordSheet> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'Kelimeyi düzenle',
+                  'تعديل الكلمة',
                   style: AppTypography.titleMedium.copyWith(
                     color: AppColors.foreground,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  'Kelimeyi, anlamını ve cümleleri buradan güncelleyebilirsin.',
+                  'يمكنك تحديث الكلمة والمعنى والجمل من هنا.',
                   style: AppTypography.bodySmall.copyWith(
                     color: AppColors.mutedForeground,
                   ),
@@ -105,8 +105,8 @@ class _EditWordSheetState extends State<EditWordSheet> {
                   enabled: !state.isSaving,
                   onChanged: (_) => _handleChanged(context),
                   decoration: InputDecoration(
-                    labelText: 'Kelime',
-                    hintText: 'örn. brave',
+                    labelText: 'الكلمة',
+                    hintText: 'مثال: brave',
                     errorText: _wordError,
                   ),
                 ),
@@ -117,8 +117,8 @@ class _EditWordSheetState extends State<EditWordSheet> {
                   enabled: !state.isSaving,
                   onChanged: (_) => _handleChanged(context),
                   decoration: InputDecoration(
-                    labelText: 'Anlamı',
-                    hintText: 'örn. cesur',
+                    labelText: 'المعنى',
+                    hintText: 'مثال: شجاع',
                     errorText: _translationError,
                   ),
                 ),
@@ -132,8 +132,8 @@ class _EditWordSheetState extends State<EditWordSheet> {
                   enabled: !state.isSaving,
                   onChanged: (_) => _handleChanged(context),
                   decoration: const InputDecoration(
-                    labelText: 'Örnek cümle',
-                    hintText: 'Kelimenin geçtiği cümle',
+                    labelText: 'جملة مثال',
+                    hintText: 'الجملة التي ترد فيها الكلمة',
                     alignLabelWithHint: true,
                   ),
                 ),
@@ -149,8 +149,8 @@ class _EditWordSheetState extends State<EditWordSheet> {
                   enabled: !state.isSaving,
                   onChanged: (_) => _handleChanged(context),
                   decoration: const InputDecoration(
-                    labelText: 'Arapça cümle',
-                    hintText: 'Cümlenin Arapça karşılığı',
+                    labelText: 'الجملة العربية',
+                    hintText: 'الترجمة العربية للجملة',
                     alignLabelWithHint: true,
                   ),
                 ),
@@ -169,7 +169,7 @@ class _EditWordSheetState extends State<EditWordSheet> {
                   children: [
                     Expanded(
                       child: AppButton(
-                        label: 'Vazgeç',
+                        label: 'إلغاء',
                         variant: AppButtonVariant.secondary,
                         expanded: true,
                         onPressed: state.isSaving
@@ -179,7 +179,7 @@ class _EditWordSheetState extends State<EditWordSheet> {
                     ),
                     Expanded(
                       child: AppButton(
-                        label: 'Kaydet',
+                        label: 'حفظ',
                         expanded: true,
                         isLoading: state.isSaving,
                         onPressed: canSave ? () => _submit(context) : null,
@@ -221,8 +221,8 @@ class _EditWordSheetState extends State<EditWordSheet> {
     final translation = _translationController.text.trim();
 
     setState(() {
-      _wordError = word.isEmpty ? 'Kelime gerekli.' : null;
-      _translationError = translation.isEmpty ? 'Anlamı gerekli.' : null;
+      _wordError = word.isEmpty ? 'الكلمة مطلوبة.' : null;
+      _translationError = translation.isEmpty ? 'المعنى مطلوب.' : null;
     });
 
     if (word.isEmpty || translation.isEmpty) return;

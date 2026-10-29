@@ -13,7 +13,7 @@ class WordRepositoryImpl implements WordRepository {
   final WordDataSource _source;
 
   static const Failure _generationFailure = Failure(
-    'Kelime oluşturulamadı. Lütfen tekrar deneyin.',
+    'تعذر إنشاء الكلمة. يرجى المحاولة مرة أخرى.',
   );
 
   @override
@@ -134,7 +134,7 @@ class WordRepositoryImpl implements WordRepository {
   Failure _failureFrom(Object? error) {
     if (error is String && error.contains('23505')) {
       return const Failure(
-        'Bu kelime zaten eklenmiş.',
+        'هذه الكلمة مضافة بالفعل.',
         type: FailureType.conflict,
         code: '23505',
       );
