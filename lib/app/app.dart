@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/design_system/design_system.dart';
@@ -27,10 +28,16 @@ class _WordlearnAppState extends State<WordlearnApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Kelime',
+      title: 'كلمة',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.dark,
       routerConfig: _router,
+      locale: const Locale('ar'),
+      supportedLocales: const [Locale('ar')],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      // The layout is designed left-to-right; only the copy is Arabic.
+      builder: (context, child) =>
+          Directionality(textDirection: TextDirection.ltr, child: child!),
     );
   }
 }
