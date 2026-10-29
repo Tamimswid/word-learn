@@ -7,7 +7,7 @@ abstract final class AppGradients {
   static const RadialGradient glow = RadialGradient(
     center: Alignment.topCenter,
     radius: 1.1,
-    colors: [Color(0x475D69CB), AppColors.transparent],
+    colors: [AppColors.primary, AppColors.transparent],
     stops: [0, 0.75],
   );
 }
