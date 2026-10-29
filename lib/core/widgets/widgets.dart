@@ -1,4 +1,5 @@
 export 'app_add_button.dart';
+export 'app_animated_background.dart';
 export 'app_badge.dart';
 export 'app_button.dart';
 export 'app_card.dart';
