@@ -13,10 +13,7 @@ class AppSupabaseClient {
 
   final supabase.SupabaseClient _client;
 
-  static const Failure _missingFilters = Failure(
-    'İşlem için en az bir filtre gerekli.',
-    type: FailureType.unexpected,
-  );
+  static const Failure _missingFilters = Failure('İşlem için en az bir filtre gerekli.', type: FailureType.unexpected);
 
   Future<Either<Failure, List<Map<String, dynamic>>>> select(
     String table, {
@@ -30,13 +27,9 @@ class AppSupabaseClient {
     assert(offset == null || limit != null, 'offset requires limit');
 
     return _guard(() async {
-      final filtered = _withFilters(
-        _client.from(table).select(columns),
-        filters,
-      );
+      final filtered = _withFilters(_client.from(table).select(columns), filters);
 
-      supabase.PostgrestTransformBuilder<supabase.PostgrestList> query =
-          filtered;
+      supabase.PostgrestTransformBuilder<supabase.PostgrestList> query = filtered;
       if (orderBy != null) {
         query = query.order(orderBy, ascending: ascending);
       }
@@ -50,10 +43,7 @@ class AppSupabaseClient {
     });
   }
 
-  Future<Either<Failure, Map<String, dynamic>>> insert(
-    String table,
-    Map<String, dynamic> values,
-  ) {
+  Future<Either<Failure, Map<String, dynamic>>> insert(String table, Map<String, dynamic> values) {
     return _guard(() async {
       final row = await _client.from(table).insert(values).select().single();
       return Map<String, dynamic>.from(row);
@@ -66,11 +56,7 @@ class AppSupabaseClient {
     String? onConflict,
   }) {
     return _guard(() async {
-      final row = await _client
-          .from(table)
-          .upsert(values, onConflict: onConflict)
-          .select()
-          .single();
+      final row = await _client.from(table).upsert(values, onConflict: onConflict).select().single();
       return Map<String, dynamic>.from(row);
     });
   }
@@ -89,10 +75,7 @@ class AppSupabaseClient {
     });
   }
 
-  Future<Either<Failure, Unit>> delete(
-    String table, {
-    required Map<String, Object?> filters,
-  }) {
+  Future<Either<Failure, Unit>> delete(String table, {required Map<String, Object?> filters}) {
     if (filters.isEmpty) return Future.value(const Left(_missingFilters));
 
     return _guard(() async {
@@ -108,9 +91,7 @@ class AppSupabaseClient {
     var result = query;
     for (final entry in filters.entries) {
       final value = entry.value;
-      result = value == null
-          ? result.isFilter(entry.key, null)
-          : result.eq(entry.key, value);
+      result = value == null ? result.isFilter(entry.key, null) : result.eq(entry.key, value);
     }
     return result;
   }
