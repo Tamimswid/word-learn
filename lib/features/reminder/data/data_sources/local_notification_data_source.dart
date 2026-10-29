@@ -67,8 +67,8 @@ class LocalNotificationDataSource implements NotificationDataSource {
 
     await _plugin.zonedSchedule(
       id: id,
-      title: slot.word,
-      body: '${slot.translation} • Tekrar zamanı',
+      title: slot.title,
+      body: slot.body,
       scheduledDate: tz.TZDateTime.from(slot.at, tz.local),
       notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
