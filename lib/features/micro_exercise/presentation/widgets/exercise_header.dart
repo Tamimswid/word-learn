@@ -36,7 +36,7 @@ class ExerciseHeader extends StatelessWidget {
                   Icons.arrow_back_rounded,
                   size: AppSpacing.xxl,
                 ),
-                tooltip: 'Ana ekrana dön',
+                tooltip: 'العودة إلى الشاشة الرئيسية',
                 variant: AppIconButtonVariant.ghost,
                 size: AppSpacing.xxxl + AppSpacing.xs,
                 onPressed: onBack,

@@ -25,7 +25,7 @@ class ExerciseFooter extends StatelessWidget {
           ),
           const SizedBox(width: AppSpacing.sm - AppSpacing.xxs),
           Text(
-            'Küçük tekrar, kalıcı kelimeler.',
+            'مراجعة صغيرة، كلمات راسخة.',
             style: AppTypography.caption.copyWith(
               color: AppColors.mutedForeground,
             ),

@@ -17,12 +17,12 @@ class SupabaseExerciseDataSource implements ExerciseDataSource {
   static const int _wordLimit = 200;
 
   static const Failure _sessionFailure = Failure(
-    'Oturumunuz sona erdi. Lütfen tekrar giriş yapın.',
+    'انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.',
     type: FailureType.authentication,
   );
 
   static const Failure _quizFailure = Failure(
-    'Alıştırma soruları oluşturulamadı. Lütfen tekrar deneyin.',
+    'تعذر إنشاء أسئلة التمرين. يرجى المحاولة مرة أخرى.',
   );
 
   @override

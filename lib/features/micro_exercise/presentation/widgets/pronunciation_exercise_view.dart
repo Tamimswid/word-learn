@@ -81,7 +81,7 @@ class _PronunciationExerciseViewState extends State<PronunciationExerciseView> {
         _available = available;
         _localeId = localeId;
         if (!available) {
-          _error = 'Mikrofon kullanılamıyor. İzin verildiğinden emin ol.';
+          _error = 'الميكروفون غير متاح. تأكد من منح الإذن.';
         }
       });
     } catch (_) {
@@ -89,7 +89,7 @@ class _PronunciationExerciseViewState extends State<PronunciationExerciseView> {
       setState(() {
         _initializing = false;
         _available = false;
-        _error = 'Mikrofon başlatılamadı.';
+        _error = 'تعذر تشغيل الميكروفون.';
       });
     }
   }
@@ -131,7 +131,7 @@ class _PronunciationExerciseViewState extends State<PronunciationExerciseView> {
       if (!mounted) return;
       setState(() {
         _listening = false;
-        _error = 'Mikrofon başlatılamadı.';
+        _error = 'تعذر تشغيل الميكروفون.';
       });
     }
   }
@@ -158,7 +158,7 @@ class _PronunciationExerciseViewState extends State<PronunciationExerciseView> {
     if (words.isEmpty) {
       setState(() {
         _listening = false;
-        _error = 'Seni duyamadım. Tekrar dene.';
+        _error = 'لم أسمعك. حاول مرة أخرى.';
       });
       return;
     }
@@ -186,9 +186,9 @@ class _PronunciationExerciseViewState extends State<PronunciationExerciseView> {
       _listening = false;
       _error = switch (error.errorMsg) {
         'error_no_match' ||
-        'error_speech_timeout' => 'Seni duyamadım. Tekrar dene.',
-        'error_permission' => 'Mikrofon izni verilmedi.',
-        _ => 'Ses tanınamadı. Tekrar dene.',
+        'error_speech_timeout' => 'لم أسمعك. حاول مرة أخرى.',
+        'error_permission' => 'لم يُمنح إذن الميكروفون.',
+        _ => 'تعذر التعرف على الصوت. حاول مرة أخرى.',
       };
     });
   }
@@ -208,7 +208,7 @@ class _PronunciationExerciseViewState extends State<PronunciationExerciseView> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Kelimeyi yüksek sesle söyle.',
+          'انطق الكلمة بصوت عالٍ.',
           style: AppTypography.bodySmall.copyWith(
             color: AppColors.mutedForeground,
           ),
@@ -295,7 +295,7 @@ class _Microphone extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.md),
         Text(
-          listening ? 'Dinliyorum…' : 'Mikrofona dokun ve kelimeyi söyle.',
+          listening ? 'أستمع…' : 'انقر على الميكروفون وانطق الكلمة.',
           textAlign: TextAlign.center,
           style: AppTypography.bodySmall.copyWith(
             color: AppColors.mutedForeground,
@@ -304,7 +304,7 @@ class _Microphone extends StatelessWidget {
         if (heard != null && heard!.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Duyduğum: $heard',
+            'ما سمعته: $heard',
             textAlign: TextAlign.center,
             style: AppTypography.bodySmall.copyWith(
               color: AppColors.secondaryForeground,
@@ -352,7 +352,7 @@ class _Unavailable extends StatelessWidget {
             const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Text(
-                error ?? 'Bu cihazda ses tanıma kullanılamıyor.',
+                error ?? 'التعرف على الصوت غير متاح على هذا الجهاز.',
                 style: AppTypography.bodySmall.copyWith(
                   color: AppColors.mutedForeground,
                 ),
@@ -364,14 +364,14 @@ class _Unavailable extends StatelessWidget {
         Row(
           children: [
             AppButton(
-              label: 'Tekrar dene',
+              label: 'إعادة المحاولة',
               variant: AppButtonVariant.secondary,
               icon: const Icon(Icons.refresh_rounded),
               onPressed: onRetry,
             ),
             const SizedBox(width: AppSpacing.md),
             AppButton(
-              label: 'Soruyu geç',
+              label: 'تخطي السؤال',
               variant: AppButtonVariant.ghost,
               onPressed: onSkip,
             ),
@@ -417,8 +417,8 @@ class _AnswerFeedback extends StatelessWidget {
               children: [
                 Text(
                   correct
-                      ? 'Telaffuzun anlaşıldı!'
-                      : 'Doğru telaffuz: ${answer.correctAnswer}',
+                      ? 'تم فهم نطقك!'
+                      : 'النطق الصحيح: ${answer.correctAnswer}',
                   style: AppTypography.titleSmall.copyWith(
                     color: AppColors.foreground,
                   ),
@@ -426,7 +426,7 @@ class _AnswerFeedback extends StatelessWidget {
                 if (heard != null && heard.isNotEmpty) ...[
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    'Duyduğum: $heard',
+                    'ما سمعته: $heard',
                     style: AppTypography.bodySmall.copyWith(
                       color: AppColors.mutedForeground,
                     ),
@@ -434,7 +434,7 @@ class _AnswerFeedback extends StatelessWidget {
                 ] else if (!correct) ...[
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    'Bu soru atlandı.',
+                    'تم تخطي هذا السؤال.',
                     style: AppTypography.bodySmall.copyWith(
                       color: AppColors.mutedForeground,
                     ),

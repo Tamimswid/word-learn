@@ -29,7 +29,7 @@ class TranslationExerciseView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Doğru Türkçe karşılığı seç.',
+          'اختر المعنى الصحيح.',
           style: AppTypography.bodySmall.copyWith(
             color: AppColors.mutedForeground,
           ),

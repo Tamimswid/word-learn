@@ -68,7 +68,7 @@ class _SpellingExerciseViewState extends State<SpellingExerciseView> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Eksik harfleri tamamla.',
+          'أكمل الحروف الناقصة.',
           style: AppTypography.bodySmall.copyWith(
             color: AppColors.mutedForeground,
           ),
@@ -116,7 +116,7 @@ class _SpellingExerciseViewState extends State<SpellingExerciseView> {
         if (widget.answer != null && !widget.answer!.isCorrect) ...[
           const SizedBox(height: AppSpacing.md),
           Text(
-            'Doğru cevap: $_word',
+            'الإجابة الصحيحة: $_word',
             style: AppTypography.bodySmall.copyWith(
               color: AppColors.mutedForeground,
             ),
@@ -134,7 +134,7 @@ class _SpellingExerciseViewState extends State<SpellingExerciseView> {
         ),
         const SizedBox(height: AppSpacing.md),
         Tooltip(
-          message: 'Son harfi geri al',
+          message: 'تراجع عن آخر حرف',
           child: SizedBox(
             width: double.infinity,
             child: TextButton(
@@ -154,7 +154,7 @@ class _SpellingExerciseViewState extends State<SpellingExerciseView> {
         ),
         const SizedBox(height: AppSpacing.xl),
         AppButton(
-          label: 'Kontrol et',
+          label: 'تحقق',
           expanded: true,
           onPressed: widget.answer == null && _isComplete ? _submit : null,
         ),

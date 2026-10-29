@@ -33,12 +33,12 @@ class ExerciseRepositoryImpl implements ExerciseRepository {
   static final RegExp _repeatedSpace = RegExp(r'\s+');
 
   static const Failure _notEnoughWords = Failure(
-    'Alıştırma için en az iki kelime gerekiyor.',
+    'يتطلب التمرين كلمتين على الأقل.',
     type: FailureType.notFound,
   );
 
   static const Failure _sessionFailure = Failure(
-    'Alıştırma soruları oluşturulamadı. Lütfen tekrar deneyin.',
+    'تعذر إنشاء أسئلة التمرين. يرجى المحاولة مرة أخرى.',
   );
 
   @override

@@ -29,7 +29,7 @@ class FillBlankExerciseView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Boşluğa hangi kelime gelir?',
+          'أي كلمة تناسب الفراغ؟',
           style: AppTypography.bodySmall.copyWith(
             color: AppColors.mutedForeground,
           ),

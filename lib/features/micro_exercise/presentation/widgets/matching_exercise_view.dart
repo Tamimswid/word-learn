@@ -110,7 +110,7 @@ class _MatchingExerciseViewState extends State<MatchingExerciseView> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'İngilizce kelimeleri Türkçe anlamlarıyla eşleştir.',
+          'طابق الكلمات الإنجليزية مع معانيها.',
           style: AppTypography.bodySmall.copyWith(
             color: AppColors.mutedForeground,
           ),

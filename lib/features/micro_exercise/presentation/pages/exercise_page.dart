@@ -161,7 +161,7 @@ class _ExerciseError extends StatelessWidget {
     return Column(
       children: [
         ExerciseHeader(
-          title: 'Alıştırma',
+          title: 'تمرين',
           position: 0,
           total: 0,
           progress: 0,
@@ -183,7 +183,7 @@ class _ExerciseError extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
-                    'Alıştırma hazırlanamadı',
+                    'تعذر إعداد التمرين',
                     style: AppTypography.titleMedium.copyWith(
                       color: AppColors.foreground,
                     ),
@@ -200,7 +200,7 @@ class _ExerciseError extends StatelessWidget {
                   ],
                   const SizedBox(height: AppSpacing.lg),
                   AppButton(
-                    label: 'Tekrar dene',
+                    label: 'إعادة المحاولة',
                     icon: const Icon(Icons.refresh_rounded),
                     onPressed: onRetry,
                   ),
