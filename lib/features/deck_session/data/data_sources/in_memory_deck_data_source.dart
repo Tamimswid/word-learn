@@ -25,6 +25,7 @@ class InMemoryDeckDataSource implements DeckDataSource {
     required int errorCount,
     required int masteryLevel,
     required DateTime reviewedAt,
+    required DateTime nextReviewAt,
   }) async {
     return const Right(unit);
   }

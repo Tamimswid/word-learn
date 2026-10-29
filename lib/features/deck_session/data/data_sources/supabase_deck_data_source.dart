@@ -58,6 +58,7 @@ class SupabaseDeckDataSource implements DeckDataSource {
     required int errorCount,
     required int masteryLevel,
     required DateTime reviewedAt,
+    required DateTime nextReviewAt,
   }) async {
     final userId = _client.auth.currentUser?.id;
     if (userId == null) return const Left(_sessionFailure);
@@ -69,6 +70,7 @@ class SupabaseDeckDataSource implements DeckDataSource {
         'error_count': errorCount,
         'mastery_level': masteryLevel,
         'last_reviewed_at': reviewedAt.toUtc().toIso8601String(),
+        'next_review_at': nextReviewAt.toUtc().toIso8601String(),
       },
       filters: <String, Object?>{'id': id, 'user_id': userId},
     );

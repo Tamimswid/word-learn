@@ -15,5 +15,6 @@ abstract interface class DeckDataSource {
     required int errorCount,
     required int masteryLevel,
     required DateTime reviewedAt,
+    required DateTime nextReviewAt,
   });
 }

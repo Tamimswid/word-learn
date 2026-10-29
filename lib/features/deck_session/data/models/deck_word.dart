@@ -13,6 +13,7 @@ class DeckWord {
     required this.successCount,
     required this.masteryLevel,
     this.lastReviewedAt,
+    this.nextReviewAt,
     this.createdAt,
     this.arabicSentence = '',
     this.wordIndex = -1,
@@ -31,6 +32,9 @@ class DeckWord {
       lastReviewedAt: DateTime.tryParse(
         json['last_reviewed_at'] as String? ?? '',
       )?.toLocal(),
+      nextReviewAt: DateTime.tryParse(
+        json['next_review_at'] as String? ?? '',
+      )?.toLocal(),
       createdAt: DateTime.tryParse(
         json['created_at'] as String? ?? '',
       )?.toLocal(),
@@ -48,6 +52,9 @@ class DeckWord {
   final int successCount;
   final int masteryLevel;
   final DateTime? lastReviewedAt;
+
+  /// When the word is scheduled again; null means it never entered a session.
+  final DateTime? nextReviewAt;
   final DateTime? createdAt;
   final String arabicSentence;
   final int wordIndex;
