@@ -12,9 +12,9 @@ class LocalNotificationDataSource implements NotificationDataSource {
     : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
 
   static const String _channelId = 'daily_word_reminders';
-  static const String _channelName = 'Günlük kelime hatırlatıcıları';
+  static const String _channelName = 'تذكيرات الكلمات اليومية';
   static const String _channelDescription =
-      'Öğrenilecek kelimeler için günlük hatırlatıcılar.';
+      'تذكيرات يومية للكلمات التي ستتعلمها.';
 
   final FlutterLocalNotificationsPlugin _plugin;
   bool _initialized = false;

@@ -26,9 +26,9 @@ class ReminderSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const AppSectionHeader(
-          title: 'Günlük hatırlatıcı',
+          title: 'التذكير اليومي',
           description:
-              'Seçtiğin saat aralığında bugünün kelimeleri sırayla hatırlatılır.',
+              'ستُذكَّر بكلمات اليوم بالترتيب خلال الفترة الزمنية التي تختارها.',
         ),
         const SizedBox(height: AppSpacing.lg),
         _ReminderToggle(
@@ -41,11 +41,11 @@ class ReminderSection extends StatelessWidget {
           children: [
             Expanded(
               child: _TimeField(
-                label: 'Başlangıç',
+                label: 'البداية',
                 minutes: settings.startMinutes,
                 onTap: () => _pickTime(
                   context,
-                  label: 'Başlangıç',
+                  label: 'البداية',
                   minutes: settings.startMinutes,
                   onPicked: onStartMinutesChanged,
                 ),
@@ -53,11 +53,11 @@ class ReminderSection extends StatelessWidget {
             ),
             Expanded(
               child: _TimeField(
-                label: 'Bitiş',
+                label: 'النهاية',
                 minutes: settings.endMinutes,
                 onTap: () => _pickTime(
                   context,
-                  label: 'Bitiş',
+                  label: 'النهاية',
                   minutes: settings.endMinutes,
                   onPicked: onEndMinutesChanged,
                 ),
@@ -67,15 +67,15 @@ class ReminderSection extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.md),
         Text(
-          'Kelimeler seçtiğin saat aralığına yayılır; aralıklar 10 dk – '
-          '2 saat arasında belirlenir.',
+          'تتوزع الكلمات على الفترة الزمنية التي اخترتها؛ '
+          'وتُحدد الفواصل بين 10 دقائق و2 ساعة.',
           style: AppTypography.caption.copyWith(
             color: AppColors.mutedForeground,
           ),
         ),
         if (!settings.isValid) ...[
           const SizedBox(height: AppSpacing.sm),
-          const _ErrorText('Bitiş saati başlangıçtan sonra olmalı.'),
+          const _ErrorText('يجب أن يكون وقت النهاية بعد وقت البداية.'),
         ],
         if (state.errorMessage != null) ...[
           const SizedBox(height: AppSpacing.sm),
@@ -95,9 +95,9 @@ Future<void> _pickTime(
   final picked = await showTimePicker(
     context: context,
     initialTime: TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60),
-    helpText: '$label saati',
-    cancelText: 'Vazgeç',
-    confirmText: 'Tamam',
+    helpText: 'وقت $label',
+    cancelText: 'إلغاء',
+    confirmText: 'تم',
     builder: (context, child) {
       return MediaQuery(
         data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
@@ -141,14 +141,14 @@ class _ReminderToggle extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Hatırlatıcıyı aç',
+                  'تفعيل التذكير',
                   style: AppTypography.labelLarge.copyWith(
                     color: AppColors.foreground,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xxs),
                 Text(
-                  'Gün içinde kelime tekrarı',
+                  'مراجعة الكلمات خلال اليوم',
                   style: AppTypography.caption.copyWith(
                     color: AppColors.mutedForeground,
                   ),
@@ -184,7 +184,7 @@ class _TimeField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
-      label: '$label saati $_value',
+      label: 'وقت $label $_value',
       child: Material(
         color: AppColors.secondary,
         clipBehavior: Clip.antiAlias,

@@ -35,7 +35,7 @@ class ReminderRepositoryImpl implements ReminderRepository {
   static const int _wordIdBase = 9100;
   static const int _promptIdBase = 9200;
 
-  static const String _promptTitle = 'Kelime tekrarı';
+  static const String _promptTitle = 'مراجعة الكلمات';
 
   final DeckRepository _deck;
   final ReminderSettingsDataSource _settings;
@@ -52,7 +52,7 @@ class ReminderRepositoryImpl implements ReminderRepository {
     ReminderSettings settings,
   ) async {
     if (!settings.isValid) {
-      return const Left(Failure('Bitiş saati başlangıçtan sonra olmalı.'));
+      return const Left(Failure('يجب أن يكون وقت النهاية بعد وقت البداية.'));
     }
 
     if (settings.isEnabled) {
@@ -62,7 +62,7 @@ class ReminderRepositoryImpl implements ReminderRepository {
       } on Object catch (error, stackTrace) {
         return Left(
           Failure(
-            'Bildirim izni kontrol edilemedi.',
+            'تعذر التحقق من إذن الإشعارات.',
             type: FailureType.permission,
             cause: error,
             stackTrace: stackTrace,
@@ -73,7 +73,7 @@ class ReminderRepositoryImpl implements ReminderRepository {
       if (!granted) {
         return const Left(
           Failure(
-            'Bildirim izni verilmedi. Ayarlardan izin verip tekrar dene.',
+            'لم يُمنح إذن الإشعارات. امنح الإذن من الإعدادات ثم حاول مرة أخرى.',
             type: FailureType.permission,
           ),
         );
@@ -94,7 +94,7 @@ class ReminderRepositoryImpl implements ReminderRepository {
     } on Object catch (error, stackTrace) {
       return Left(
         Failure(
-          'Hatırlatıcı ayarları okunamadı.',
+          'تعذرت قراءة إعدادات التذكير.',
           type: FailureType.storage,
           cause: error,
           stackTrace: stackTrace,
@@ -112,7 +112,7 @@ class ReminderRepositoryImpl implements ReminderRepository {
       if (wordsResult.isLeft()) {
         return wordsResult.fold(
           (failure) => Left(failure),
-          (_) => const Left(Failure('Kelimeler yüklenemedi.')),
+          (_) => const Left(Failure('تعذر تحميل الكلمات.')),
         );
       }
 
@@ -136,7 +136,7 @@ class ReminderRepositoryImpl implements ReminderRepository {
     } on Object catch (error, stackTrace) {
       return Left(
         Failure(
-          'Hatırlatıcılar planlanamadı.',
+          'تعذر جدولة التذكيرات.',
           cause: error,
           stackTrace: stackTrace,
         ),
@@ -177,7 +177,7 @@ class ReminderRepositoryImpl implements ReminderRepository {
       slots.add(
         ReminderSlot(
           title: word.word,
-          body: '${word.translation} • Tekrar zamanı',
+          body: '${word.translation} • وقت المراجعة',
           at: at,
         ),
       );
@@ -228,8 +228,8 @@ class ReminderRepositoryImpl implements ReminderRepository {
     }
 
     final body = pendingWords > 0
-        ? '$pendingWords kelime seni bekliyor.'
-        : 'Kelimelerini tekrar etme zamanı.';
+        ? 'لديك $pendingWords كلمة بانتظارك.'
+        : 'حان وقت مراجعة كلماتك.';
 
     final slots = <ReminderSlot>[];
     while (at.isBefore(windowEnd)) {
