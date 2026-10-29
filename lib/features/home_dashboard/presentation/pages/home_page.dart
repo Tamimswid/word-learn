@@ -19,7 +19,7 @@ import '../sheets/home_settings_sheet.dart';
 import '../widgets/home_header.dart';
 import '../widgets/learning_rhythm_card.dart';
 // import '../widgets/quick_practice_section.dart';
-import '../widgets/recent_words_section.dart';
+import '../widgets/daily_words_section.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -90,8 +90,8 @@ class _HomeViewState extends State<_HomeView> {
                       //   onLevelTap: () => _openExercise(context),
                       // ),
                       // const SizedBox(height: AppSpacing.xl),
-                      RecentWordsSection(
-                        words: snapshot.recentWords,
+                      DailyWordsSection(
+                        words: state.sessionWords,
                         isLoading: state.isLoading,
                         onSeeAll: () => _openAllWords(context),
                         onDeleted: (word) => _removeWord(context, word),

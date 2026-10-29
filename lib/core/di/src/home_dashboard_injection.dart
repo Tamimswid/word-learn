@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../features/deck_session/deck_session.dart';
 import '../../../features/home_dashboard/data/data_sources/home_data_source.dart';
 import '../../../features/home_dashboard/data/data_sources/in_memory_home_data_source.dart';
 import '../../../features/home_dashboard/data/data_sources/supabase_home_data_source.dart';
@@ -32,7 +33,11 @@ void registerHomeDashboardDependencies(GetIt locator) {
 
   if (!locator.isRegistered<HomeCubit>()) {
     locator.registerFactory<HomeCubit>(
-      () => HomeCubit(locator<HomeRepository>(), locator<WordRepository>()),
+      () => HomeCubit(
+        locator<HomeRepository>(),
+        locator<WordRepository>(),
+        locator<DeckRepository>(),
+      ),
     );
   }
 }
