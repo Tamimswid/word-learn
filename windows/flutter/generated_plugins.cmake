@@ -4,8 +4,8 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   app_links
+  audioplayers_windows
   flutter_timezone
-  flutter_tts
   hotkey_manager_windows
   screen_retriever_windows
   speech_to_text_windows
