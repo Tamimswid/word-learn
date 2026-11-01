@@ -38,9 +38,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Kelime telaffuzunu kaydetmek için mikrofon kullanılır.</string>
+	<string>يُستخدم الميكروفون لالتقاط صوتك أثناء التمارين والمحادثة.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Söylediğin kelimenin telaffuzunu kontrol etmek için ses tanıma kullanılır.</string>
+	<string>يُستخدم التعرف على الصوت لتحويل كلامك إلى نص أثناء التمارين والمحادثة.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
