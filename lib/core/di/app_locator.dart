@@ -2,7 +2,10 @@ import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../data/supabase_client.dart';
+import '../platform/speech_to_text_service.dart';
 import '../platform/text_to_speech_service.dart';
+import '../platform/translation_service.dart';
+import 'src/ai_tutor_injection.dart';
 import 'src/auth_injection.dart';
 import 'src/deck_session_injection.dart';
 import 'src/home_dashboard_injection.dart';
@@ -30,6 +33,14 @@ void setupLocator({SupabaseClient? supabaseClient}) {
     locator.registerLazySingleton<TextToSpeechService>(TextToSpeechService.new);
   }
 
+  if (!locator.isRegistered<SpeechToTextService>()) {
+    locator.registerLazySingleton<SpeechToTextService>(SpeechToTextService.new);
+  }
+
+  if (!locator.isRegistered<TranslationService>()) {
+    locator.registerLazySingleton<TranslationService>(TranslationService.new);
+  }
+
   registerAuthDependencies(locator);
   registerWordManagementDependencies(locator);
   registerHomeDashboardDependencies(locator);
@@ -37,4 +48,5 @@ void setupLocator({SupabaseClient? supabaseClient}) {
   registerMicroExerciseDependencies(locator);
   registerReminderDependencies(locator);
   registerQuickCaptureDependencies(locator);
+  registerAiTutorDependencies(locator);
 }

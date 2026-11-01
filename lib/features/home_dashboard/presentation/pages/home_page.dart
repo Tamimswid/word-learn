@@ -78,6 +78,7 @@ class _HomeViewState extends State<_HomeView> {
                           streakDays: snapshot.streakDays,
                           dailyLoginCount: snapshot.dailyLoginCount,
                           onOpenSettings: () => _openSettings(context),
+                          onOpenAiTutor: () => _openAiTutor(context),
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xxl),
@@ -159,6 +160,10 @@ class _HomeViewState extends State<_HomeView> {
 
   void _openAllWords(BuildContext context) {
     context.pushNamed(AppRoute.words.name);
+  }
+
+  void _openAiTutor(BuildContext context) {
+    context.pushNamed(AppRoute.aiTutor.name);
   }
 
   Future<void> _addWord(BuildContext context) async {

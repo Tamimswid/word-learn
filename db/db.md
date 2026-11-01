@@ -38,3 +38,19 @@ CREATE TABLE public.user_settings (
   CONSTRAINT user_settings_pkey PRIMARY KEY (id),
   CONSTRAINT user_settings_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
 );
+CREATE TABLE public.tutor_settings (
+  user_id uuid NOT NULL DEFAULT auth.uid(),
+  english_level text NOT NULL DEFAULT 'B1' CHECK (english_level = ANY (ARRAY['A1', 'A2', 'B1', 'B2', 'C1', 'C2'])),
+  correction_level text NOT NULL DEFAULT 'medium' CHECK (correction_level = ANY (ARRAY['low', 'medium', 'high'])),
+  CONSTRAINT tutor_settings_pkey PRIMARY KEY (user_id),
+  CONSTRAINT tutor_settings_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+);
+CREATE TABLE public.tutor_chats (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL DEFAULT auth.uid(),
+  summary text NOT NULL CHECK (length(btrim(summary)) > 0),
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT tutor_chats_pkey PRIMARY KEY (id),
+  CONSTRAINT tutor_chats_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+);
+CREATE INDEX idx_tutor_chats_user_created ON public.tutor_chats USING btree (user_id, created_at DESC);
