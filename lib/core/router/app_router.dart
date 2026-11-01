@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../features/ai_tutor/presentation/pages/ai_tutor_page.dart';
 import '../../../features/auth/presentation/pages/auth_page.dart';
 import '../../../features/deck_session/presentation/pages/deck_page.dart';
 import '../../../features/home_dashboard/presentation/pages/home_page.dart';
@@ -105,6 +106,14 @@ abstract final class AppRouter {
       pageBuilder: (context, state) => _page(
         AppRoute.settings,
         const RoutePlaceholderPage(route: AppRoute.settings),
+      ),
+    ),
+    GoRoute(
+      path: AppRoute.aiTutor.path,
+      name: AppRoute.aiTutor.name,
+      pageBuilder: (context, state) => _page(
+        AppRoute.aiTutor,
+        AiTutorPage(onEndConversation: () => context.pop()),
       ),
     ),
     GoRoute(

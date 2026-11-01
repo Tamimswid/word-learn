@@ -13,6 +13,7 @@ enum AppRoute {
   deck(name: 'deck', path: '/deck'),
   exercise(name: 'exercise', path: '/exercise'),
   settings(name: 'settings', path: '/settings'),
+  aiTutor(name: 'ai-tutor', path: '/ai-tutor'),
   signIn(name: 'sign-in', path: '/sign-in');
 
   const AppRoute({required this.name, required this.path});

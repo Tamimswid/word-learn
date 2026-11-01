@@ -10,12 +10,14 @@ class HomeHeader extends StatelessWidget {
     required this.streakDays,
     required this.dailyLoginCount,
     required this.onOpenSettings,
+    required this.onOpenAiTutor,
   });
 
   final String greetingName;
   final int streakDays;
   final int dailyLoginCount;
   final VoidCallback onOpenSettings;
+  final VoidCallback onOpenAiTutor;
 
   @override
   Widget build(BuildContext context) {
@@ -65,10 +67,20 @@ class HomeHeader extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      AppIconButton(
-                        icon: const Icon(Icons.tune_rounded),
-                        tooltip: 'الإعدادات',
-                        onPressed: onOpenSettings,
+                      Row(
+                        children: [
+                          AppIconButton(
+                            icon: const Icon(Icons.tune_rounded),
+                            tooltip: 'الإعدادات',
+                            onPressed: onOpenSettings,
+                          ),
+                          const SizedBox(width: AppSpacing.xs),
+                          AppIconButton(
+                            icon: const Icon(Icons.forum_rounded),
+                            tooltip: 'محادثة مع المعلم',
+                            onPressed: onOpenAiTutor,
+                          ),
+                        ],
                       ),
                       Text(greeting, style: AppTypography.bodySmall.copyWith(color: AppColors.mutedForeground)),
                     ],
